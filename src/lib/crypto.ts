@@ -52,6 +52,11 @@ export async function deriveDataKey(password: string, saltHex: string): Promise<
   );
 }
 
+/** A random AES-256-GCM key, for data that must outlive a password change (notes). */
+export function generateDataKey(): Promise<CryptoKey> {
+  return crypto.subtle.generateKey({ name: 'AES-GCM', length: KEY_LEN_BYTES * 8 }, true, ['encrypt', 'decrypt']);
+}
+
 export async function exportRawKey(key: CryptoKey): Promise<string> {
   const raw = await crypto.subtle.exportKey('raw', key);
   return bytesToBase64(new Uint8Array(raw));

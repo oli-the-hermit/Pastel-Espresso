@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import '@fontsource-variable/geist';
 import { AppProvider } from './context/AppContext';
+import { NotesProvider } from './context/NotesContext';
 import { AppContent } from './App';
 import { MiniPlayerApp } from './mini/MiniPlayerApp';
 import { IslandApp } from './island/IslandApp';
@@ -30,7 +31,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <MiniPlayerApp />
       ) : (
         <AppProvider>
-          <AppContent />
+          <NotesProvider>
+            <AppContent />
+          </NotesProvider>
         </AppProvider>
       )}
     </CrashBoundary>

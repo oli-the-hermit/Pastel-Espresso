@@ -1,9 +1,9 @@
 import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Profile, ShowToast } from '../../types';
 import { api } from '../../lib/api';
-import { deriveDataKey, decryptBlob, randomSaltHex, exportRawKey, importRawKey } from '../../lib/crypto';
-import { sealState } from '../../lib/persistence';
+import { deriveDataKey, decryptBlob, randomSaltHex, exportRawKey, importRawKey, generateDataKey } from '../../lib/crypto';
+import { readNotesKey, sealState } from '../../lib/persistence';
 import { strings } from '../../constants/strings';
 import { clearTimerRun, loadTimerRun, storage } from '../../lib/storage';
 import { TIMING } from '../../constants/timing';
@@ -43,6 +43,40 @@ export function useAuthSession({ state, setState, showToast, onSignedOut }: Auth
   const saveTimerRef = useRef<number | null>(null);
   const authStatusRef = useRef<AuthStatus>('loading');
   authStatusRef.current = authStatus;
+  const latestStateRef = useRef(state);
+  latestStateRef.current = state;
+
+  // Notes are sealed with their own key, kept inside the encrypted profile data (never in
+  // React state). It is saved before any note is sealed with it.
+  const notesKeyRef = useRef<string | null>(null);
+  const notesKeySavedRef = useRef(false);
+  const notesKeyTaskRef = useRef<Promise<CryptoKey> | null>(null);
+
+  // Profile-data writes run one at a time, in order, and seal when they run: a slow earlier
+  // save can't land on top of a newer one, and every save carries the current notes key.
+  const writeChainRef = useRef<Promise<void>>(Promise.resolve());
+
+  const adoptNotesKey = (raw: unknown) => {
+    notesKeyRef.current = readNotesKey(raw);
+    notesKeySavedRef.current = notesKeyRef.current !== null;
+  };
+  const forgetNotesKey = () => {
+    notesKeyRef.current = null;
+    notesKeySavedRef.current = false;
+    notesKeyTaskRef.current = null;
+  };
+
+  /** Queues a save of `snapshot` under the current data key and notes key (reads refs only, so it's stable). */
+  const writeBlob = useCallback((snapshot: AppState): Promise<void> => {
+    const run = writeChainRef.current.then(async () => {
+      const token = tokenRef.current;
+      const key = dataKeyRef.current;
+      if (!token || !key) return;
+      await api.put('/api/data', await sealState(snapshot, key, notesKeyRef.current), token);
+    });
+    writeChainRef.current = run.catch(() => {});
+    return run;
+  }, []);
 
   // Auto-authenticate & restore persistent session on startup
   useEffect(() => {
@@ -68,9 +102,11 @@ export function useAuthSession({ state, setState, showToast, onSignedOut }: Auth
         ]);
 
         let nextState = normalizeState(null);
+        forgetNotesKey();
         if (dataRes.cipher && dataRes.iv) {
-          const plain = await decryptBlob({ iv: dataRes.iv, cipher: dataRes.cipher }, key);
-          nextState = normalizeState(JSON.parse(plain));
+          const raw: unknown = JSON.parse(await decryptBlob({ iv: dataRes.iv, cipher: dataRes.cipher }, key));
+          adoptNotesKey(raw);
+          nextState = normalizeState(raw);
         }
 
         // Restore active running timer if valid
@@ -105,6 +141,7 @@ export function useAuthSession({ state, setState, showToast, onSignedOut }: Auth
           storage.remove('authToken', 'authKey', 'timerRun');
           tokenRef.current = null;
           dataKeyRef.current = null;
+          forgetNotesKey();
           setProfile(null);
           setAuthStatus('unauthenticated');
         }
@@ -122,34 +159,45 @@ export function useAuthSession({ state, setState, showToast, onSignedOut }: Auth
   useEffect(() => {
     if (authStatus !== 'authenticated' || !dataKeyRef.current) return;
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = window.setTimeout(async () => {
-      const token = tokenRef.current;
-      const key = dataKeyRef.current;
-      if (!token || !key || authStatusRef.current !== 'authenticated') return;
-      try {
-        const sealed = await sealState(state, key);
-        await api.put('/api/data', sealed, token);
-      } catch (err) {
-        console.warn('Failed to persist data:', err);
-      }
+    saveTimerRef.current = window.setTimeout(() => {
+      if (authStatusRef.current !== 'authenticated') return;
+      writeBlob(state).catch(err => console.warn('Failed to persist data:', err));
     }, TIMING.saveDebounceMs);
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
-  }, [state, authStatus]);
+  }, [state, authStatus, writeBlob]);
+
+  /**
+   * The key notes are sealed with. Created on first use and saved into the profile data
+   * before it's handed out, so no note is ever sealed with a key that could be lost.
+   */
+  const getNotesKey = (): Promise<CryptoKey> => {
+    notesKeyTaskRef.current ??= (async () => {
+      if (!tokenRef.current || !dataKeyRef.current) throw new Error(strings.errors.api.SESSION_EXPIRED);
+      if (!notesKeyRef.current) notesKeyRef.current = await exportRawKey(await generateDataKey());
+      if (!notesKeySavedRef.current) {
+        await writeBlob(latestStateRef.current);
+        notesKeySavedRef.current = true;
+      }
+      return importRawKey(notesKeyRef.current);
+    })().finally(() => {
+      notesKeyTaskRef.current = null;
+    });
+    return notesKeyTaskRef.current;
+  };
 
   // ── Auth actions ─────────────────────────────────────────────────────
   const login = async (username: string, password: string) => {
     const res = await api.post<AuthResponse>('/api/auth/login', { username, password });
     tokenRef.current = res.token;
     let next = normalizeState(null);
-    let key: CryptoKey;
+    const key = await deriveDataKey(password, res.data.salt);
+    forgetNotesKey();
     if (res.data.cipher && res.data.iv) {
-      key = await deriveDataKey(password, res.data.salt);
-      const plain = await decryptBlob({ iv: res.data.iv, cipher: res.data.cipher }, key);
-      next = normalizeState(JSON.parse(plain));
-    } else {
-      key = await deriveDataKey(password, res.data.salt);
+      const raw: unknown = JSON.parse(await decryptBlob({ iv: res.data.iv, cipher: res.data.cipher }, key));
+      adoptNotesKey(raw);
+      next = normalizeState(raw);
     }
     dataKeyRef.current = key;
     const rawKeyB64 = await exportRawKey(key);
@@ -166,6 +214,7 @@ export function useAuthSession({ state, setState, showToast, onSignedOut }: Auth
     tokenRef.current = res.token;
     const key = await deriveDataKey(password, res.data.salt);
     dataKeyRef.current = key;
+    forgetNotesKey();
     const rawKeyB64 = await exportRawKey(key);
     storage.set('authToken', res.token);
     storage.set('authKey', rawKeyB64);
@@ -189,14 +238,10 @@ export function useAuthSession({ state, setState, showToast, onSignedOut }: Auth
 
   const logout = async () => {
     const token = tokenRef.current;
-    const key = dataKeyRef.current;
-    if (token && key && authStatus === 'authenticated') {
-      try {
-        const sealed = await sealState(state, key);
-        await api.put('/api/data', sealed, token);
-      } catch {
-        // Best effort: every change was already auto-saved; this only flushes the last one.
-      }
+    if (token && dataKeyRef.current && authStatus === 'authenticated') {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      // Best effort: every change was already auto-saved; this only flushes the last one.
+      await writeBlob(state).catch(() => {});
     }
     if (token) {
       try {
@@ -208,6 +253,7 @@ export function useAuthSession({ state, setState, showToast, onSignedOut }: Auth
     storage.remove('authToken', 'authKey', 'timerRun');
     tokenRef.current = null;
     dataKeyRef.current = null;
+    forgetNotesKey();
     setProfile(null);
     setAuthStatus('unauthenticated');
     onSignedOut();
@@ -219,39 +265,44 @@ export function useAuthSession({ state, setState, showToast, onSignedOut }: Auth
     storage.remove('authToken', 'authKey', 'timerRun');
     tokenRef.current = null;
     dataKeyRef.current = null;
+    forgetNotesKey();
     setProfile(null);
     setAuthStatus('unauthenticated');
     setState(() => normalizeState(null));
   };
 
   const changePassword = async (currentPassword: string, newPassword: string) => {
-    const key = dataKeyRef.current;
-    const token = tokenRef.current;
-    if (!key || !token || authStatus !== 'authenticated') {
+    if (!dataKeyRef.current || !tokenRef.current || authStatus !== 'authenticated') {
       throw new Error(strings.errors.api.SESSION_EXPIRED);
     }
-    // Flush any pending save so stale ciphertext (old key) can't overwrite the re-encrypted blob
     if (saveTimerRef.current) {
       clearTimeout(saveTimerRef.current);
       saveTimerRef.current = null;
     }
-    // Re-encrypt the whole blob under a fresh salt + new password-derived key
+    // Re-encrypt the whole blob under a fresh salt + new password-derived key. It runs in the
+    // write queue: earlier saves (old key) land first, later ones already use the new key.
+    // The notes key travels inside unchanged, so no note needs re-sealing.
     const newSalt = randomSaltHex();
     const newKey = await deriveDataKey(newPassword, newSalt);
-    const sealed = await sealState(state, newKey);
-    const res = await api.put<AuthResponse>(
-      '/api/profile/password',
-      {
-        currentPassword,
-        newPassword,
-        salt: newSalt,
-        iv: sealed.iv,
-        cipher: sealed.cipher
-      },
-      token
-    );
-    tokenRef.current = res.token;
-    dataKeyRef.current = newKey;
+    const run = writeChainRef.current.then(async () => {
+      const sealed = await sealState(latestStateRef.current, newKey, notesKeyRef.current);
+      const res = await api.put<AuthResponse>(
+        '/api/profile/password',
+        {
+          currentPassword,
+          newPassword,
+          salt: newSalt,
+          iv: sealed.iv,
+          cipher: sealed.cipher
+        },
+        tokenRef.current
+      );
+      tokenRef.current = res.token;
+      dataKeyRef.current = newKey;
+      return res;
+    });
+    writeChainRef.current = run.then(() => {}, () => {});
+    const res = await run;
     const rawKeyB64 = await exportRawKey(newKey);
     storage.set('authToken', res.token);
     storage.set('authKey', rawKeyB64);
@@ -261,5 +312,5 @@ export function useAuthSession({ state, setState, showToast, onSignedOut }: Auth
 
   const refreshProfile = (updated: Profile) => setProfile(updated);
 
-  return { authStatus, profile, tokenRef, login, setup, logout, deleteOwnProfile, changePassword, refreshProfile };
+  return { authStatus, profile, tokenRef, getNotesKey, login, setup, logout, deleteOwnProfile, changePassword, refreshProfile };
 }

@@ -13,6 +13,7 @@ import { DEFAULT_CALENDAR_EVENTS, DEFAULT_GOALS, DEFAULT_REWARDS, DEFAULT_REWARD
 import { getTodayStr } from './dateUtils';
 import { DEFAULT_AUTO_DISMISS_SEC } from './notify';
 import { phaseMinutes } from './sessionTime';
+import type { NoteCollection, NoteLabel } from './notes';
 
 type Raw = Record<string, unknown>;
 
@@ -48,6 +49,26 @@ export function normalizeGoal(raw: Raw): Goal {
     completed: rest.completed === true,
     landmarks: Array.isArray(rest.landmarks) ? (rest.landmarks as Raw[]).map(normalizeLandmark) : []
   };
+}
+
+/** Entries with a string id and name, each id once; `extra` adds the rest of an entry's fields. */
+function namedEntries<T extends { id: string; name: string }>(raw: unknown, extra: (r: Raw) => Omit<T, 'id' | 'name'>): T[] {
+  if (!Array.isArray(raw)) return [];
+  const seen = new Set<string>();
+  return raw.flatMap(item => {
+    const r = (item && typeof item === 'object') ? (item as Raw) : null;
+    if (!r || typeof r.id !== 'string' || typeof r.name !== 'string' || seen.has(r.id)) return [];
+    seen.add(r.id);
+    return [{ id: r.id, name: r.name, ...extra(r) } as T];
+  });
+}
+
+export function normalizeNoteCollections(raw: unknown): NoteCollection[] {
+  return namedEntries<NoteCollection>(raw, r => ({ createdAt: typeof r.createdAt === 'number' ? r.createdAt : 0 }));
+}
+
+export function normalizeNoteLabels(raw: unknown): NoteLabel[] {
+  return namedEntries<NoteLabel>(raw, () => ({}));
 }
 
 export function normalizeReward(raw: Raw): Reward {
@@ -132,6 +153,8 @@ export function normalizeState(raw: unknown): AppState {
     notifications: normalizeNotifications(r?.notifications),
     goals: linked.goals,
     rewards: rawRewards ? rawRewards.map(normalizeReward) : DEFAULT_REWARDS,
+    noteCollections: normalizeNoteCollections(r?.noteCollections),
+    noteLabels: normalizeNoteLabels(r?.noteLabels),
     timer: {
       phase: 'focus',
       status: 'idle',

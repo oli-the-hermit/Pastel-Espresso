@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { migrateRewardLinks, normalizeGoal, normalizeLandmark, normalizeReward, normalizeState, normalizeTask } from './normalize';
+import { migrateRewardLinks, normalizeGoal, normalizeLandmark, normalizeNoteCollections, normalizeNoteLabels, normalizeReward, normalizeState, normalizeTask } from './normalize';
 import { strings } from '../constants/strings';
 import { DEFAULT_REWARD_EMOJI } from '../constants/defaults';
 
@@ -151,5 +151,24 @@ describe('normalizeState', () => {
     });
     expect(s.sessions[0].rewardId).toBe('r');
     expect(s.rewards[0]).not.toHaveProperty('linkedSessionId');
+  });
+});
+
+describe('note collections and labels', () => {
+  it('start empty for data saved before notes existed', () => {
+    const s = normalizeState({ sessions: [], taskLists: [] });
+    expect(s.noteCollections).toEqual([]);
+    expect(s.noteLabels).toEqual([]);
+  });
+  it('keep entries with a string id and name, each id once', () => {
+    expect(normalizeNoteCollections([
+      { id: 'c1', name: 'Work', createdAt: 5 },
+      { id: 'c1', name: 'Again' },
+      { id: 2, name: 'Bad id' },
+      { id: 'c2', name: 'No date' },
+      null
+    ])).toEqual([{ id: 'c1', name: 'Work', createdAt: 5 }, { id: 'c2', name: 'No date', createdAt: 0 }]);
+    expect(normalizeNoteLabels([{ id: 'l1', name: 'handoff', extra: true }, 'loose'])).toEqual([{ id: 'l1', name: 'handoff' }]);
+    expect(normalizeNoteLabels('nope')).toEqual([]);
   });
 });

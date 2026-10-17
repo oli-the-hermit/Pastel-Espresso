@@ -27,6 +27,7 @@ import { createListActions } from './actions/lists';
 import { createCalendarActions } from './actions/calendar';
 import { createGoalActions } from './actions/goals';
 import { createRewardActions, type RewardLinkChoice } from './actions/rewards';
+import { createNoteActions } from './actions/notes';
 import { useAlertState } from './hooks/useAlertState';
 import { useAuthSession, type AuthStatus } from './hooks/useAuthSession';
 import { useThemeSync } from './hooks/useThemeSync';
@@ -118,6 +119,15 @@ interface AppContextType {
   deleteReward: (id: string) => void;
   claimReward: (id: string) => void;
 
+  // Notes' collections and labels (the notes themselves: useNotes in NotesContext, which also
+  // deletes these safely: use its deleteCollection / deleteLabel, not the remove* below)
+  createNoteCollection: (name: string) => string;
+  renameNoteCollection: (id: string, name: string) => void;
+  removeNoteCollection: (id: string) => void;
+  createNoteLabel: (name: string) => string;
+  renameNoteLabel: (id: string, name: string) => void;
+  removeNoteLabel: (id: string) => void;
+
   // Notifications
   updateNotifications: (settings: Partial<NotificationSettings>) => void;
 
@@ -125,6 +135,8 @@ interface AppContextType {
   authStatus: AuthStatus;
   profile: Profile | null;
   token: string | null;
+  /** The key notes are sealed with; created and saved on first use. */
+  getNotesKey: () => Promise<CryptoKey>;
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   setup: (username: string, displayName: string, password: string) => Promise<void>;
@@ -190,7 +202,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const { toasts, showToast, bellDot, clearBellDot } = useToasts();
 
   // ── Auth & encrypted data layer (hooks/useAuthSession) ───────────────
-  const { authStatus, profile, tokenRef, login, setup, logout, deleteOwnProfile, changePassword, refreshProfile } = useAuthSession({
+  const { authStatus, profile, tokenRef, getNotesKey, login, setup, logout, deleteOwnProfile, changePassword, refreshProfile } = useAuthSession({
     state,
     setState,
     showToast,
@@ -248,6 +260,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const { moveCalendarEvent, addCalendarEvent, updateCalendarEvent, deleteCalendarEvent, setCalendarView, setCalendarDate } = createCalendarActions({ setState, showToast, stateRef });
   const { addGoal, updateGoal, duplicateGoal, deleteGoal, reorderGoals, toggleGoal, addLandmark, updateLandmark, duplicateLandmark, deleteLandmark, toggleLandmark } = createGoalActions({ setState, showToast });
   const { addReward, updateReward, duplicateReward, deleteReward, claimReward } = createRewardActions({ setState, showToast, stateRef, setActiveCelebrationReward });
+  const { createNoteCollection, renameNoteCollection, removeNoteCollection, createNoteLabel, renameNoteLabel, removeNoteLabel } = createNoteActions({ setState });
 
   const setActiveSessionRef = useRef(setActiveSession);
   setActiveSessionRef.current = setActiveSession;
@@ -332,10 +345,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         duplicateReward,
         deleteReward,
         claimReward,
+        createNoteCollection,
+        renameNoteCollection,
+        removeNoteCollection,
+        createNoteLabel,
+        renameNoteLabel,
+        removeNoteLabel,
         updateNotifications,
         authStatus,
         profile,
         token: tokenRef.current,
+        getNotesKey,
         login,
         logout,
         setup,

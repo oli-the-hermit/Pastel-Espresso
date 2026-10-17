@@ -1,4 +1,5 @@
 import type { AccentId } from '../constants/accents';
+import type { NoteCollection, NoteLabel } from '../lib/notes';
 
 export type TabType ='timer' | 'tasks' | 'calendar' | 'stats' | 'goals' | 'rewards';
 export type TimerPhase = 'focus' | 'break';
@@ -164,6 +165,10 @@ export interface AppState {
 
   goals: Goal[];
   rewards: Reward[];
+
+  /** Notes' collections and labels. The notes themselves are stored apart (lib/notes). */
+  noteCollections: NoteCollection[];
+  noteLabels: NoteLabel[];
 
   timer: TimerState;
   sound: boolean;
