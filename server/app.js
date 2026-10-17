@@ -52,6 +52,28 @@ function validateSalt(v) {
   if (typeof v !== 'string' || v.length !== 32) return false;
   return Buffer.from(v, 'hex').length === 16;
 }
+// Notes: lowercase UUID v4 ids, chosen by the client so imports and new notes can name themselves.
+const DOC_ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+function validateDocId(v) {
+  return typeof v === 'string' && DOC_ID_RE.test(v);
+}
+/** A sealed record `{ iv, cipher }`: 'ok', 'invalid', or 'tooLarge' past maxBytes of ciphertext. */
+function checkSealed(v, maxBytes) {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return 'invalid';
+  if (!validateIv(v.iv) || typeof v.cipher !== 'string' || v.cipher.length === 0) return 'invalid';
+  if (v.cipher.length > Math.ceil(maxBytes / 3) * 4) return 'tooLarge';
+  const buf = decodeBase64(v.cipher);
+  if (buf === null) return 'invalid';
+  return buf.length > maxBytes ? 'tooLarge' : 'ok';
+}
+/** A document's sealed parts; the body may be left out (null or absent) only when not required. */
+function checkDocParts(meta, body, bodyRequired) {
+  const m = checkSealed(meta, LIMITS.documents.maxMetaBytes);
+  const b = body == null && !bodyRequired ? 'ok' : checkSealed(body, LIMITS.documents.maxBytes);
+  if (m === 'invalid' || b === 'invalid') return [400, E.SAVE_FAILED];
+  if (m === 'tooLarge' || b === 'tooLarge') return [413, E.DOCUMENT_TOO_LARGE];
+  return null;
+}
 
 // ── Brute-force limiter (in-memory) ──────────────────────────────
 const attempts = new Map(); // key -> { count, blockedUntil }
@@ -143,6 +165,16 @@ function publicProfile(row) {
     displayName: row.display_name,
     avatar: row.avatar,
     role: row.role,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  };
+}
+
+/** A document as the list returns it: its sealed metadata and times, never the body. */
+function docSummary(row) {
+  return {
+    id: row.id,
+    meta: { iv: row.meta_iv, cipher: row.meta_cipher },
     createdAt: row.created_at,
     updatedAt: row.updated_at
   };
@@ -272,6 +304,111 @@ function createApp() {
         .prepare('UPDATE profiles SET data_iv = ?, data_cipher = ?, updated_at = ? WHERE id = ?')
         .run(iv, cipher, Date.now(), req.profile.id);
       res.status(204).end();
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // ── Notes: one sealed record per document ─────────────────────
+  // The list carries metadata only, newest first; a body loads when its note opens.
+  app.get('/api/documents', requireAuth, (req, res) => {
+    const rows = getDb()
+      .prepare('SELECT id, meta_iv, meta_cipher, created_at, updated_at FROM documents WHERE profile_id = ? ORDER BY updated_at DESC, id')
+      .all(req.profile.id);
+    res.json({ documents: rows.map(docSummary) });
+  });
+
+  app.get('/api/documents/:id', requireAuth, (req, res) => {
+    const { id } = req.params;
+    const row = validateDocId(id)
+      ? getDb().prepare('SELECT * FROM documents WHERE profile_id = ? AND id = ?').get(req.profile.id, id)
+      : undefined;
+    if (!row) return fail(res, 404, E.DOCUMENT_NOT_FOUND);
+    res.json({ document: { ...docSummary(row), body: { iv: row.body_iv, cipher: row.body_cipher } } });
+  });
+
+  // Creates (201, body required) or updates (200; leave the body out to change only the metadata).
+  app.put('/api/documents/:id', requireAuth, (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { meta, body } = req.body || {};
+      if (!validateDocId(id)) return fail(res, 400, E.SAVE_FAILED);
+      const partsError = checkDocParts(meta, body, false);
+      if (partsError) return fail(res, ...partsError);
+
+      const db = getDb();
+      const existing = db.prepare('SELECT created_at FROM documents WHERE profile_id = ? AND id = ?').get(req.profile.id, id);
+      const now = Date.now();
+      if (!existing) {
+        if (body == null) return fail(res, 400, E.SAVE_FAILED);
+        const { n } = db.prepare('SELECT COUNT(*) AS n FROM documents WHERE profile_id = ?').get(req.profile.id);
+        if (n >= LIMITS.documents.maxPerProfile) return fail(res, 409, E.DOCUMENT_LIMIT);
+        db.prepare(
+          `INSERT INTO documents (profile_id, id, meta_iv, meta_cipher, body_iv, body_cipher, created_at, updated_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+        ).run(req.profile.id, id, meta.iv, meta.cipher, body.iv, body.cipher, now, now);
+        return res.status(201).json({ document: { id, createdAt: now, updatedAt: now } });
+      }
+      if (body == null) {
+        db.prepare('UPDATE documents SET meta_iv = ?, meta_cipher = ?, updated_at = ? WHERE profile_id = ? AND id = ?')
+          .run(meta.iv, meta.cipher, now, req.profile.id, id);
+      } else {
+        db.prepare(
+          `UPDATE documents SET meta_iv = ?, meta_cipher = ?, body_iv = ?, body_cipher = ?, updated_at = ?
+           WHERE profile_id = ? AND id = ?`
+        ).run(meta.iv, meta.cipher, body.iv, body.cipher, now, req.profile.id, id);
+      }
+      res.json({ document: { id, createdAt: existing.created_at, updatedAt: now } });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // Import: every document is new, all of them or none. The client splits big imports.
+  app.post('/api/documents/batch', requireAuth, (req, res, next) => {
+    try {
+      const docs = req.body?.documents;
+      if (!Array.isArray(docs) || docs.length === 0) return fail(res, 400, E.SAVE_FAILED);
+      if (docs.length > LIMITS.documents.maxBatch) return fail(res, 400, E.BATCH_TOO_LARGE);
+      const seen = new Set();
+      for (const d of docs) {
+        if (!d || typeof d !== 'object' || !validateDocId(d.id) || seen.has(d.id)) return fail(res, 400, E.SAVE_FAILED);
+        seen.add(d.id);
+        const partsError = checkDocParts(d.meta, d.body, true);
+        if (partsError) return fail(res, ...partsError);
+      }
+
+      const db = getDb();
+      const exists = db.prepare('SELECT 1 FROM documents WHERE profile_id = ? AND id = ?');
+      if (docs.some(d => exists.get(req.profile.id, d.id))) return fail(res, 409, E.DOCUMENT_EXISTS);
+      const { n } = db.prepare('SELECT COUNT(*) AS n FROM documents WHERE profile_id = ?').get(req.profile.id);
+      if (n + docs.length > LIMITS.documents.maxPerProfile) return fail(res, 409, E.DOCUMENT_LIMIT);
+
+      const now = Date.now();
+      const insert = db.prepare(
+        `INSERT INTO documents (profile_id, id, meta_iv, meta_cipher, body_iv, body_cipher, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+      );
+      db.transaction(() => {
+        for (const d of docs) insert.run(req.profile.id, d.id, d.meta.iv, d.meta.cipher, d.body.iv, d.body.cipher, now, now);
+      })();
+      res.status(201).json({ documents: docs.map(d => ({ id: d.id, createdAt: now, updatedAt: now })) });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // Deleting for good (Trash is a flag inside the sealed metadata). Unknown ids just don't count.
+  app.post('/api/documents/purge', requireAuth, (req, res, next) => {
+    try {
+      const ids = req.body?.ids;
+      if (!Array.isArray(ids) || ids.length === 0) return fail(res, 400, E.SAVE_FAILED);
+      if (ids.length > LIMITS.documents.maxBatch) return fail(res, 400, E.BATCH_TOO_LARGE);
+      if (!ids.every(validateDocId)) return fail(res, 400, E.SAVE_FAILED);
+      const db = getDb();
+      const del = db.prepare('DELETE FROM documents WHERE profile_id = ? AND id = ?');
+      const deleted = db.transaction(() => ids.reduce((sum, id) => sum + del.run(req.profile.id, id).changes, 0))();
+      res.json({ deleted });
     } catch (err) {
       next(err);
     }

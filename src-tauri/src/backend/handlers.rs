@@ -127,6 +127,70 @@ fn str_field<'a>(body: &'a Value, key: &str) -> Option<&'a str> {
     body.get(key).and_then(Value::as_str)
 }
 
+/// A lowercase UUID v4, the same rule as `DOC_ID_RE` in server/app.js.
+fn valid_doc_id(v: Option<&str>) -> bool {
+    v.is_some_and(|s| {
+        s.len() == 36
+            && s.bytes().enumerate().all(|(i, c)| match i {
+                8 | 13 | 18 | 23 => c == b'-',
+                14 => c == b'4',
+                19 => matches!(c, b'8' | b'9' | b'a' | b'b'),
+                _ => c.is_ascii_digit() || (b'a'..=b'f').contains(&c),
+            })
+    })
+}
+
+#[derive(PartialEq)]
+enum Sealed {
+    Ok,
+    Invalid,
+    TooLarge,
+}
+
+/// A sealed record `{ iv, cipher }`: the checks of `checkSealed` in server/app.js, in its order.
+fn check_sealed(v: Option<&Value>, max_bytes: usize) -> Sealed {
+    let Some(record) = v.and_then(Value::as_object) else {
+        return Sealed::Invalid;
+    };
+    if !valid_iv(record.get("iv").and_then(Value::as_str)) {
+        return Sealed::Invalid;
+    }
+    let Some(cipher) = record.get("cipher").and_then(Value::as_str).filter(|c| !c.is_empty()) else {
+        return Sealed::Invalid;
+    };
+    if js_len(cipher) > max_bytes.div_ceil(3) * 4 {
+        return Sealed::TooLarge;
+    }
+    match BASE64_LENIENT.decode(cipher) {
+        Err(_) => Sealed::Invalid,
+        Ok(bytes) if bytes.len() > max_bytes => Sealed::TooLarge,
+        Ok(_) => Sealed::Ok,
+    }
+}
+
+fn is_absent(v: Option<&Value>) -> bool {
+    matches!(v, None | Some(Value::Null))
+}
+
+/// A document's sealed parts (`checkDocParts`); the body may be left out only when not required.
+fn check_doc_parts(meta: Option<&Value>, body: Option<&Value>, body_required: bool) -> Result<(), ApiErr> {
+    let limits = &LIMITS.documents;
+    let m = check_sealed(meta, limits.max_meta_bytes);
+    let b = if is_absent(body) && !body_required { Sealed::Ok } else { check_sealed(body, limits.max_bytes) };
+    if m == Sealed::Invalid || b == Sealed::Invalid {
+        return Err(fail(400, errors::SAVE_FAILED));
+    }
+    if m == Sealed::TooLarge || b == Sealed::TooLarge {
+        return Err(fail(413, errors::DOCUMENT_TOO_LARGE));
+    }
+    Ok(())
+}
+
+/// One field of a record `check_sealed` already accepted.
+fn sealed_field<'a>(v: Option<&'a Value>, key: &str) -> &'a str {
+    v.and_then(|r| r.get(key)).and_then(Value::as_str).unwrap_or("")
+}
+
 // ── Brute-force limiter ──────────────────────────────────────────────────
 
 fn is_blocked(b: &Backend, key: &str) -> bool {
@@ -350,6 +414,12 @@ fn route(b: &Backend, method: &str, path: &str, body: &Value, token: Option<&str
         ("GET", ["data"]) => get_data(b, &require_auth(b, token)?),
         ("PUT", ["data"]) => put_data(b, &require_auth(b, token)?, body),
 
+        ("GET", ["documents"]) => list_documents(b, &require_auth(b, token)?),
+        ("GET", ["documents", id]) => get_document(b, &require_auth(b, token)?, id),
+        ("PUT", ["documents", id]) => put_document(b, &require_auth(b, token)?, id, body),
+        ("POST", ["documents", "batch"]) => batch_documents(b, &require_auth(b, token)?, body),
+        ("POST", ["documents", "purge"]) => purge_documents(b, &require_auth(b, token)?, body),
+
         ("PUT", ["profile"]) => update_profile(b, &require_auth(b, token)?, body),
         ("PUT", ["profile", "password"]) => change_password(b, &require_auth(b, token)?, body),
         ("DELETE", ["profile"]) => delete_self(b, &require_auth(b, token)?, body),
@@ -486,6 +556,178 @@ fn put_data(b: &Backend, ctx: &AuthCtx, body: &Value) -> Reply {
         params![iv.unwrap(), cipher.unwrap(), now_ms(), ctx.id],
     )?;
     no_content()
+}
+
+// ── Notes: one sealed record per document ────────────────────────────────
+
+/// Metadata only, newest first; a body loads when its note opens.
+fn list_documents(b: &Backend, ctx: &AuthCtx) -> Reply {
+    let conn = db(b)?;
+    let mut stmt = conn.prepare(
+        "SELECT id, meta_iv, meta_cipher, created_at, updated_at FROM documents WHERE profile_id = ? ORDER BY updated_at DESC, id",
+    )?;
+    let documents = stmt
+        .query_map([ctx.id], |r| {
+            Ok(json!({
+                "id": r.get::<_, String>(0)?,
+                "meta": { "iv": r.get::<_, String>(1)?, "cipher": r.get::<_, String>(2)? },
+                "createdAt": r.get::<_, i64>(3)?,
+                "updatedAt": r.get::<_, i64>(4)?,
+            }))
+        })?
+        .collect::<rusqlite::Result<Vec<_>>>()?;
+    ok(json!({ "documents": documents }))
+}
+
+fn get_document(b: &Backend, ctx: &AuthCtx, id: &str) -> Reply {
+    if !valid_doc_id(Some(id)) {
+        return Err(fail(404, errors::DOCUMENT_NOT_FOUND));
+    }
+    let document = db(b)?
+        .query_row(
+            "SELECT id, meta_iv, meta_cipher, body_iv, body_cipher, created_at, updated_at
+             FROM documents WHERE profile_id = ? AND id = ?",
+            params![ctx.id, id],
+            |r| {
+                Ok(json!({
+                    "id": r.get::<_, String>(0)?,
+                    "meta": { "iv": r.get::<_, String>(1)?, "cipher": r.get::<_, String>(2)? },
+                    "body": { "iv": r.get::<_, String>(3)?, "cipher": r.get::<_, String>(4)? },
+                    "createdAt": r.get::<_, i64>(5)?,
+                    "updatedAt": r.get::<_, i64>(6)?,
+                }))
+            },
+        )
+        .optional()?
+        .ok_or_else(|| fail(404, errors::DOCUMENT_NOT_FOUND))?;
+    ok(json!({ "document": document }))
+}
+
+/// Creates (201, body required) or updates (200; leave the body out to change only the metadata).
+fn put_document(b: &Backend, ctx: &AuthCtx, id: &str, body: &Value) -> Reply {
+    if !valid_doc_id(Some(id)) {
+        return Err(fail(400, errors::SAVE_FAILED));
+    }
+    let (meta, content) = (body.get("meta"), body.get("body"));
+    check_doc_parts(meta, content, false)?;
+    let (meta_iv, meta_cipher) = (sealed_field(meta, "iv"), sealed_field(meta, "cipher"));
+
+    let conn = db(b)?;
+    let existing: Option<i64> = conn
+        .query_row("SELECT created_at FROM documents WHERE profile_id = ? AND id = ?", params![ctx.id, id], |r| r.get(0))
+        .optional()?;
+    let now = now_ms();
+    let Some(created_at) = existing else {
+        if is_absent(content) {
+            return Err(fail(400, errors::SAVE_FAILED));
+        }
+        let count: i64 = conn.query_row("SELECT COUNT(*) FROM documents WHERE profile_id = ?", [ctx.id], |r| r.get(0))?;
+        if count >= LIMITS.documents.max_per_profile {
+            return Err(fail(409, errors::DOCUMENT_LIMIT));
+        }
+        conn.execute(
+            "INSERT INTO documents (profile_id, id, meta_iv, meta_cipher, body_iv, body_cipher, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            params![ctx.id, id, meta_iv, meta_cipher, sealed_field(content, "iv"), sealed_field(content, "cipher"), now, now],
+        )?;
+        return Ok((201, json!({ "document": { "id": id, "createdAt": now, "updatedAt": now } })));
+    };
+    if is_absent(content) {
+        conn.execute(
+            "UPDATE documents SET meta_iv = ?, meta_cipher = ?, updated_at = ? WHERE profile_id = ? AND id = ?",
+            params![meta_iv, meta_cipher, now, ctx.id, id],
+        )?;
+    } else {
+        conn.execute(
+            "UPDATE documents SET meta_iv = ?, meta_cipher = ?, body_iv = ?, body_cipher = ?, updated_at = ?
+             WHERE profile_id = ? AND id = ?",
+            params![meta_iv, meta_cipher, sealed_field(content, "iv"), sealed_field(content, "cipher"), now, ctx.id, id],
+        )?;
+    }
+    ok(json!({ "document": { "id": id, "createdAt": created_at, "updatedAt": now } }))
+}
+
+/// Import: every document is new, all of them or none. The client splits big imports.
+fn batch_documents(b: &Backend, ctx: &AuthCtx, body: &Value) -> Reply {
+    let limits = &LIMITS.documents;
+    let docs = match body.get("documents").and_then(Value::as_array) {
+        Some(docs) if !docs.is_empty() => docs,
+        _ => return Err(fail(400, errors::SAVE_FAILED)),
+    };
+    if docs.len() > limits.max_batch {
+        return Err(fail(400, errors::BATCH_TOO_LARGE));
+    }
+    let mut seen = std::collections::HashSet::new();
+    for d in docs {
+        let id = d.get("id").and_then(Value::as_str);
+        if !d.is_object() || !valid_doc_id(id) || !seen.insert(id.unwrap_or_default()) {
+            return Err(fail(400, errors::SAVE_FAILED));
+        }
+        check_doc_parts(d.get("meta"), d.get("body"), true)?;
+    }
+
+    let mut conn = db(b)?;
+    for d in docs {
+        let id = d.get("id").and_then(Value::as_str).unwrap_or_default();
+        let found = conn
+            .query_row("SELECT 1 FROM documents WHERE profile_id = ? AND id = ?", params![ctx.id, id], |_| Ok(()))
+            .optional()?;
+        if found.is_some() {
+            return Err(fail(409, errors::DOCUMENT_EXISTS));
+        }
+    }
+    let count: i64 = conn.query_row("SELECT COUNT(*) FROM documents WHERE profile_id = ?", [ctx.id], |r| r.get(0))?;
+    if count + docs.len() as i64 > limits.max_per_profile {
+        return Err(fail(409, errors::DOCUMENT_LIMIT));
+    }
+
+    let now = now_ms();
+    let tx = conn.transaction()?;
+    {
+        let mut insert = tx.prepare(
+            "INSERT INTO documents (profile_id, id, meta_iv, meta_cipher, body_iv, body_cipher, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        )?;
+        for d in docs {
+            let (meta, content) = (d.get("meta"), d.get("body"));
+            insert.execute(params![
+                ctx.id,
+                d.get("id").and_then(Value::as_str).unwrap_or_default(),
+                sealed_field(meta, "iv"),
+                sealed_field(meta, "cipher"),
+                sealed_field(content, "iv"),
+                sealed_field(content, "cipher"),
+                now,
+                now
+            ])?;
+        }
+    }
+    tx.commit()?;
+    let created: Vec<Value> =
+        docs.iter().map(|d| json!({ "id": d["id"], "createdAt": now, "updatedAt": now })).collect();
+    Ok((201, json!({ "documents": created })))
+}
+
+/// Deleting for good (Trash is a flag inside the sealed metadata). Unknown ids just don't count.
+fn purge_documents(b: &Backend, ctx: &AuthCtx, body: &Value) -> Reply {
+    let ids = match body.get("ids").and_then(Value::as_array) {
+        Some(ids) if !ids.is_empty() => ids,
+        _ => return Err(fail(400, errors::SAVE_FAILED)),
+    };
+    if ids.len() > LIMITS.documents.max_batch {
+        return Err(fail(400, errors::BATCH_TOO_LARGE));
+    }
+    if !ids.iter().all(|v| valid_doc_id(v.as_str())) {
+        return Err(fail(400, errors::SAVE_FAILED));
+    }
+    let mut conn = db(b)?;
+    let tx = conn.transaction()?;
+    let mut deleted = 0;
+    for id in ids {
+        deleted += tx.execute("DELETE FROM documents WHERE profile_id = ? AND id = ?", params![ctx.id, id.as_str()])?;
+    }
+    tx.commit()?;
+    ok(json!({ "deleted": deleted }))
 }
 
 // ── Self profile management ──────────────────────────────────────────────

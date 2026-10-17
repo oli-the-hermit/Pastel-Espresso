@@ -30,6 +30,11 @@ pub const NO_CHANGES: &str = "NO_CHANGES";
 pub const SAVE_FAILED: &str = "SAVE_FAILED";
 pub const NOT_FOUND: &str = "NOT_FOUND";
 pub const INTERNAL: &str = "INTERNAL";
+pub const DOCUMENT_NOT_FOUND: &str = "DOCUMENT_NOT_FOUND";
+pub const DOCUMENT_TOO_LARGE: &str = "DOCUMENT_TOO_LARGE";
+pub const DOCUMENT_LIMIT: &str = "DOCUMENT_LIMIT";
+pub const DOCUMENT_EXISTS: &str = "DOCUMENT_EXISTS";
+pub const BATCH_TOO_LARGE: &str = "BATCH_TOO_LARGE";
 
 /// Numbers the frontend puts into the message for codes that mention a limit.
 pub fn params(code: &str) -> Option<Value> {
@@ -40,6 +45,8 @@ pub fn params(code: &str) -> Option<Value> {
         INVALID_PASSWORD | INVALID_NEW_PASSWORD => Some(json!({ "min": l.password.min, "max": l.password.max })),
         TOO_MANY_ATTEMPTS => Some(json!({ "seconds": l.login.lockout_seconds })),
         PROFILE_LIMIT => Some(json!({ "max": l.max_profiles })),
+        DOCUMENT_LIMIT => Some(json!({ "max": l.documents.max_per_profile })),
+        BATCH_TOO_LARGE => Some(json!({ "max": l.documents.max_batch })),
         _ => None,
     }
 }

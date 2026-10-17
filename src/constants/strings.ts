@@ -701,7 +701,12 @@ export const strings = {
       SAVE_FAILED: 'We couldn’t save that change. Your data is safe, so please try again.',
       PAYLOAD_TOO_LARGE: 'That’s more than we can save at once. Try a smaller image or fewer changes.',
       NOT_FOUND: 'We couldn’t find what you were looking for.',
-      INTERNAL: 'Something unexpected happened on our side. Your data is safe, so please try again.'
+      INTERNAL: 'Something unexpected happened on our side. Your data is safe, so please try again.',
+      DOCUMENT_NOT_FOUND: 'We couldn’t find that note. It may have been deleted already.',
+      DOCUMENT_TOO_LARGE: 'This note is too long to save in one piece. Split it into two notes and try again.',
+      DOCUMENT_LIMIT: 'You’ve reached the limit of {max} notes. Emptying the Trash makes room for more.',
+      DOCUMENT_EXISTS: 'These notes are already here, so nothing new was added.',
+      BATCH_TOO_LARGE: 'You can add up to {max} notes at a time. Try importing fewer at once.'
     },
     createProfile: 'We couldn’t create that profile. Please try again.',
     renameProfile: 'We couldn’t rename that profile. Please try again.',

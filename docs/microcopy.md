@@ -238,6 +238,18 @@ The single reference for every user-facing message in Focus Space: what the app 
 | Reward updated / duplicated / deleted | Success | Toast | Reward saved | Reward updated. · Reward duplicated. · Reward deleted. | — |
 | Delete a reward | Helpful Alert | Modal | Delete reward? | Delete "{name}"? This can't be undone. | Delete / Cancel |
 
+## Notes
+
+Notes are sealed on the device like the rest of a profile's data: both backends store only ids and times. The server's messages so far; the rest of the section arrives with the Notes screens.
+
+| Feature Context / Trigger | Category | UI Component | Semantic Title | Message Body | Suggested Action / CTA |
+|---|---|---|---|---|---|
+| Opening a note that was deleted for good | Helpful Alert | Toast | Note not found | We couldn't find that note. It may have been deleted already. | — |
+| Saving a note over the size limit (`documents.maxBytes`) | Helpful Alert | Inline helper | Note too long | This note is too long to save in one piece. Split it into two notes and try again. | Split the note |
+| Creating or importing past the note limit (Trash counts until emptied) | Helpful Alert | Toast | Note limit | You've reached the limit of {max} notes. Emptying the Trash makes room for more. | Empty Trash |
+| An import retried after it already went through | Helpful Alert | Toast | Already imported | These notes are already here, so nothing new was added. | — |
+| An import request over `documents.maxBatch` (the app splits imports, so rare) | Helpful Alert | Toast | Too many at once | You can add up to {max} notes at a time. Try importing fewer at once. | Import fewer |
+
 ---
 
 ## Implementation notes

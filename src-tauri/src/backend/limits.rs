@@ -43,6 +43,15 @@ pub(crate) struct Login {
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub(crate) struct Documents {
+    pub max_bytes: usize,
+    pub max_meta_bytes: usize,
+    pub max_per_profile: i64,
+    pub max_batch: usize,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub(crate) struct Limits {
     pub username: UsernameRule,
     pub display_name: Range,
@@ -52,6 +61,7 @@ pub(crate) struct Limits {
     pub login: Login,
     pub session_ttl_days: i64,
     pub max_blob_bytes: usize,
+    pub documents: Documents,
 }
 
 impl Limits {

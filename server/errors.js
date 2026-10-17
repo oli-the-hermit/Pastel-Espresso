@@ -28,7 +28,12 @@ export const E = {
   SAVE_FAILED: 'SAVE_FAILED',
   PAYLOAD_TOO_LARGE: 'PAYLOAD_TOO_LARGE',
   NOT_FOUND: 'NOT_FOUND',
-  INTERNAL: 'INTERNAL'
+  INTERNAL: 'INTERNAL',
+  DOCUMENT_NOT_FOUND: 'DOCUMENT_NOT_FOUND',
+  DOCUMENT_TOO_LARGE: 'DOCUMENT_TOO_LARGE',
+  DOCUMENT_LIMIT: 'DOCUMENT_LIMIT',
+  DOCUMENT_EXISTS: 'DOCUMENT_EXISTS',
+  BATCH_TOO_LARGE: 'BATCH_TOO_LARGE'
 };
 
 /** Numbers the frontend puts into the message for codes that mention a limit. */
@@ -38,7 +43,9 @@ export const PARAMS = {
   INVALID_PASSWORD: { min: LIMITS.password.min, max: LIMITS.password.max },
   INVALID_NEW_PASSWORD: { min: LIMITS.password.min, max: LIMITS.password.max },
   TOO_MANY_ATTEMPTS: { seconds: LIMITS.login.lockoutSeconds },
-  PROFILE_LIMIT: { max: LIMITS.maxProfiles }
+  PROFILE_LIMIT: { max: LIMITS.maxProfiles },
+  DOCUMENT_LIMIT: { max: LIMITS.documents.maxPerProfile },
+  BATCH_TOO_LARGE: { max: LIMITS.documents.maxBatch }
 };
 
 /** Sends `{ code, params? }` with the given status. */

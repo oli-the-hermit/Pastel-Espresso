@@ -41,6 +41,19 @@ function initDb() {
     );
 
     CREATE INDEX IF NOT EXISTS idx_sessions_profile ON sessions(profile_id);
+
+    -- Notes: sealed client-side like the data blob, so only ids and times are readable here.
+    CREATE TABLE IF NOT EXISTS documents (
+      profile_id  INTEGER NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+      id          TEXT NOT NULL,
+      meta_iv     TEXT NOT NULL,
+      meta_cipher TEXT NOT NULL,
+      body_iv     TEXT NOT NULL,
+      body_cipher TEXT NOT NULL,
+      created_at  INTEGER NOT NULL,
+      updated_at  INTEGER NOT NULL,
+      PRIMARY KEY (profile_id, id)
+    );
   `);
   return db;
 }

@@ -13,5 +13,12 @@
   "maxProfiles": 6,
   "login": { "maxFailures": 5, "lockoutSeconds": 30, "failDelayMs": 250 },
   "sessionTtlDays": 30,
-  "maxBlobBytes": 1572864
+  "maxBlobBytes": 1572864,
+  "documents": {
+    "$comment": "Notes. Each document is two sealed records: its metadata (title, collection, labels, flags) and its Markdown body. Sizes are decoded ciphertext bytes (base64 adds a third on the wire); a body at maxBytes still fits the web server's 2 MB request limit, so bigger imports go in several batch requests. Trashed notes count toward maxPerProfile until purged.",
+    "maxBytes": 1048576,
+    "maxMetaBytes": 16384,
+    "maxPerProfile": 10000,
+    "maxBatch": 100
+  }
 }
