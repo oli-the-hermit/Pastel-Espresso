@@ -99,3 +99,4 @@
 .icon-btn.on-accent { color: var(--on-accent-2); }
 .icon-btn.on-accent:hover:not(:disabled) { background: var(--on-accent); color: var(--accent); }
 .icon-btn.on-accent-container { color: var(--on-accent-container); }
+.icon-btn.on-accent-container:hover:not(:disabled) { background: var(--on-accent-container); color: var(--accent-container); }

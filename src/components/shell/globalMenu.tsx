@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { useMiniPlayer } from '../../mini/MiniPlayerProvider';
+import { useNotes } from '../../context/NotesContext';
 import { strings } from '../../constants/strings';
 import { getTodayStr } from '../../lib/dateUtils';
 import type { MenuItem } from '../ui/Menu';
@@ -11,6 +12,7 @@ import {
   IconHelp,
   IconList,
   IconMiniPlayer,
+  IconNotes,
   IconPause,
   IconPlay,
   IconPlus,
@@ -19,12 +21,13 @@ import {
 } from '../ui/icons';
 import { shortcutHint } from '../../constants/shortcuts';
 
-type Creator = 'session' | 'list' | 'task' | 'schedule' | 'goal' | 'reward';
+type Creator = 'session' | 'list' | 'task' | 'note' | 'schedule' | 'goal' | 'reward';
 
 /** Which "new …" action belongs to each page; it's listed first there. */
 const PRIMARY: Record<TabType, Creator> = {
   timer: 'session',
   tasks: 'task',
+  notes: 'note',
   calendar: 'schedule',
   stats: 'session',
   goals: 'goal',
@@ -36,8 +39,9 @@ const PRIMARY: Record<TabType, Creator> = {
  * open help. Components with their own menu handle the event first.
  */
 export function useGlobalMenuItems(): () => (MenuItem | false)[] {
-  const { state, activeTab, openModal, toggleTimer, setHelpOpen } = useApp();
+  const { state, activeTab, setActiveTab, openModal, toggleTimer, setHelpOpen, showToast } = useApp();
   const mini = useMiniPlayer();
+  const { createNote } = useNotes();
 
   return () => {
     const cm = strings.actions;
@@ -50,6 +54,14 @@ export function useGlobalMenuItems(): () => (MenuItem | false)[] {
         icon: <IconPlus size={16} />,
         onSelect: () => openModal('NEW_TASK', { listId: state.activeListId! })
       },
+      note: {
+        key: 'note',
+        label: cm.newNote,
+        icon: <IconNotes size={16} />,
+        onSelect: () => {
+          createNote().then(() => setActiveTab('notes'), () => showToast(strings.notes.toasts.failed, 'error'));
+        }
+      },
       schedule: {
         key: 'schedule',
         label: cm.scheduleSession,
@@ -60,7 +72,7 @@ export function useGlobalMenuItems(): () => (MenuItem | false)[] {
       reward: { key: 'reward', label: cm.newReward, icon: <IconGift size={16} />, onSelect: () => openModal('NEW_REWARD') }
     };
     const primary = PRIMARY[activeTab];
-    const order: Creator[] = [primary, ...(['session', 'list', 'task', 'schedule', 'goal', 'reward'] as Creator[]).filter(c => c !== primary)];
+    const order: Creator[] = [primary, ...(['session', 'list', 'task', 'note', 'schedule', 'goal', 'reward'] as Creator[]).filter(c => c !== primary)];
     const running = state.timer.status === 'running';
 
     return [

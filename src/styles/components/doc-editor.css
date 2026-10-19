@@ -1,0 +1,96 @@
+/* ── Doc editor (ui/DocEditor, ui/DocEditorToolbar) ───────── */
+.doc-editor { display: flex; flex-direction: column; gap: var(--space-12); min-width: 0; }
+
+.doc-editor-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-10);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+}
+.doc-editor-sep { flex: none; width: 1px; height: 20px; margin: 0 var(--space-6); background: var(--surface-4); }
+.doc-editor-link-panel { padding: var(--space-12); min-width: 280px; }
+.doc-editor-link-form { display: flex; flex-direction: column; gap: var(--space-10); }
+
+.doc-editor-content { min-width: 0; }
+
+/* TipTap's own base rules, kept here because the desktop CSP forbids its injected <style>. */
+.doc-editor-content .ProseMirror {
+  position: relative;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0;
+  outline: none;
+}
+.doc-editor-content .ProseMirror [contenteditable='false'] { white-space: normal; }
+.doc-editor-content .ProseMirror [contenteditable='false'] [contenteditable='true'] { white-space: pre-wrap; }
+.doc-editor-content .ProseMirror pre { white-space: pre-wrap; }
+.doc-editor-content img.ProseMirror-separator { display: inline !important; border: none !important; margin: 0 !important; width: 0 !important; height: 0 !important; }
+.doc-editor-content .ProseMirror-gapcursor { display: none; pointer-events: none; position: absolute; margin: 0; }
+.doc-editor-content .ProseMirror-gapcursor::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -2px;
+  width: 20px;
+  border-top: var(--ring-width) solid var(--text-1);
+  animation: doc-editor-cursor-blink calc(var(--dur-4) * 2.75) steps(2, start) infinite;
+}
+.doc-editor-content .ProseMirror-focused .ProseMirror-gapcursor { display: block; }
+.doc-editor-content .ProseMirror-hideselection *::selection { background: transparent; }
+.doc-editor-content .ProseMirror-hideselection * { caret-color: transparent; }
+@keyframes doc-editor-cursor-blink { to { visibility: hidden; } }
+
+/* The page itself. */
+.doc-editor-content .ProseMirror {
+  min-height: 50vh;
+  padding: var(--space-8) var(--space-4) var(--space-48);
+  color: var(--text-1);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+}
+.doc-editor-content .ProseMirror > * + * { margin-top: var(--space-12); }
+.doc-editor-content .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--text-3);
+  pointer-events: none;
+}
+.doc-editor-content h1, .doc-editor-content h2, .doc-editor-content h3 { font-weight: var(--weight-bold); line-height: var(--leading-tight); }
+.doc-editor-content h1 { font-size: var(--text-3xl); margin-top: var(--space-24); }
+.doc-editor-content h2 { font-size: var(--text-2xl); margin-top: var(--space-20); }
+.doc-editor-content h3 { font-size: var(--text-xl); margin-top: var(--space-16); }
+.doc-editor-content a { color: var(--accent-text); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.doc-editor-content strong { font-weight: var(--weight-heavy); }
+.doc-editor-content ul, .doc-editor-content ol { padding-left: var(--space-24); }
+.doc-editor-content ul { list-style: disc; }
+.doc-editor-content ol { list-style: decimal; }
+.doc-editor-content li > p { margin: 0; }
+.doc-editor-content li + li { margin-top: var(--space-4); }
+.doc-editor-content ul[data-type='taskList'] { list-style: none; padding-left: 0; }
+.doc-editor-content ul[data-type='taskList'] li { display: flex; align-items: flex-start; gap: var(--space-10); }
+.doc-editor-content ul[data-type='taskList'] li > label { flex: none; display: flex; align-items: center; height: calc(var(--text-base) * var(--leading-normal)); user-select: none; }
+.doc-editor-content ul[data-type='taskList'] li > div { flex: 1; min-width: 0; }
+.doc-editor-content ul[data-type='taskList'] input[type='checkbox'] { accent-color: var(--accent); width: var(--checkbox-size); height: var(--checkbox-size); cursor: pointer; }
+.doc-editor-content ul[data-type='taskList'] li[data-checked='true'] > div { color: var(--text-3); text-decoration: line-through; }
+.doc-editor-content blockquote { padding: var(--space-4) var(--space-16); border-radius: var(--radius-md); background: var(--surface-1); color: var(--text-2); }
+.doc-editor-content code { padding: 0 var(--space-6); border-radius: var(--radius-xs); background: var(--surface-2); font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: var(--text-sm); }
+.doc-editor-content pre { padding: var(--space-14) var(--space-16); border-radius: var(--radius-lg); background: var(--surface-1); overflow-x: auto; }
+.doc-editor-content pre code { padding: 0; background: none; }
+.doc-editor-content hr { height: 2px; border: none; background: var(--surface-3); margin: var(--space-20) 0; }
+
+/* Tables: cells are tiles with a gap between them, not ruled lines. */
+.doc-editor-content .tableWrapper { overflow-x: auto; }
+.doc-editor-content table { border-collapse: separate; border-spacing: var(--space-2); width: 100%; table-layout: fixed; }
+.doc-editor-content th, .doc-editor-content td { position: relative; min-width: 80px; padding: var(--space-8) var(--space-10); border-radius: var(--radius-xs); background: var(--surface-1); text-align: left; vertical-align: top; }
+.doc-editor-content th { background: var(--surface-3); font-weight: var(--weight-bold); }
+.doc-editor-content th > p, .doc-editor-content td > p { margin: 0; }
+.doc-editor-content .selectedCell { background: var(--accent-container); }

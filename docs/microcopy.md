@@ -28,7 +28,7 @@ The single reference for every user-facing message in Focus Space: what the app 
 **The wizard nod.** First-run setup has one small nod to classic installation wizards: *"One quick step, no Next › Next › Finish required."* The success toast then reads *"Setup complete, no restart required."* That's the only Easter egg. Don't add more.
 
 **Reading the table**
-- **Toasts** render one line of text with no title or button. They appear top right, under the bell, in one of four tones, each with its own color and icon: *success* (green, check; the default for confirmations), *info* (accent color, "i"; phase-end notices), *warning* (amber, triangle; e.g. the mini player didn't open) and *error* (red, ×; announced as an alert). The bell keeps a dot in the most important tone since it was last opened; it clears when the bell opens or a minute after the last toast. For toasts, *Semantic Title* is the intent (for docs and accessibility), and *Suggested Action* points to a control already on screen.
+- **Toasts** render one line of text with no title; a few carry a single button after the message (Undo on notes moved or trashed), and those stay on screen longer. They appear top right, under the bell, in one of four tones, each with its own color and icon: *success* (green, check; the default for confirmations), *info* (accent color, "i"; phase-end notices), *warning* (amber, triangle; e.g. the mini player didn't open) and *error* (red, ×; announced as an alert). The bell keeps a dot in the most important tone since it was last opened; it clears when the bell opens or a minute after the last toast. For toasts, *Semantic Title* is the intent (for docs and accessibility), and *Suggested Action* points to a control already on screen.
 - **Placeholders** such as `{name}` are filled at runtime.
 - ***(needs wiring)*** marks a state the app doesn't announce yet. The copy is ready, but the behavior still needs to be built. These strings are **not** in `strings.ts` yet.
 - ***(inactive)*** marks the Agenda view, whose components exist but aren't currently rendered.
@@ -240,7 +240,7 @@ The single reference for every user-facing message in Focus Space: what the app 
 
 ## Notes
 
-Notes are sealed on the device like the rest of a profile's data: both backends store only ids and times. The server's messages so far; the rest of the section arrives with the Notes screens.
+Notes are sealed on the device like the rest of a profile's data: both backends store only ids and times. Everything in the screens' own words lives in `strings.notes`; the server's messages come first.
 
 | Feature Context / Trigger | Category | UI Component | Semantic Title | Message Body | Suggested Action / CTA |
 |---|---|---|---|---|---|
@@ -249,6 +249,28 @@ Notes are sealed on the device like the rest of a profile's data: both backends 
 | Creating or importing past the note limit (Trash counts until emptied) | Helpful Alert | Toast | Note limit | You've reached the limit of {max} notes. Emptying the Trash makes room for more. | Empty Trash |
 | An import retried after it already went through | Helpful Alert | Toast | Already imported | These notes are already here, so nothing new was added. | — |
 | An import request over `documents.maxBatch` (the app splits imports, so rare) | Helpful Alert | Toast | Too many at once | You can add up to {max} notes at a time. Try importing fewer at once. | Import fewer |
+| Opening Notes | Status | Empty state | Opening notes | Opening your notes… | — |
+| Notes couldn't be fetched | Helpful Alert | Empty state | Notes unavailable | We couldn't open your notes this time. Check your connection and try again. | Try again |
+| Some notes can't be opened on this device | Helpful Alert | Muted line under the list | Unreadable notes | {count} note(s) couldn't be opened on this device. | — |
+| No notes at all | Empty state | Empty state | No notes yet | No notes yet. Start one and it lands in your Inbox, with no filing needed. | New note |
+| Empty Inbox | Empty state | Empty state | Inbox is clear | Your Inbox is clear. New notes land here until you file them. | — |
+| Empty collection or label | Empty state | Empty state | Nothing here yet | Nothing in this collection yet. Move notes here from anywhere. · No notes have this label yet. | — |
+| Empty Trash | Empty state | Empty state | Trash is empty | The Trash is empty. Deleted notes wait here until you empty it. | — |
+| A search with no results | Empty state | Empty state | No matches | No notes match "{query}". Try fewer or different words. | Clear search |
+| Move to the Trash | Success | Toast | Moved to the Trash | Note moved to the Trash. · {count} notes moved to the Trash. | Undo |
+| Move to a collection or the Inbox | Success | Toast | Moved | Note moved to {place}. · {count} notes moved to {place}. | Undo |
+| Restore from the Trash | Success | Toast | Restored | Note restored. · {count} notes restored. | — |
+| Delete for good | Helpful Alert | Modal | Delete for good? | Delete "{title}" for good? This can't be undone. · Delete {count} notes for good? This can't be undone. | Delete / Cancel |
+| Delete for good, done | Success | Toast | Deleted | Note deleted for good. · {count} notes deleted for good. | — |
+| Empty the Trash | Helpful Alert | Modal | Empty the Trash? | This deletes {count} note(s) for good. This can't be undone. | Empty Trash / Cancel |
+| Delete a collection | Helpful Alert | Modal | Delete collection? | Delete "{name}"? Its notes move to your Inbox. | Delete / Cancel |
+| Delete a label | Helpful Alert | Modal | Delete label? | Delete "{name}"? It comes off every note that has it. | Delete / Cancel |
+| Collection or label created, renamed, deleted | Success | Toast | Saved | Collection "{name}" is ready. · Collection renamed. · Collection deleted. · and the same for labels | — |
+| A change to notes didn't save | Helpful Alert | Toast | Change not saved | That change didn't save this time. Your notes are as they were; try again. | — |
+| Note renamed | Success | Toast | Renamed | Note renamed. | — |
+| Opening a note | Status | Empty state | Opening note | Opening your note… | — |
+| A note can't be opened | Helpful Alert | Empty state | Note unavailable | We couldn't open this note. It may have been deleted, or the connection dropped. | Back to notes |
+| Typing in a note | Status | Chip | Saved / Saving… | Saved · Saving… · Not saved yet. Your next change tries again. | — |
 
 ---
 

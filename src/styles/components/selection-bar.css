@@ -1,0 +1,13 @@
+/* ── Selection bar (ui/SelectionBar) ─────────────────────── */
+.selection-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-6) var(--space-8) var(--space-6) var(--space-20);
+  border-radius: var(--radius-pill);
+  background: var(--accent-container);
+  color: var(--on-accent-container);
+  animation: pop-in var(--dur-2) var(--ease-decel);
+}
+.selection-bar-summary { font-size: var(--text-md); font-weight: var(--weight-bold); white-space: nowrap; }
+.selection-bar-actions { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-6); }

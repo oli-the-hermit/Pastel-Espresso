@@ -32,6 +32,8 @@ export const TOUR_STEPS: TourStep[] = [
   { id: 'lists', kind: 'spot', chapter: 'tasks', tab: 'tasks', target: 'lists', ...s.lists },
   { id: 'list-content', kind: 'spot', chapter: 'tasks', tab: 'tasks', target: 'list-content', ...s.listContent },
 
+  { id: 'notes', kind: 'spot', chapter: 'notes', tab: 'notes', target: 'notes', ...s.notes },
+
   { id: 'calendar', kind: 'spot', chapter: 'calendar', tab: 'calendar', target: 'calendar', ...s.calendar },
   { id: 'stats', kind: 'spot', chapter: 'stats', tab: 'stats', target: 'stats', ...s.stats },
   { id: 'goals', kind: 'spot', chapter: 'goals', tab: 'goals', target: 'goals', ...s.goals },

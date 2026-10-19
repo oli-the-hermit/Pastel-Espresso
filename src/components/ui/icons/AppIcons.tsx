@@ -490,3 +490,150 @@ export const IconGrip: React.FC<React.HTMLAttributes<HTMLSpanElement>> = ({ clas
     </svg>
   </span>
 );
+
+/** A page with lines of text: notes and documents. */
+export const IconNotes: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 3 14 8 19 8" />
+    <line x1="9" y1="13" x2="15" y2="13" />
+    <line x1="9" y1="17" x2="13" y2="17" />
+  </StrokeIcon>
+);
+
+/** An open tray: where new, unfiled things land. */
+export const IconInbox: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <polyline points="22 12 16 12 14 15 10 15 8 12 2 12" />
+    <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
+  </StrokeIcon>
+);
+
+export const IconFolder: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+  </StrokeIcon>
+);
+
+export const IconTag: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+    <circle cx="7" cy="7" r="1.25" fill="currentColor" />
+  </StrokeIcon>
+);
+
+/** Four tiles: a grid layout. */
+export const IconGridView: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+    <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+    <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+    <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+  </StrokeIcon>
+);
+
+/** Editor glyphs. */
+export const IconBold: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <path d="M6 4h8a4 4 0 0 1 0 8H6z" />
+    <path d="M6 12h9a4 4 0 0 1 0 8H6z" />
+  </StrokeIcon>
+);
+
+export const IconItalic: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <line x1="19" y1="4" x2="10" y2="4" />
+    <line x1="14" y1="20" x2="5" y2="20" />
+    <line x1="15" y1="4" x2="9" y2="20" />
+  </StrokeIcon>
+);
+
+export const IconStrike: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <path d="M16 5.5A4 4 0 0 0 12.5 4H11a3.5 3.5 0 0 0 0 7" />
+    <path d="M8 18.5A4 4 0 0 0 11.5 20H13a3.5 3.5 0 0 0 1.9-6.4" />
+    <line x1="4" y1="12" x2="20" y2="12" />
+  </StrokeIcon>
+);
+
+export const IconCode: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <polyline points="16 18 22 12 16 6" />
+    <polyline points="8 6 2 12 8 18" />
+  </StrokeIcon>
+);
+
+export const IconCodeBlock: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <rect x="3" y="4" width="18" height="16" rx="2" />
+    <polyline points="10 9 7 12 10 15" />
+    <polyline points="14 9 17 12 14 15" />
+  </StrokeIcon>
+);
+
+export const IconLink: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+  </StrokeIcon>
+);
+
+export const IconListOrdered: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <line x1="11" y1="6" x2="21" y2="6" />
+    <line x1="11" y1="12" x2="21" y2="12" />
+    <line x1="11" y1="18" x2="21" y2="18" />
+    <path d="M4 5.5L5.5 4.5V9" />
+    <path d="M3.5 14.5a1.5 1.5 0 1 1 2.6 1L3.5 19h3" />
+  </StrokeIcon>
+);
+
+export const IconChecklist: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <polyline points="3 6 4.5 7.5 7.5 4" />
+    <polyline points="3 12 4.5 13.5 7.5 10" />
+    <polyline points="3 18 4.5 19.5 7.5 16" />
+    <line x1="11" y1="6" x2="21" y2="6" />
+    <line x1="11" y1="12" x2="21" y2="12" />
+    <line x1="11" y1="18" x2="21" y2="18" />
+  </StrokeIcon>
+);
+
+export const IconQuote: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <path d="M4 8h4.5v4.5c0 2.2-1.2 3.6-3.5 4" />
+    <path d="M13.5 8H18v4.5c0 2.2-1.2 3.6-3.5 4" />
+  </StrokeIcon>
+);
+
+export const IconTable: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <rect x="3" y="4" width="18" height="16" rx="2" />
+    <line x1="3" y1="10" x2="21" y2="10" />
+    <line x1="3" y1="15" x2="21" y2="15" />
+    <line x1="9" y1="4" x2="9" y2="20" />
+  </StrokeIcon>
+);
+
+/** A heading: an H made of two bars and a bridge. */
+export const IconHeading: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <line x1="6" y1="4" x2="6" y2="20" />
+    <line x1="18" y1="4" x2="18" y2="20" />
+    <line x1="6" y1="12" x2="18" y2="12" />
+  </StrokeIcon>
+);
+
+export const IconUndo: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <polyline points="9 14 4 9 9 4" />
+    <path d="M20 20v-7a4 4 0 0 0-4-4H4" />
+  </StrokeIcon>
+);
+
+export const IconRedo: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <polyline points="15 14 20 9 15 4" />
+    <path d="M4 20v-7a4 4 0 0 1 4-4h12" />
+  </StrokeIcon>
+);

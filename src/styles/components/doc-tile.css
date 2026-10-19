@@ -1,0 +1,73 @@
+/* ── Doc tile (ui/DocTile): a document in a grid or a list ── */
+.doc-tile {
+  --tile-bg: var(--surface-1);
+  position: relative;
+  display: grid;
+  gap: var(--space-4) var(--space-12);
+  padding: var(--space-16) var(--space-18);
+  border-radius: var(--radius-2xl);
+  background: var(--tile-bg);
+  color: var(--text-1);
+  cursor: pointer;
+  min-width: 0;
+  transition: background var(--dur-2) var(--ease-standard), color var(--dur-2) var(--ease-standard);
+}
+.doc-tile:hover { --tile-bg: var(--surface-2); }
+.doc-tile:focus-visible { outline-offset: 2px; }
+.doc-tile.is-selected { --tile-bg: var(--accent-container); color: var(--on-accent-container); }
+.doc-tile.is-dimmed .doc-tile-text { opacity: 0.7; }
+
+.doc-tile-text { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+.doc-tile-title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.doc-tile-meta { font-size: var(--text-xs); color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.doc-tile.is-selected .doc-tile-meta { color: var(--on-accent-container); }
+.doc-tile-pin { flex: none; color: var(--accent-text); }
+.doc-tile.is-selected .doc-tile-pin { color: var(--on-accent-container); }
+.doc-tile-chips { display: flex; flex-wrap: wrap; gap: var(--space-6); min-width: 0; }
+
+/* The check box and the menu show on hover, on focus, and (the check box) once anything is selected. */
+.doc-tile-check { opacity: 0; transition: opacity var(--dur-2) var(--ease-standard); }
+.doc-tile:hover .doc-tile-check,
+.doc-tile:focus-within .doc-tile-check,
+.doc-tile.is-selecting .doc-tile-check,
+.doc-tile.is-selected .doc-tile-check { opacity: 1; }
+.doc-tile-menu { opacity: 0; transition: opacity var(--dur-2) var(--ease-standard); }
+.doc-tile:hover .doc-tile-menu,
+.doc-tile:focus-within .doc-tile-menu,
+.doc-tile-menu:has([aria-expanded='true']) { opacity: 1; }
+
+/* Grid: check box and pin on a top row with the menu, then the title, details and labels. */
+.doc-tile--grid {
+  grid-template-columns: auto 1fr auto auto;
+  grid-template-areas:
+    'check . pin menu'
+    'text text text text'
+    'chips chips chips chips';
+  align-content: start;
+  min-height: 132px;
+}
+.doc-tile--grid .doc-tile-check { grid-area: check; }
+.doc-tile--grid .doc-tile-pin { grid-area: pin; align-self: center; }
+.doc-tile--grid .doc-tile-menu { grid-area: menu; margin: calc(var(--space-6) * -1) calc(var(--space-8) * -1) 0 0; }
+.doc-tile--grid .doc-tile-text { grid-area: text; margin-top: var(--space-4); }
+.doc-tile--grid .doc-tile-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.doc-tile--grid .doc-tile-chips { grid-area: chips; margin-top: var(--space-6); }
+
+/* List: one row. */
+.doc-tile--list {
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  padding-block: var(--space-10);
+  border-radius: var(--radius-xl);
+}
+.doc-tile--list .doc-tile-title { white-space: nowrap; font-size: var(--text-md); }
+.doc-tile--list .doc-tile-chips { flex-wrap: nowrap; overflow: hidden; }
+@media (max-width: 600px) {
+  .doc-tile--list .doc-tile-chips { display: none; }
+}

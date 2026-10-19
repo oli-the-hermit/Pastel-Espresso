@@ -1,0 +1,11 @@
+/* ── Notes tab: where the pieces sit ─────────────────────── */
+.notes-main { display: flex; flex-direction: column; gap: var(--space-16); min-width: 0; }
+.notes-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-12); }
+.notes-toolbar .search-field { flex: 1 1 240px; }
+.notes-sort { flex: none; width: 200px; }
+.notes-rows { display: flex; flex-direction: column; gap: var(--space-6); }
+
+/* A note open for writing: a head row, then the page at a readable width. */
+.note-editor { display: flex; flex-direction: column; gap: var(--space-16); max-width: 860px; margin-inline: auto; }
+.note-editor-head { display: flex; align-items: center; gap: var(--space-12); }
+.note-editor-title { flex: 1; min-width: 0; }

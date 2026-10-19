@@ -57,6 +57,11 @@
 @import url('./styles/components/collapsible.css') layer(app);
 @import url('./styles/components/switch.css') layer(app);
 @import url('./styles/components/icon-swap.css') layer(app);
+@import url('./styles/components/search-field.css') layer(app);
+@import url('./styles/components/scope-list.css') layer(app);
+@import url('./styles/components/doc-tile.css') layer(app);
+@import url('./styles/components/selection-bar.css') layer(app);
+@import url('./styles/components/doc-editor.css') layer(app);
 
 /* Layout: the app shell */
 @import url('./styles/layout/app-shell.css') layer(app);
@@ -75,6 +80,7 @@
 @import url('./styles/features/stats.css') layer(app);
 @import url('./styles/features/goals.css') layer(app);
 @import url('./styles/features/rewards.css') layer(app);
+@import url('./styles/features/notes.css') layer(app);
 @import url('./styles/features/celebration.css') layer(app);
 @import url('./styles/features/auth.css') layer(app);
 @import url('./styles/features/crash.css') layer(app);

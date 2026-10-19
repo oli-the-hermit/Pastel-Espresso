@@ -16,6 +16,7 @@ import { StatCard } from './components/ui/StatCard';
 import { ProductivityChart } from './components/stats/ProductivityChart';
 import { CompletionLogs } from './components/stats/CompletionLogs';
 
+import { NotesPage } from './components/notes/NotesPage';
 import { GoalsGrid } from './components/goals/GoalsGrid';
 import { RewardsGrid } from './components/rewards/RewardsGrid';
 import { CelebrationOverlay } from './components/rewards/CelebrationOverlay';
@@ -130,6 +131,11 @@ const AppShell: React.FC = () => {
                 sidebar={<div data-tour="lists"><ListSidebar /></div>}
                 content={<div data-tour="list-content"><TaskListCard /></div>}
               />
+            </section>
+
+            {/* ── TAB: NOTES ────────────────────────────────────── */}
+            <section className={`tab-page ${activeTab === 'notes' ? 'active' : ''}`} id="tab-notes" data-tour="notes">
+              <NotesPage />
             </section>
 
             {/* ── TAB: CALENDAR ─────────────────────────────────── */}

@@ -24,6 +24,21 @@
   animation: toast-in var(--dur-3) var(--ease-emphasized);
 }
 .toast-icon { flex: none; display: grid; place-items: center; }
+.toast-message { min-width: 0; }
+/* The container ignores the pointer so toasts never block the page; an action has to take it back. */
+.toast-action {
+  flex: none;
+  height: var(--button-height-xs);
+  padding: 0 var(--space-12);
+  margin-left: var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--surface-4);
+  color: var(--text-1);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  pointer-events: auto;
+}
+.toast-action:hover { background: var(--surface-3); }
 
 /* Each tone: its container color and an icon in its own color (the icon differs too). */
 .toast.is-success { background: var(--success-container); }

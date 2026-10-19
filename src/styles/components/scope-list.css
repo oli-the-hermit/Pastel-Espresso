@@ -1,0 +1,42 @@
+/* ── Scope list (ui/ScopeList): a card of places to switch between ── */
+.scope-list { padding: var(--space-16) var(--space-12); }
+.scope-section + .scope-section { margin-top: var(--space-16); }
+.scope-empty { padding: var(--space-4) var(--space-12) var(--space-8); font-size: var(--text-xs); color: var(--text-3); }
+
+.scope-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  color: var(--text-2);
+  transition: background var(--dur-2) var(--ease-standard), color var(--dur-2) var(--ease-standard);
+}
+.scope-item:hover { background: var(--surface-2); color: var(--text-1); }
+.scope-item.is-active { background: var(--accent); color: var(--on-accent); }
+.scope-item.is-active:hover { background: var(--accent-hover); }
+
+.scope-item-main {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--button-height);
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+  padding: 0 var(--space-12);
+  border-radius: var(--radius-pill);
+  color: inherit;
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  text-align: left;
+}
+.scope-item-icon { flex: none; display: grid; place-items: center; width: 20px; }
+.scope-item-name { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.scope-item-count { flex: none; font-size: var(--text-2xs); font-variant-numeric: tabular-nums; color: var(--text-3); }
+.scope-item.is-active .scope-item-count { color: var(--on-accent-2); }
+
+/* The ⋮ replaces the count on hover, so the name never loses room to it. */
+.scope-item-menu { position: absolute; right: var(--space-6); display: none; }
+.scope-item:hover .scope-item-menu,
+.scope-item:focus-within .scope-item-menu { display: block; }
+.scope-item:has(.scope-item-menu):hover .scope-item-count,
+.scope-item:has(.scope-item-menu):focus-within .scope-item-count { visibility: hidden; }

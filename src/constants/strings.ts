@@ -67,6 +67,7 @@ export const strings = {
     stats: 'Stats',
     goals: 'Goals',
     rewards: 'Rewards',
+    notes: 'Notes',
     navLabel: 'Main navigation',
     expand: 'Expand menu',
     collapse: 'Collapse menu'
@@ -77,6 +78,7 @@ export const strings = {
     calendar: 'Calendar',
     stats: 'Analytics & stats',
     goals: 'Goals & landmarks',
+    notes: 'Notes',
     rewards: 'Rewards'
   },
   timer: {
@@ -569,6 +571,7 @@ export const strings = {
     chapters: {
       timer: 'Timer',
       tasks: 'Tasks',
+      notes: 'Notes',
       calendar: 'Calendar',
       stats: 'Stats',
       goals: 'Goals',
@@ -582,6 +585,7 @@ export const strings = {
       sessionTasks: { title: 'Tasks for this session', body: 'Attach task lists to a session to keep them in view while you focus.' },
       lists: { title: 'Task lists', body: 'Group tasks into lists. Any session can reuse them.' },
       listContent: { title: 'Check things off', body: 'Add tasks, drag them into order and tick them off. We time how long each one took.' },
+      notes: { title: 'Keep what you make', body: 'Write notes, or bring them in. They land in your Inbox, and you can file them whenever you like.' },
       calendar: { title: 'Plan ahead', body: 'Schedule sessions and drag them to move. We’ll give you a heads-up before each one.' },
       stats: { title: 'See your rhythm', body: 'Daily averages, your most productive days and a log of finished tasks.' },
       goals: { title: 'Goals and landmarks', body: 'Break bigger goals into landmarks and tick them off as you go.' },
@@ -593,11 +597,139 @@ export const strings = {
       help: { title: 'Help', body: 'Shortcuts, what’s new and this tour live here.' }
     }
   },
+  // Notes: documents kept in collections and labels (screens: components/notes).
+  notes: {
+    scopesTitle: 'Notes',
+    scopes: { all: 'All notes', inbox: 'Inbox', trash: 'Trash' },
+    collectionsHeading: 'Collections',
+    labelsHeading: 'Labels',
+    newNote: 'New note',
+    newCollection: 'New collection',
+    newLabel: 'New label',
+    untitled: 'Untitled note',
+    pinned: 'Pinned',
+    searchLabel: 'Search notes',
+    searchPlaceholder: 'Search your notes…',
+    clearSearch: 'Clear search',
+    sortLabel: 'Sort notes',
+    sortOptions: { edited: 'Recently edited', created: 'Newest first', title: 'Title (A–Z)' },
+    viewLabel: 'Layout',
+    viewGrid: 'Grid',
+    viewList: 'List',
+    editedToday: 'Edited today, {time}',
+    editedYesterday: 'Edited yesterday',
+    editedOn: 'Edited {date}',
+    trashedOn: 'In the Trash since {date}',
+    /** Under a note's title: when it changed and, outside its own collection, where it lives. */
+    metaWithPlace: '{edited} · {place}',
+    moreLabels: '+{count}',
+    loading: 'Opening your notes…',
+    loadError: 'We couldn’t open your notes this time. Check your connection and try again.',
+    retry: 'Try again',
+    unreadable: {
+      one: '{count} note couldn’t be opened on this device.',
+      other: '{count} notes couldn’t be opened on this device.'
+    },
+    empty: {
+      all: 'No notes yet. Start one and it lands in your Inbox, with no filing needed.',
+      inbox: 'Your Inbox is clear. New notes land here until you file them.',
+      collection: 'Nothing in this collection yet. Move notes here from anywhere.',
+      label: 'No notes have this label yet.',
+      trash: 'The Trash is empty. Deleted notes wait here until you empty it.',
+      search: 'No notes match "{query}". Try fewer or different words.'
+    },
+    menu: {
+      open: 'Open',
+      moreActions: 'Note actions',
+      pin: 'Pin',
+      unpin: 'Unpin',
+      moveTo: 'Move to…',
+      labels: 'Labels…',
+      moveToTrash: 'Move to Trash',
+      restore: 'Restore',
+      deleteForever: 'Delete for good'
+    },
+    editor: {
+      back: 'Back to notes',
+      titleLabel: 'Note title',
+      titlePlaceholder: 'Untitled note',
+      bodyLabel: 'Note text',
+      bodyPlaceholder: 'Start writing. Everything saves as you go.',
+      loading: 'Opening your note…',
+      loadError: 'We couldn’t open this note. It may have been deleted, or the connection dropped.',
+      saved: 'Saved',
+      saving: 'Saving…',
+      saveError: 'Not saved yet. Your next change tries again.'
+    },
+    selectNote: 'Select "{title}"',
+    selected: '{count} selected',
+    selectionLabel: 'Selected notes',
+    selectAll: 'Select all',
+    clearSelection: 'Clear selection',
+    movePrompt: {
+      title: 'Move to…',
+      inbox: 'Inbox',
+      newCollection: 'New collection…'
+    },
+    labelPrompt: {
+      title: 'Labels',
+      none: 'No labels yet. Create one to start tagging.',
+      add: 'Add a label…',
+      newLabel: 'New label…',
+      done: 'Done'
+    },
+    nameDialog: {
+      newCollection: 'New collection',
+      renameCollection: 'Rename collection',
+      newLabel: 'New label',
+      renameLabel: 'Rename label',
+      renameNote: 'Rename note',
+      collectionName: 'Collection name',
+      collectionPlaceholder: 'e.g. Research',
+      labelName: 'Label name',
+      labelPlaceholder: 'e.g. Handoff',
+      noteTitle: 'Note title',
+      notePlaceholder: 'Untitled note',
+      create: 'Create'
+    },
+    sideMenu: { rename: 'Rename', delete: 'Delete', moreActions: 'Actions for "{name}"' },
+    confirm: {
+      deleteForeverTitle: 'Delete for good?',
+      deleteForeverOne: 'Delete "{title}" for good? This can’t be undone.',
+      deleteForeverMany: 'Delete {count} notes for good? This can’t be undone.',
+      emptyTrash: 'Empty Trash',
+      emptyTrashTitle: 'Empty the Trash?',
+      emptyTrashMessage: {
+        one: 'This deletes {count} note for good. This can’t be undone.',
+        other: 'This deletes {count} notes for good. This can’t be undone.'
+      },
+      deleteCollectionTitle: 'Delete collection?',
+      deleteCollectionMessage: 'Delete "{name}"? Its notes move to your Inbox.',
+      deleteLabelTitle: 'Delete label?',
+      deleteLabelMessage: 'Delete "{name}"? It comes off every note that has it.'
+    },
+    toasts: {
+      undo: 'Undo',
+      trashed: { one: 'Note moved to the Trash.', other: '{count} notes moved to the Trash.' },
+      restored: { one: 'Note restored.', other: '{count} notes restored.' },
+      moved: { one: 'Note moved to {place}.', other: '{count} notes moved to {place}.' },
+      deleted: { one: 'Note deleted for good.', other: '{count} notes deleted for good.' },
+      collectionCreated: 'Collection "{name}" is ready.',
+      collectionRenamed: 'Collection renamed.',
+      collectionDeleted: 'Collection deleted.',
+      labelCreated: 'Label "{name}" is ready.',
+      labelRenamed: 'Label renamed.',
+      labelDeleted: 'Label deleted.',
+      noteRenamed: 'Note renamed.',
+      failed: 'That change didn’t save this time. Your notes are as they were; try again.'
+    }
+  },
   // Commands, shared by buttons, tooltips, menus and alerts that run the same action.
   actions: {
     newSession: 'New session',
     newList: 'New task list',
     newTask: 'New task',
+    newNote: 'New note',
     scheduleSession: 'Schedule session',
     newGoal: 'New goal',
     newReward: 'New reward',

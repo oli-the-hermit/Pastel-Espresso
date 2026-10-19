@@ -4,7 +4,7 @@ import { TabType } from '../../types';
 import { strings } from '../../constants/strings';
 import { UserBadge } from '../auth/UserBadge';
 import { UserMenuModal, type UserMenuView } from '../auth/UserMenuModal';
-import { IconCalendar, IconGift, IconLogo, IconStats, IconTarget, IconTasks, IconTimer } from '../ui/icons';
+import { IconCalendar, IconGift, IconLogo, IconNotes, IconStats, IconTarget, IconTasks, IconTimer } from '../ui/icons';
 import { NavigationRail, type NavigationItem } from '../ui/NavigationRail';
 import { isTauri } from '../../lib/desktop';
 import { useDrawer } from '../../hooks/useDrawer';
@@ -12,6 +12,7 @@ import { useDrawer } from '../../hooks/useDrawer';
 const NAV_ITEMS: { tab: TabType; label: string; icon: React.ReactNode }[] = [
   { tab: 'timer', label: strings.rail.timer, icon: <IconTimer size={22} /> },
   { tab: 'tasks', label: strings.rail.tasks, icon: <IconTasks size={21} /> },
+  { tab: 'notes', label: strings.rail.notes, icon: <IconNotes size={21} /> },
   { tab: 'calendar', label: strings.rail.calendar, icon: <IconCalendar size={21} /> },
   { tab: 'stats', label: strings.rail.stats, icon: <IconStats size={22} /> },
   { tab: 'goals', label: strings.rail.goals, icon: <IconTarget size={21} /> },

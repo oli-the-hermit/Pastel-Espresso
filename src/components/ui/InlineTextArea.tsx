@@ -11,6 +11,8 @@ export interface InlineTextAreaProps {
   placeholder?: string;
   ariaLabel: string;
   maxLength?: number;
+  /** `title` for the heading of a page (a card title's size and weight). */
+  size?: 'md' | 'title';
   className?: string;
 }
 
@@ -20,7 +22,7 @@ export interface InlineTextAreaProps {
  * text (styles: components/form.css, .inline-textarea).
  */
 export const InlineTextArea = forwardRef<HTMLTextAreaElement, InlineTextAreaProps>(
-  ({ value, onSave, placeholder, ariaLabel, maxLength, className }, forwarded) => {
+  ({ value, onSave, placeholder, ariaLabel, maxLength, size = 'md', className }, forwarded) => {
     const [draft, setDraft] = useState(value);
     const ref = useRef<HTMLTextAreaElement | null>(null);
     const reverting = useRef(false);
@@ -57,7 +59,7 @@ export const InlineTextArea = forwardRef<HTMLTextAreaElement, InlineTextAreaProp
           if (typeof forwarded === 'function') forwarded(el);
           else if (forwarded) forwarded.current = el;
         }}
-        className={cx('inline-textarea', className)}
+        className={cx('inline-textarea', size === 'title' && 'inline-textarea--title', className)}
         rows={1}
         value={draft}
         placeholder={placeholder}

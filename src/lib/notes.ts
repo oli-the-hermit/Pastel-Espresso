@@ -77,3 +77,26 @@ export function metaOf(note: Note): NoteMeta {
   const { title, collectionId, labelIds, pinned, trashedAt, createdAt, editedAt } = note;
   return { title, collectionId, labelIds, pinned, trashedAt, createdAt, editedAt };
 }
+
+/** The longest title taken from a note's text. */
+const DERIVED_TITLE_MAX = 80;
+
+/**
+ * A title for a note that has none: its first line of text, without the Markdown around it
+ * (heading hashes, list and quote marks, checkbox, emphasis, code ticks, link syntax).
+ * Empty when the text has nothing to name it by.
+ */
+export function deriveNoteTitle(markdown: string): string {
+  for (const raw of markdown.split(/\r?\n/)) {
+    const text = raw
+      .replace(/^\s*(?:#{1,6}\s+|>\s*|[-*+]\s+(?:\[[ xX]\]\s+)?|\d+[.)]\s+)+/, '')
+      .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+      .replace(/[*_~`]+/g, '')
+      .replace(/\\([\\`*_{}[\]()#+\-.!&])/g, '$1')
+      .trim();
+    // A fence, a rule or a table row says nothing about the note.
+    if (!text || /^[-=_*|:\s]+$/.test(text) || text.startsWith('|')) continue;
+    return text.length > DERIVED_TITLE_MAX ? `${text.slice(0, DERIVED_TITLE_MAX).trimEnd()}…` : text;
+  }
+  return '';
+}

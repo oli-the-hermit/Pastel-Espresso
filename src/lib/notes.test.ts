@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { generateDataKey } from './crypto';
-import { metaOf, newNoteId, newNoteMeta, normalizeNoteMeta, openNoteBody, openNoteMeta, sealNoteBody, sealNoteMeta } from './notes';
+import { deriveNoteTitle, metaOf, newNoteId, newNoteMeta, normalizeNoteMeta, openNoteBody, openNoteMeta, sealNoteBody, sealNoteMeta } from './notes';
 
 // The rule both backends check (DOC_ID_RE in server/app.js, valid_doc_id in handlers.rs).
 const DOC_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
@@ -55,5 +55,32 @@ describe('metaOf', () => {
   it('returns exactly the sealed fields of a listed note', () => {
     const meta = newNoteMeta(3, { title: 'x' });
     expect(metaOf({ ...meta, id: 'n1', savedAt: 9 })).toEqual(meta);
+  });
+});
+
+describe('deriveNoteTitle', () => {
+  it('takes the first line of text', () => {
+    expect(deriveNoteTitle('Weekly plan\nmore text')).toBe('Weekly plan');
+    expect(deriveNoteTitle('\n\n  Second try  \n')).toBe('Second try');
+  });
+
+  it('drops the Markdown around it', () => {
+    expect(deriveNoteTitle('## A heading')).toBe('A heading');
+    expect(deriveNoteTitle('- [ ] buy milk')).toBe('buy milk');
+    expect(deriveNoteTitle('> **quoted** and `code`')).toBe('quoted and code');
+    expect(deriveNoteTitle('1. [the docs](https://example.com) first')).toBe('the docs first');
+    expect(deriveNoteTitle('fish \\& chips')).toBe('fish & chips');
+  });
+
+  it('skips lines that name nothing', () => {
+    expect(deriveNoteTitle('---\n\n```\n| a | b |\nreal start')).toBe('real start');
+    expect(deriveNoteTitle('---\n***\n')).toBe('');
+    expect(deriveNoteTitle('')).toBe('');
+  });
+
+  it('shortens a long line', () => {
+    const title = deriveNoteTitle('word '.repeat(40));
+    expect(title.length).toBeLessThanOrEqual(81);
+    expect(title.endsWith('…')).toBe(true);
   });
 });

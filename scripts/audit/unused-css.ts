@@ -8,6 +8,17 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const SRC = path.join(ROOT, 'src');
 
+// Classes a library puts on its own elements (the editor's ProseMirror), so no source file names them.
+const LIBRARY_CLASSES = new Set([
+  'ProseMirror',
+  'ProseMirror-focused',
+  'ProseMirror-gapcursor',
+  'ProseMirror-hideselection',
+  'ProseMirror-separator',
+  'selectedCell',
+  'tableWrapper'
+]);
+
 const read = (dir: string, ext: RegExp): { file: string; text: string }[] =>
   fs.readdirSync(dir, { recursive: true, encoding: 'utf8' })
     .filter(f => ext.test(f))
@@ -29,7 +40,7 @@ for (const { file, text } of cssFiles) {
     if (/^\s*@/.test(sel)) continue;
     for (const m of sel.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)) {
       const cls = m[1];
-      const used = new RegExp(`(^|[^\\w-])${cls}(?![\\w-])`).test(code) || dynamicPrefixes.some(p => cls.startsWith(p));
+      const used = LIBRARY_CLASSES.has(cls) || new RegExp(`(^|[^\\w-])${cls}(?![\\w-])`).test(code) || dynamicPrefixes.some(p => cls.startsWith(p));
       if (!used) {
         const rel = path.relative(ROOT, file).split(path.sep).join('/');
         unused.set(cls, [...new Set([...(unused.get(cls) ?? []), rel])]);

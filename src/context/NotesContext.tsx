@@ -6,6 +6,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useApp } from './AppContext';
 import {
+  deriveNoteTitle,
   metaOf,
   newNoteId,
   newNoteMeta,
@@ -192,11 +193,13 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           const note = notesRef.current.find(n => n.id === id);
           if (!note) return;
           const k = await key();
-          const meta = { ...metaOf(note), editedAt: Date.now() };
+          // A note without a title is named by what it starts with.
+          const title = note.title.trim() === '' ? deriveNoteTitle(body) : note.title;
+          const meta = { ...metaOf(note), title, editedAt: Date.now() };
           const [sealedMeta, sealedBody] = await Promise.all([sealNoteMeta(meta, k), sealNoteBody(body, k)]);
           const saved = await notesApi.save(token(), id, sealedMeta, sealedBody);
           if (pendingBodyRef.current.get(id)?.version === version) pendingBodyRef.current.delete(id);
-          changeNotes(list => list.map(n => (n.id === id ? { ...n, editedAt: meta.editedAt, savedAt: saved.updatedAt } : n)));
+          changeNotes(list => list.map(n => (n.id === id ? { ...n, title, editedAt: meta.editedAt, savedAt: saved.updatedAt } : n)));
         });
       },
 

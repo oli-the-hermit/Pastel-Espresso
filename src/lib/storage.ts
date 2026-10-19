@@ -25,7 +25,9 @@ export const STORAGE_KEYS = {
   /** 'expanded' when the navigation drawer shows labels beside the icons; else the rail. Per device. */
   drawer: 'focusspace_drawer',
   /** Task lists opened on this device, newest first (the list pickers' Recently opened). */
-  recentLists: 'focusspace_recent_lists'
+  recentLists: 'focusspace_recent_lists',
+  /** The Notes screen's grid or list, and its sort order. Per device. */
+  notesLayout: 'focusspace_notes_layout'
 } as const;
 
 export type StorageKey = keyof typeof STORAGE_KEYS;

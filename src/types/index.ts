@@ -1,7 +1,7 @@
 import type { AccentId } from '../constants/accents';
 import type { NoteCollection, NoteLabel } from '../lib/notes';
 
-export type TabType ='timer' | 'tasks' | 'calendar' | 'stats' | 'goals' | 'rewards';
+export type TabType ='timer' | 'tasks' | 'notes' | 'calendar' | 'stats' | 'goals' | 'rewards';
 export type TimerPhase = 'focus' | 'break';
 export type TimerStatus = 'idle' | 'running' | 'paused';
 export type CalendarView = 'week' | 'day' | 'month';
@@ -13,8 +13,13 @@ export type ThemeMode = 'light' | 'dark' | 'system';
 
 /** A toast's kind: its color and icon (success green, info the accent, warning amber, error red). */
 export type ToastTone = 'success' | 'info' | 'warning' | 'error';
+/** A button on a toast, e.g. Undo. Running it dismisses the toast. */
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
 /** Shows a one-line toast; confirmations use the default, 'success'. */
-export type ShowToast = (message: string, tone?: ToastTone) => void;
+export type ShowToast = (message: string, tone?: ToastTone, action?: ToastAction) => void;
 
 export interface Profile {
   id: number;

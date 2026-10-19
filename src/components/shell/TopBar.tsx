@@ -15,6 +15,7 @@ import { StatusChip, type StatusTone } from '../ui/StatusChip';
 const PAGE_TITLES: Record<TabType, string> = {
   timer: strings.tabs.timer,
   tasks: strings.tabs.tasks,
+  notes: strings.tabs.notes,
   calendar: strings.tabs.calendar,
   stats: strings.tabs.stats,
   goals: strings.tabs.goals,
