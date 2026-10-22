@@ -6,6 +6,8 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
 
 // Set by the Tauri CLI when it runs beforeDevCommand / beforeBuildCommand.
 const underTauri = !!process.env.TAURI_ENV_PLATFORM;
+// Set in Claude Code's shells: Claude previews in its own browser pane, never the user's.
+const underClaude = !!process.env.CLAUDECODE;
 
 export default defineConfig({
   plugins: [react()],
@@ -21,8 +23,8 @@ export default defineConfig({
   server: {
     port: 3000,
     strictPort: true,
-    // The desktop shell opens its own window; don't also open a browser tab.
-    open: !underTauri,
+    // The desktop shell opens its own window, and Claude uses its own pane; don't also open a browser tab.
+    open: !underTauri && !underClaude,
     proxy: {
       // FOCUSSPACE_API_URL lets a second dev instance talk to its own API server.
       '/api': process.env.FOCUSSPACE_API_URL || 'http://127.0.0.1:4000'
