@@ -80,6 +80,17 @@ async function tour(page: Page, context: BrowserContext, withPip: boolean) {
     await page.locator(`.nav-rail [data-tab="${tab}"]`).click();
     await page.waitForTimeout(250);
   }
+  // The notes editor is a lazy chunk, and TipTap tables write styles of their own.
+  await page.locator('.nav-rail [data-tab="notes"]').click();
+  await page.getByRole('button', { name: strings.notes.newNote }).first().click();
+  const editor = page.locator('.doc-editor-content .ProseMirror');
+  await editor.click();
+  await page.keyboard.type('CSP check');
+  await page.getByRole('button', { name: 'Table' }).click();
+  await editor.locator('table').waitFor();
+  await page.keyboard.type('cell');
+  await page.waitForTimeout(500);
+  await page.locator('.nav-rail [data-tab="timer"]').click();
   await page.locator('[data-tour="help-btn"]').click();
   await page.waitForTimeout(250);
   await page.keyboard.press('Escape');
