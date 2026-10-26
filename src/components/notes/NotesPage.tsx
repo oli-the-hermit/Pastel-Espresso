@@ -72,7 +72,8 @@ export const NotesPage: React.FC = () => {
   const selectedIds = [...selection.ids];
 
   const openNote = (id: string) => setOpenId(id);
-  const menuFor = useNoteMenu(openNote, setDialog);
+  // Right-click or ⋮ on one of several selected notes acts on all of them.
+  const menuFor = useNoteMenu(openNote, setDialog, selectedIds);
 
   const newNote = () =>
     actions.run(async () => {

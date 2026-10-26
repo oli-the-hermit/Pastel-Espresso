@@ -7,6 +7,20 @@ import { TableKit } from '@tiptap/extension-table';
 import { Placeholder } from '@tiptap/extensions';
 import { Markdown } from '@tiptap/markdown';
 import { DocEditorToolbar } from './DocEditorToolbar';
+import { decodeBasicEntities, escapeMarkdownText } from './markdownText';
+
+/**
+ * Markdown that escapes only what it must (ui/markdownText). TipTap has no option for this,
+ * so the serializer's escaping step is replaced on each editor's manager; markdownText.test
+ * fails if that step is ever renamed.
+ */
+const GentleMarkdown = Markdown.extend({
+  onBeforeCreate(event) {
+    this.parent?.(event);
+    const manager = this.editor.markdown as unknown as { escapeMarkdownSyntax?: (text: string) => string } | undefined;
+    if (manager?.escapeMarkdownSyntax) manager.escapeMarkdownSyntax = text => escapeMarkdownText(decodeBasicEntities(text));
+  }
+});
 
 export interface DocEditorProps {
   /** The Markdown the editor opens with. The editor owns the text from then on and reports each change. */
@@ -34,7 +48,7 @@ export const DocEditor: React.FC<DocEditorProps> = ({ markdown, onChange, ariaLa
       TaskItem.configure({ nested: true }),
       TableKit,
       Placeholder.configure({ placeholder: placeholder ?? '' }),
-      Markdown
+      GentleMarkdown
     ],
     content: markdown,
     contentType: 'markdown',

@@ -5,6 +5,8 @@ import { radioKeyTarget } from '../../lib/radioKeys';
 export interface SegmentedOption<T extends string> {
   value: T;
   label: React.ReactNode;
+  /** The option's name for screen readers and its tooltip, when `label` is only an icon. */
+  ariaLabel?: string;
 }
 
 export interface SegmentedControlProps<T extends string> {
@@ -65,6 +67,8 @@ export const SegmentedControl = <T extends string>({
             aria-checked={checked}
             tabIndex={i === tabStop ? 0 : -1}
             className={cx('segmented-option', checked && 'is-selected')}
+            aria-label={o.ariaLabel}
+            title={o.ariaLabel}
             onClick={() => onChange(o.value)}
             onKeyDown={e => onKeyDown(e, i)}
           >

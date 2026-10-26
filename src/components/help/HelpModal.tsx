@@ -9,7 +9,7 @@ import { TextButton } from '../ui/TextButton';
 import { ListRow } from '../ui/ListRow';
 import { format } from '../../lib/i18n';
 import { platformLabel } from '../../lib/platform';
-import { SHORTCUTS } from '../../constants/shortcuts';
+import { EDITOR_SHORTCUTS, SHORTCUTS, modifierCaps } from '../../constants/shortcuts';
 
 type HelpView = 'home' | 'shortcuts' | 'whatsNew' | 'about';
 
@@ -19,6 +19,7 @@ const version = __APP_VERSION__;
 export const HelpModal: React.FC = () => {
   const { helpOpen, setHelpOpen, startTour } = useApp();
   const [view, setView] = useState<HelpView>('home');
+  const modifiers = modifierCaps();
 
   // Always reopen on the list, not on the last sub-view.
   useEffect(() => {
@@ -101,6 +102,7 @@ export const HelpModal: React.FC = () => {
 
       {view === 'shortcuts' && (
         <div className="help-sub" key="shortcuts">
+          <h3 className="help-heading">{strings.help.shortcutsAppTitle}</h3>
           <ul className="shortcut-list">
             {SHORTCUTS.map(s => (
               <li key={s.id} className="shortcut-row">
@@ -114,6 +116,20 @@ export const HelpModal: React.FC = () => {
             ))}
           </ul>
           <p className="help-note">{strings.help.shortcutsNote}</p>
+          <h3 className="help-heading">{strings.help.shortcutsEditorTitle}</h3>
+          <ul className="shortcut-list">
+            {EDITOR_SHORTCUTS.map(s => (
+              <li key={s.id} className="shortcut-row">
+                <span>{strings.editorShortcuts[s.id]}</span>
+                <span className="shortcut-keys">
+                  {s.caps.map(k => (
+                    <kbd key={k} className="kbd">{k in modifiers ? modifiers[k as keyof typeof modifiers] : k}</kbd>
+                  ))}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="help-note">{strings.help.shortcutsEditorNote}</p>
         </div>
       )}
 

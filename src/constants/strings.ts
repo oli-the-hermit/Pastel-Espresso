@@ -38,10 +38,27 @@ export const strings = {
     help: 'Open help',
     contextMenu: 'Open the menu for the focused item'
   },
+  // The note editor's shortcuts (keys: EDITOR_SHORTCUTS in constants/shortcuts.ts).
+  editorShortcuts: {
+    bold: 'Bold',
+    italic: 'Italic',
+    strike: 'Strikethrough',
+    code: 'Code',
+    heading: 'Heading 1 to 6',
+    bulletList: 'Bulleted list',
+    orderedList: 'Numbered list',
+    checklist: 'Checklist',
+    quote: 'Quote',
+    codeBlock: 'Code block',
+    undo: 'Undo',
+    redo: 'Redo'
+  },
   // Names of keys shown on key caps.
   keys: {
     space: 'Space',
-    shift: 'Shift'
+    shift: 'Shift',
+    ctrl: 'Ctrl',
+    alt: 'Alt'
   },
   // Compact duration units: formatDuration() in lib/formatUtils.
   units: {
@@ -526,6 +543,9 @@ export const strings = {
     starTitle: 'Star on GitHub',
     starDesc: 'If Focus Space helps you, a star helps us.',
     shortcutsNote: 'Shortcuts pause while you’re typing or a dialog is open.',
+    shortcutsAppTitle: 'Anywhere in the app',
+    shortcutsEditorTitle: 'While writing a note',
+    shortcutsEditorNote: 'Markdown works as you type too: # and a space for a heading, - for a list, [ ] for a checklist.',
     whatsNew: [
       'A new look and new ways to organize your task lists. Still an alpha, so things may change before the final version, and your feedback shapes them (Help → Report a problem).',
       'The menu on the left now floats in its own panel, tinted with your accent color. Open or close it from the logo at its top.',

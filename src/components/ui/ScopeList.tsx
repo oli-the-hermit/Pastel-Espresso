@@ -4,6 +4,8 @@ import { Card, PanelHeader } from './Card';
 import { IconButton } from './IconButton';
 import { Menu, type MenuItem } from './Menu';
 import { useContextMenu } from './ContextMenu';
+import { Select } from './Select';
+import { useUiLabels } from './UiLabels';
 
 export interface ScopeItem {
   key: string;
@@ -32,16 +34,45 @@ export interface ScopeSection {
 export interface ScopeListProps {
   sections: ScopeSection[];
   ariaLabel: string;
+  /**
+   * For narrow windows: one dropdown of every place instead of the card, and a ⋮ beside it
+   * with the current place's actions and each section's action. Item keys must be unique
+   * across sections.
+   */
+  compact?: boolean;
   className?: string;
   'data-tour'?: string;
 }
+
+/** The compact form: a Select of every place, and a ⋮ with what the card's menus and "+" buttons offer. */
+const ScopeSelect: React.FC<Omit<ScopeListProps, 'compact'>> = ({ sections, ariaLabel, className, 'data-tour': dataTour }) => {
+  const labels = useUiLabels();
+  const items = sections.flatMap(s => s.items);
+  const active = items.find(i => i.active);
+  const adds = sections.flatMap(s =>
+    s.action ? [{ key: `add-${s.key}`, label: s.action.label, icon: s.action.icon, onSelect: s.action.onClick }] : []
+  );
+  const actions: MenuItem[] = [...(active?.menu ?? []), ...(active?.menu?.length && adds.length ? [{ key: 'add-divider', divider: true as const }] : []), ...adds];
+  return (
+    <div className={cx('scope-select', className)} data-tour={dataTour}>
+      <Select
+        value={active?.key ?? ''}
+        onChange={key => items.find(i => i.key === key)?.onSelect()}
+        ariaLabel={ariaLabel}
+        options={items.map(i => ({ value: i.key, label: i.label, icon: i.icon, meta: i.count ? i.count : undefined }))}
+      />
+      {actions.length > 0 && <Menu items={actions} ariaLabel={active?.menuLabel ?? labels.moreActions} align="end" />}
+    </div>
+  );
+};
 
 /**
  * A card of places to switch between (a mailbox's folders and labels): sections of rows with
  * an icon, a name and a count, one of them current (styles: components/scope-list.css).
  */
-export const ScopeList: React.FC<ScopeListProps> = ({ sections, ariaLabel, className, 'data-tour': dataTour }) => {
+export const ScopeList: React.FC<ScopeListProps> = ({ sections, ariaLabel, compact = false, className, 'data-tour': dataTour }) => {
   const contextMenu = useContextMenu();
+  if (compact) return <ScopeSelect sections={sections} ariaLabel={ariaLabel} className={className} data-tour={dataTour} />;
   return (
     <Card className={cx('scope-list', className)} data-tour={dataTour}>
       <nav aria-label={ariaLabel}>

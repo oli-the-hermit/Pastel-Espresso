@@ -344,6 +344,134 @@ async function main() {
       return (await page.locator('#tab-timer .list-panel .select-value', { hasText: name }).count()) === 1;
     });
 
+    // ── Notes: empty, an import dropped on the page (preview, then the notes), the list as a
+    // grid and as rows, a selection and its menu, Export, a note open, a narrow window ──
+    const NOTE_CANARY = 'lilac-otter-4217';
+    const t0 = FROZEN_NOW.getTime();
+    const day = 24 * 60 * 60 * 1000;
+    const dropped = [
+      {
+        name: 'Session handoff.md',
+        lastModified: t0 - day,
+        text: '---\ntags:\n  - handoff\n---\n\n# Session handoff\n\n- [x] Storage in both backends\n- [ ] The Notes screen\n\n| Step | State |\n|---|---|\n| 2 | Done |\n| 3 | Next |\n'
+      },
+      { name: 'Research notes.md', lastModified: t0 - 3 * day, text: `Interviews say **capture first**, file later.\n\nCanary: ${NOTE_CANARY}\n` },
+      {
+        name: 'Pastel Studio.focusbundle.json',
+        lastModified: t0 - 2 * day,
+        text: JSON.stringify({
+          format: 'focus-space-bundle', version: 1, createdAt: '2026-09-26T09:00:00Z', title: 'Pastel Studio, Sep 26',
+          collections: [{ id: 'c1', name: 'Pastel Studio' }],
+          documents: [
+            { id: 'd1', collection: 'c1', title: 'Plan for the library', labels: ['plan'], created: '2026-09-20T09:00:00Z', updated: '2026-09-26T09:00:00Z', body: '# Plan\n\n1. Tokens\n2. Primitives\n' },
+            { id: 'd2', collection: 'c1', title: 'Colour decisions', labels: ['plan', 'handoff'], created: '2026-09-21T09:00:00Z', updated: '2026-09-25T09:00:00Z', body: 'Lime keeps its strength.\n' },
+            { id: 'd3', title: 'Loose idea', labels: [], created: '2026-09-22T09:00:00Z', updated: '2026-09-22T09:00:00Z', body: 'A note with no collection.\n' }
+          ]
+        })
+      },
+      { name: 'photo.png', lastModified: t0, text: 'not an image' }
+    ];
+    const dropOnNotes = (files: typeof dropped) => page.evaluate(list => {
+      const data = new DataTransfer();
+      for (const f of list) data.items.add(new File([f.text], f.name, { lastModified: f.lastModified }));
+      document.querySelector('.notes-main')!.dispatchEvent(new DragEvent('drop', { dataTransfer: data, bubbles: true, cancelable: true }));
+    }, files);
+    const notesPlace = (name: string) => page.locator('.scope-item-main', { hasText: new RegExp(`^${name}`) });
+    const tile = (title: string) => page.locator('.doc-tile', { has: page.locator('.doc-tile-title', { hasText: title }) });
+    const viewAs = (view: 'grid' | 'list') =>
+      page.getByRole('radiogroup', { name: strings.notes.viewLabel }).getByRole('radio', { name: view === 'grid' ? strings.notes.viewGrid : strings.notes.viewList }).click();
+
+    await page.locator('.nav-rail [data-tab="notes"]').click();
+    await settle(page);
+    for (const theme of THEMES) {
+      await page.emulateMedia({ colorScheme: theme });
+      await shot(theme, '60-notes-empty');
+    }
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await dropOnNotes(dropped);
+    await page.locator('.modal-backdrop').waitFor({ timeout: 5000 });
+    for (const theme of THEMES) {
+      await page.emulateMedia({ colorScheme: theme });
+      await shot(theme, '61-notes-import-preview');
+    }
+    await check('Dropped files open a preview that names the new collections and leaves the image out', async () => {
+      const values = await page.locator('.modal input').evaluateAll(els => els.map(e => (e as HTMLInputElement).value));
+      const text = (await page.locator('.modal').textContent()) ?? '';
+      return values.join('|') === `${strings.notes.transfer.looseName.replace('{date}', 'Sep 28, 2026')}|Pastel Studio` && text.includes('photo.png');
+    });
+    await page.locator('.modal').getByRole('button', { name: strings.notes.transfer.importButton.other.replace('{count}', '5'), exact: true }).click();
+    await page.locator('.modal-backdrop').waitFor({ state: 'detached', timeout: 5000 });
+    await notesPlace(strings.notes.scopes.all).click();
+    await settle(page);
+
+    for (const theme of THEMES) {
+      await page.emulateMedia({ colorScheme: theme });
+      await page.mouse.move(0, 0);
+      await shot(theme, '62-notes-grid');
+      await shot(theme, '63-notes-list', () => viewAs('list'));
+      await viewAs('grid');
+      await shot(theme, '64-notes-selection', async () => {
+        await tile('Colour decisions').click({ modifiers: ['Control'] });
+        await tile('Loose idea').click({ modifiers: ['Control'] });
+      });
+      await shot(theme, '65-notes-selection-menu', () => tile('Loose idea').click({ button: 'right' }));
+      await page.keyboard.press('Escape');
+      await shot(theme, '66-notes-export', () => page.locator('.selection-bar').getByRole('button', { name: strings.notes.menu.export }).click());
+      await closeOverlays();
+      await page.locator('.selection-bar').getByRole('button', { name: strings.notes.clearSelection }).click();
+      await shot(theme, '67-note-editor', async () => {
+        await tile('Session handoff').click();
+        await page.locator('.doc-editor-content .ProseMirror table').waitFor({ timeout: 10_000 });
+      });
+      await page.getByRole('button', { name: strings.notes.editor.back }).click();
+      await settle(page);
+      await page.setViewportSize({ width: 800, height: 900 });
+      await shot(theme, '68-notes-narrow');
+      await page.setViewportSize(VIEWPORT);
+      await shot(theme, '57-help-shortcuts', async () => {
+        await page.locator('[data-tour="help-btn"]').click();
+        await page.locator('.list-row', { hasText: strings.help.shortcutsDesc }).click();
+      });
+      await closeOverlays();
+    }
+    await page.emulateMedia({ colorScheme: 'dark' });
+
+    await check('The sandbox database holds no note text or title', async () => {
+      const bytes = fs.readdirSync(dataDir, { recursive: true, withFileTypes: true })
+        .filter(e => e.isFile())
+        .map(e => fs.readFileSync(path.join(e.parentPath, e.name)));
+      const found = (needle: string) => bytes.some(b => b.includes(Buffer.from(needle, 'utf8')));
+      // The username is stored as is, so finding it shows the search works.
+      return found(SANDBOX.username) && !found(NOTE_CANARY) && !found('Colour decisions') && !found('Lime keeps its strength');
+    });
+    await check('An exported bundle holds every note with its text, labels and collection', async () => {
+      await page.evaluate(() => {
+        const w = window as unknown as { __saved: string[]; showSaveFilePicker: unknown };
+        w.__saved = [];
+        w.showSaveFilePicker = async () => ({
+          createWritable: async () => {
+            let text = '';
+            return { write: async (t: string) => { text += t; }, close: async () => { w.__saved.push(text); } };
+          }
+        });
+      });
+      await tile('Loose idea').click({ modifiers: ['Control'] });
+      await page.locator('.selection-bar').getByRole('button', { name: strings.notes.selectAll }).click();
+      await page.locator('.selection-bar').getByRole('button', { name: strings.notes.menu.export }).click();
+      await page.locator('.modal .list-row', { hasText: strings.notes.transfer.asBundle }).click();
+      await page.locator('.modal-backdrop').waitFor({ state: 'detached', timeout: 5000 });
+      await page.locator('.selection-bar').getByRole('button', { name: strings.notes.clearSelection }).click();
+      const [saved] = await page.evaluate(() => (window as unknown as { __saved: string[] }).__saved);
+      const bundle = JSON.parse(saved) as { collections: { id: string; name: string }[]; documents: { title: string; labels: string[]; body: string; collection?: string }[] };
+      const doc = (title: string) => bundle.documents.find(d => d.title === title);
+      const colours = doc('Colour decisions');
+      return bundle.documents.length === 5
+        && doc('Research notes')?.body.includes(NOTE_CANARY) === true
+        && doc('Session handoff')?.labels.join() === 'handoff'
+        && colours?.body === 'Lime keeps its strength.\n' && colours.labels.join() === 'plan,handoff'
+        && bundle.collections.find(c => c.id === colours.collection)?.name === 'Pastel Studio';
+    });
+
     // ── A completed task (checked checkbox). Runs last on the main page: it changes stats. ──
     await page.locator('.nav-rail [data-tab="tasks"]').click();
     await settle(page);
@@ -623,6 +751,32 @@ async function main() {
         await settle(live, 300);
         const readyAfter = (await reward.getAttribute('class'))?.split(' ').includes('ready') ?? false;
         return lockedBefore && readyAfter && ringOk;
+      });
+      // After every check that signs in with the sandbox password: this one changes it.
+      await check('A note opens unchanged after a password change and a new sign-in', async () => {
+        const newPassword = `${SANDBOX.password}-changed`;
+        await live.locator('.user-badge-btn').first().click();
+        await live.getByRole('menuitem', { name: strings.userMenu.profile }).click();
+        await live.locator('.modal').getByRole('button', { name: strings.profile.changePasswordBtn }).click();
+        await live.locator('#curPw').fill(SANDBOX.password);
+        await live.locator('#newPw').fill(newPassword);
+        await live.locator('#confirmPw').fill(newPassword);
+        await live.locator('.modal').getByRole('button', { name: strings.common.saveChanges, exact: true }).click();
+        await live.getByText(strings.profile.passwordChangedMsg).first().waitFor({ timeout: 10_000 });
+        await live.locator('.modal-backdrop').getByRole('button', { name: strings.common.close }).first().click();
+        await live.locator('.user-badge-btn').first().click();
+        await live.getByRole('menuitem', { name: strings.userMenu.exit }).click();
+        await live.locator('.auth-form').waitFor({ timeout: 10_000 });
+        const inputs = live.locator('.auth-form input');
+        await inputs.nth(0).fill(SANDBOX.username);
+        await inputs.nth(1).fill(newPassword);
+        await live.getByRole('button', { name: strings.auth.signInBtn }).click();
+        await live.locator('.app-shell').waitFor({ timeout: 15_000 });
+        await live.locator('.nav-rail [data-tab="notes"]').click();
+        await live.locator('.doc-tile', { has: live.locator('.doc-tile-title', { hasText: 'Research notes' }) }).click();
+        const text = live.locator('.doc-editor-content .ProseMirror');
+        await text.getByText(NOTE_CANARY).waitFor({ timeout: 10_000 });
+        return true;
       });
     } finally {
       await liveContext.close();

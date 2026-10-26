@@ -4,6 +4,7 @@ import { useNotes } from '../../context/NotesContext';
 import { strings } from '../../constants/strings';
 import { format } from '../../lib/i18n';
 import { useNoteActions } from './useNoteActions';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { sameScope, type NoteCounts, type NoteScope } from '../../lib/noteList';
 import { IconEdit, IconExport, IconFolder, IconInbox, IconNotes, IconPlus, IconTag, IconTrash } from '../ui/icons';
 import { ScopeList, type ScopeItem } from '../ui/ScopeList';
@@ -21,6 +22,8 @@ export const NotesSidebar: React.FC<NotesSidebarProps> = ({ scope, onScope, coun
   const { notes, collections, labels, deleteCollection, deleteLabel } = useNotes();
   const { openModal, showToast } = useApp();
   const { run } = useNoteActions();
+  // Where the two columns stack (layout/columns.css), the places become one dropdown.
+  const compact = useMediaQuery('(max-width: 900px)');
   const s = strings.notes;
 
   const place = (key: string, label: string, icon: React.ReactNode, target: NoteScope, count?: number): ScopeItem => ({
@@ -48,6 +51,7 @@ export const NotesSidebar: React.FC<NotesSidebarProps> = ({ scope, onScope, coun
   return (
     <ScopeList
       ariaLabel={s.scopesTitle}
+      compact={compact}
       sections={[
         {
           key: 'places',

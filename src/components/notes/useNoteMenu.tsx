@@ -9,12 +9,30 @@ import { useNoteActions } from './useNoteActions';
 /**
  * The actions on one note, for its ⋮ and its right-click menu. In the Trash a note can only
  * be restored or deleted for good; the text of the others is in strings.notes.menu.
+ * With `selection` (the ids picked, when there are several), a note among them gets the
+ * selection bar's actions for all of them instead.
  */
-export function useNoteMenu(onOpen: (id: string) => void, onDialog: (dialog: NotesDialogState) => void) {
+export function useNoteMenu(onOpen: (id: string) => void, onDialog: (dialog: NotesDialogState) => void, selection: readonly string[] = []) {
   const actions = useNoteActions();
   const m = strings.notes.menu;
 
+  const forMany = (ids: string[], inTrash: boolean): MenuItem[] =>
+    inTrash
+      ? [
+          { key: 'restore', label: m.restore, icon: <IconReset size={15} />, onSelect: () => void actions.restore(ids) },
+          { key: 'd1', divider: true },
+          { key: 'delete', label: m.deleteForever, icon: <IconTrash size={15} />, danger: true, onSelect: () => actions.confirmDeleteForever(ids) }
+        ]
+      : [
+          { key: 'move', label: m.moveTo, icon: <IconFolder size={15} />, onSelect: () => onDialog({ kind: 'move', ids }) },
+          { key: 'labels', label: m.labels, icon: <IconTag size={15} />, onSelect: () => onDialog({ kind: 'labels', ids }) },
+          { key: 'export', label: m.export, icon: <IconExport size={15} />, onSelect: () => onDialog({ kind: 'export', ids }) },
+          { key: 'd1', divider: true },
+          { key: 'trash', label: m.moveToTrash, icon: <IconTrash size={15} />, danger: true, onSelect: () => void actions.trash(ids) }
+        ];
+
   return (note: Note): MenuItem[] => {
+    if (selection.length > 1 && selection.includes(note.id)) return forMany([...selection], note.trashedAt !== null);
     if (note.trashedAt !== null) {
       return [
         { key: 'restore', label: m.restore, icon: <IconReset size={15} />, onSelect: () => void actions.restore([note.id]) },

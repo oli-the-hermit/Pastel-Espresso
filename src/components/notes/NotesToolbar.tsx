@@ -39,8 +39,8 @@ export const NotesToolbar: React.FC<NotesToolbarProps> = ({ query, onQuery, sort
         value={view}
         onChange={onView}
         options={[
-          { value: 'grid', label: <IconGridView size={16} aria-label={s.viewGrid} role="img" /> },
-          { value: 'list', label: <IconList size={16} aria-label={s.viewList} role="img" /> }
+          { value: 'grid', label: <IconGridView size={16} />, ariaLabel: s.viewGrid },
+          { value: 'list', label: <IconList size={16} />, ariaLabel: s.viewList }
         ]}
       />
       {canCreate && (

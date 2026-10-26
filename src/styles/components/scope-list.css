@@ -1,5 +1,8 @@
 /* ── Scope list (ui/ScopeList): a card of places to switch between ── */
 .scope-list { padding: var(--space-16) var(--space-12); }
+/* Compact (narrow windows): the dropdown takes the row, its ⋮ sits at the end. */
+.scope-select { display: flex; align-items: center; gap: var(--space-8); }
+.scope-select > .select { flex: 1; min-width: 0; }
 .scope-section + .scope-section { margin-top: var(--space-16); }
 .scope-empty { padding: var(--space-4) var(--space-12) var(--space-8); font-size: var(--text-xs); color: var(--text-3); }
 

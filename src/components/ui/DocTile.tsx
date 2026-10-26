@@ -90,7 +90,7 @@ export const DocTile: React.FC<DocTileProps> = ({
       <span className="doc-tile-title" title={title}>{title}</span>
       <span className="doc-tile-meta">{meta}</span>
     </div>
-    {pinned && <IconPin size={15} className="doc-tile-pin" aria-label={pinnedLabel} role="img" />}
+    {pinned && <IconPin size={15} className="doc-tile-pin" aria-label={pinnedLabel} role="img" aria-hidden={false} />}
     {chips && <div className="doc-tile-chips">{chips}</div>}
     <div className="doc-tile-menu" onClick={e => e.stopPropagation()}>
       <Menu items={menu} ariaLabel={menuLabel} triggerSize="sm" triggerSurface={selected ? 'accent-container' : 2} />
