@@ -4,6 +4,28 @@ Every release of Focus Space, newest first. The app shows the short version in *
 
 Versions follow [Semantic Versioning](https://semver.org): the middle number goes up when features are added, the last one for fixes. **1.5** is planned as the first final (non-alpha) version.
 
+## 1.4.0 (alpha, not released yet)
+
+Notes: a place to keep what your focus produced.
+
+### What's new
+
+- **Notes.** A new tab for writing and keeping documents. *New note* asks nothing: it opens a blank page in your Inbox, and you can file it whenever you like. A note with no title takes its name from its first line.
+- **Collections and labels.** File notes into collections and tag them with labels; pin the ones you come back to. The Trash keeps deleted notes until you empty it, and moves and deletions come with an Undo.
+- **Find your notes.** One loose search over titles, collections and labels; sort by last edited, created or title; show notes as a grid or a list.
+- **Tidy in one sweep.** Select several notes (click, Ctrl, Shift) and move, label, export or trash them together, from the selection bar, the ⋮ menu or a right-click.
+- **The editor.** Headings, bold, italic, strikethrough, code, lists, checklists, quotes, code blocks, tables and links, from a toolbar or the keyboard (the shortcuts are listed in Help). Notes save as you type: there's no Save button.
+- **Import and export.** Open or drop Markdown files, folders and Focus Space bundles; a preview shows what will come in before anything does. Export a note, a selection or a collection as a Markdown file, a folder of Markdown files, or one bundle file.
+- **Narrow windows.** The Notes places fold into one dropdown.
+
+### Under the hood
+
+- **Notes are encrypted one by one**, title and text sealed separately, with a key of their own kept inside your encrypted profile, so changing your password never touches them. Both backends (the web server and the desktop app's Rust port) store them the same way, checked by new steps in the shared API scenarios.
+- **The editor** is TipTap (ProseMirror) wearing the app's own components, loaded only when you open a note, with its styles in the app's stylesheet so the desktop's strict Content Security Policy holds. Markdown is escaped only where it could be misread, so "R&D", snake_case and Windows paths stay as typed.
+- **Accessibility:** the Grid/List switch and the pinned mark gained names for screen readers.
+- **Dependencies:** security updates for Express's `body-parser`, `proxy-addr` and `qs`, and for development tools.
+- **Checks:** 172 unit tests, 22 browser behavior checks and 104 screenshots per theme compared pixel by pixel on every change, including the Notes screens, a check that the database holds no note text, and one that a note opens unchanged after a password change.
+
 ## 1.3.0 (alpha)
 
 A new look and new ways to organize your task lists.
