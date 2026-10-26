@@ -1,7 +1,7 @@
 import React from 'react';
 import { strings } from '../../constants/strings';
 import type { Note } from '../../lib/notes';
-import { IconEdit, IconFolder, IconNotes, IconPin, IconReset, IconTag, IconTrash } from '../ui/icons';
+import { IconEdit, IconExport, IconFolder, IconNotes, IconPin, IconReset, IconTag, IconTrash } from '../ui/icons';
 import type { MenuItem } from '../ui/Menu';
 import type { NotesDialogState } from './NotesDialogs';
 import { useNoteActions } from './useNoteActions';
@@ -28,6 +28,7 @@ export function useNoteMenu(onOpen: (id: string) => void, onDialog: (dialog: Not
       { key: 'move', label: m.moveTo, icon: <IconFolder size={15} />, onSelect: () => onDialog({ kind: 'move', ids: [note.id] }) },
       { key: 'labels', label: m.labels, icon: <IconTag size={15} />, onSelect: () => onDialog({ kind: 'labels', ids: [note.id] }) },
       { key: 'rename', label: strings.common.rename, icon: <IconEdit size={15} />, onSelect: () => onDialog({ kind: 'name', mode: 'rename-note', id: note.id, initial: note.title }) },
+      { key: 'export', label: m.export, icon: <IconExport size={15} />, onSelect: () => onDialog({ kind: 'export', ids: [note.id] }) },
       { key: 'd1', divider: true },
       { key: 'trash', label: m.moveToTrash, icon: <IconTrash size={15} />, danger: true, onSelect: () => void actions.trash([note.id]) }
     ];

@@ -47,6 +47,8 @@ interface NotesActions {
   renameCollection: (id: string, name: string) => void;
   /** Moves the collection's notes to the Inbox, then removes it. */
   deleteCollection: (id: string) => Promise<void>;
+  /** Removes those of the collections that hold no notes (after an import that stopped early); returns the ones kept. */
+  removeEmptyCollections: (ids: string[]) => string[];
   createLabel: (name: string) => string;
   renameLabel: (id: string, name: string) => void;
   /** Takes the label off every note, then removes it. */
@@ -245,6 +247,12 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const inIt = notesRef.current.filter(n => n.collectionId === id).map(n => n.id);
         if (inIt.length > 0) await patchNotes(inIt, () => ({ collectionId: null }));
         appRef.current.removeNoteCollection(id);
+      },
+
+      removeEmptyCollections(ids) {
+        const used = new Set(notesRef.current.map(n => n.collectionId));
+        for (const id of ids) if (!used.has(id)) appRef.current.removeNoteCollection(id);
+        return ids.filter(id => used.has(id));
       },
 
       createLabel: name => appRef.current.createNoteLabel(name),

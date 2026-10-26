@@ -532,6 +532,32 @@ export const IconGridView: React.FC<IconProps> = p => (
   </StrokeIcon>
 );
 
+/** An arrow into a tray: bring files in. */
+export const IconImport: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <polyline points="7 10 12 15 17 10" />
+    <line x1="12" y1="15" x2="12" y2="3" />
+  </StrokeIcon>
+);
+
+/** An arrow out of a tray: save a copy as files. */
+export const IconExport: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <polyline points="17 8 12 3 7 8" />
+    <line x1="12" y1="3" x2="12" y2="15" />
+  </StrokeIcon>
+);
+
+/** A page with a folded corner: one file. */
+export const IconFile: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 3 14 8 19 8" />
+  </StrokeIcon>
+);
+
 /** Editor glyphs. */
 export const IconBold: React.FC<IconProps> = p => (
   <StrokeIcon {...p}>

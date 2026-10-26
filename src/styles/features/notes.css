@@ -4,6 +4,7 @@
 .notes-toolbar .search-field { flex: 1 1 240px; }
 .notes-sort { flex: none; width: 200px; }
 .notes-rows { display: flex; flex-direction: column; gap: var(--space-6); }
+.note-transfer-options { display: flex; flex-direction: column; gap: var(--space-6); }
 
 /* A note open for writing: a head row, then the page at a readable width. */
 .note-editor { display: flex; flex-direction: column; gap: var(--space-16); max-width: 860px; margin-inline: auto; }

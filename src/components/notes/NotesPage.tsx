@@ -7,6 +7,8 @@ import { strings } from '../../constants/strings';
 import { plural, format } from '../../lib/i18n';
 import { countNotes, listNotes, type NoteScope } from '../../lib/noteList';
 import type { Note } from '../../lib/notes';
+import { dragHasFiles, droppedFiles } from '../../lib/fileAccess';
+import { isImportable } from '../../lib/noteFiles';
 import { Button } from '../ui/Button';
 import { EmptyState } from '../ui/EmptyState';
 import { SelectionBar } from '../ui/SelectionBar';
@@ -18,6 +20,7 @@ import { NotesSidebar } from './NotesSidebar';
 import { NotesToolbar } from './NotesToolbar';
 import { useNoteActions } from './useNoteActions';
 import { useNoteMenu } from './useNoteMenu';
+import { useNoteTransfer } from './useNoteTransfer';
 
 const EMPTY_TEXT: Record<NoteScope['kind'], string> = {
   all: strings.notes.empty.all,
@@ -40,6 +43,8 @@ export const NotesPage: React.FC = () => {
   const [query, setQuery] = useState('');
   const [dialog, setDialog] = useState<NotesDialogState | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [dropping, setDropping] = useState(false);
+  const transfer = useNoteTransfer();
   const s = strings.notes;
 
   // The notes load the first time the page is shown, and again on a retry.
@@ -62,6 +67,8 @@ export const NotesPage: React.FC = () => {
   );
   const selection = useNoteSelection(useMemo(() => visible.map(n => n.id), [visible]));
   const inTrash = scope.kind === 'trash';
+  // An export from a collection is named after it.
+  const scopeTitle = scope.kind === 'collection' ? collections.find(c => c.id === scope.id)?.name : undefined;
   const selectedIds = [...selection.ids];
 
   const openNote = (id: string) => setOpenId(id);
@@ -85,6 +92,39 @@ export const NotesPage: React.FC = () => {
   };
   const check = (note: Note, e: React.MouseEvent) => selection.select(note.id, e.shiftKey ? 'range' : 'toggle');
 
+  const changeScope = (next: NoteScope) => {
+    setScope(next);
+    setQuery('');
+    selection.clear();
+  };
+  const showImported = (collectionId: string | null) => {
+    if (collectionId) changeScope({ kind: 'collection', id: collectionId });
+  };
+
+  // Files dropped anywhere on the list go to the import preview. Notes being dragged carry no files.
+  const dropProps: React.HTMLAttributes<HTMLDivElement> = {
+    onDragOver: e => {
+      if (!dragHasFiles(e.dataTransfer)) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      setDropping(true);
+    },
+    onDragLeave: e => {
+      if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDropping(false);
+    },
+    onDrop: e => {
+      if (!dragHasFiles(e.dataTransfer)) return;
+      e.preventDefault();
+      setDropping(false);
+      const dropped = droppedFiles(e.dataTransfer, isImportable);
+      void (async () => {
+        const { files, folder } = await dropped;
+        const plan = files.length > 0 ? await transfer.plan(files, folder) : null;
+        if (plan) setDialog({ kind: 'import-preview', plan });
+      })();
+    }
+  };
+
   if (openId) {
     return (
       <>
@@ -101,13 +141,14 @@ export const NotesPage: React.FC = () => {
     <>
       <TwoColumnLayout
         className="notes-layout"
-        sidebar={<NotesSidebar scope={scope} onScope={next => { setScope(next); setQuery(''); selection.clear(); }} counts={counts} onDialog={setDialog} />}
+        sidebar={<NotesSidebar scope={scope} onScope={changeScope} counts={counts} onDialog={setDialog} />}
         content={
           <div
             className="notes-main"
             onKeyDown={e => {
               if (e.key === 'Escape' && selection.count > 0) selection.clear();
             }}
+            {...(inTrash ? {} : dropProps)}
           >
             <div className="notes-toolbar">
               <NotesToolbar
@@ -118,6 +159,7 @@ export const NotesPage: React.FC = () => {
                 view={layout.view}
                 onView={layout.setView}
                 onNewNote={() => void newNote()}
+                onImport={() => setDialog({ kind: 'import' })}
                 canCreate={!inTrash}
               />
               {inTrash && counts.trash > 0 && (
@@ -142,13 +184,16 @@ export const NotesPage: React.FC = () => {
                   <>
                     <Button size="sm" onClick={() => setDialog({ kind: 'move', ids: selectedIds })}>{s.menu.moveTo}</Button>
                     <Button size="sm" onClick={() => setDialog({ kind: 'labels', ids: selectedIds })}>{s.menu.labels}</Button>
+                    <Button size="sm" onClick={() => setDialog({ kind: 'export', ids: selectedIds, title: scopeTitle })}>{s.menu.export}</Button>
                     <Button size="sm" variant="danger" onClick={() => void actions.trash(selectedIds)}>{s.menu.moveToTrash}</Button>
                   </>
                 )}
               </SelectionBar>
             )}
 
-            {status === 'error' && notes.length === 0 ? (
+            {dropping ? (
+              <EmptyState role="status">{s.transfer.dropHere}</EmptyState>
+            ) : status === 'error' && notes.length === 0 ? (
               <EmptyState>
                 <p>{s.loadError}</p>
                 <Button onClick={() => loadNotes().catch(() => {})}>{s.retry}</Button>
@@ -176,7 +221,7 @@ export const NotesPage: React.FC = () => {
           </div>
         }
       />
-      <NotesDialogs dialog={dialog} onDialog={setDialog} />
+      <NotesDialogs dialog={dialog} onDialog={setDialog} onImported={showImported} />
     </>
   );
 };

@@ -5,7 +5,7 @@ import { strings } from '../../constants/strings';
 import { format } from '../../lib/i18n';
 import { useNoteActions } from './useNoteActions';
 import { sameScope, type NoteCounts, type NoteScope } from '../../lib/noteList';
-import { IconEdit, IconFolder, IconInbox, IconNotes, IconPlus, IconTag, IconTrash } from '../ui/icons';
+import { IconEdit, IconExport, IconFolder, IconInbox, IconNotes, IconPlus, IconTag, IconTrash } from '../ui/icons';
 import { ScopeList, type ScopeItem } from '../ui/ScopeList';
 import type { NotesDialogState } from './NotesDialogs';
 
@@ -18,7 +18,7 @@ export interface NotesSidebarProps {
 
 /** The places notes live: everything, the Inbox, collections, labels and the Trash. */
 export const NotesSidebar: React.FC<NotesSidebarProps> = ({ scope, onScope, counts, onDialog }) => {
-  const { collections, labels, deleteCollection, deleteLabel } = useNotes();
+  const { notes, collections, labels, deleteCollection, deleteLabel } = useNotes();
   const { openModal, showToast } = useApp();
   const { run } = useNoteActions();
   const s = strings.notes;
@@ -32,10 +32,14 @@ export const NotesSidebar: React.FC<NotesSidebarProps> = ({ scope, onScope, coun
     onSelect: () => onScope(target)
   });
 
-  const menuFor = (name: string, rename: () => void, remove: () => void): Pick<ScopeItem, 'menu' | 'menuLabel'> => ({
+  /** A collection's or label's menu; a collection's can also export its notes (none while it's empty). */
+  const menuFor = (name: string, rename: () => void, remove: () => void, exportIds?: string[]): Pick<ScopeItem, 'menu' | 'menuLabel'> => ({
     menuLabel: format(s.sideMenu.moreActions, { name }),
     menu: [
       { key: 'rename', label: s.sideMenu.rename, icon: <IconEdit size={15} />, onSelect: rename },
+      ...(exportIds
+        ? [{ key: 'export', label: s.sideMenu.export, icon: <IconExport size={15} />, disabled: exportIds.length === 0, onSelect: () => onDialog({ kind: 'export', ids: exportIds, title: name }) }]
+        : []),
       { key: 'd1', divider: true },
       { key: 'delete', label: s.sideMenu.delete, icon: <IconTrash size={15} />, danger: true, onSelect: remove }
     ]
@@ -72,7 +76,8 @@ export const NotesSidebar: React.FC<NotesSidebarProps> = ({ scope, onScope, coun
                       await deleteCollection(c.id);
                       showToast(s.toasts.collectionDeleted);
                     })
-                })
+                }),
+              notes.filter(n => n.collectionId === c.id && n.trashedAt === null).map(n => n.id)
             )
           }))
         },

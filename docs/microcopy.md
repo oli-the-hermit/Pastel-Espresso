@@ -271,6 +271,22 @@ Notes are sealed on the device like the rest of a profile's data: both backends 
 | Opening a note | Status | Empty state | Opening note | Opening your note… | — |
 | A note can't be opened | Helpful Alert | Empty state | Note unavailable | We couldn't open this note. It may have been deleted, or the connection dropped. | Back to notes |
 | Typing in a note | Status | Chip | Saved / Saving… | Saved · Saving… · Not saved yet. Your next change tries again. | — |
+| Import, where from | Informational | Modal (Import notes) | Import notes | Bring in Markdown files, a folder of them (an Obsidian vault works), or a Focus Space bundle. Your files stay as they are, and the notes arrive in a new collection. · You can also drop files or a folder onto the notes page. | Files / A folder |
+| Files dragged over the notes page | Status | Empty state | Drop to import | Drop to bring these in as notes, in a new collection. | — |
+| Reading picked or dropped files | Status | Hint | Reading | Reading your files… | — |
+| Import preview | Informational | Modal (Ready to import) | Ready to import | New collection for {count} note(s) (an editable name per new collection) · Includes {titles} (and {count} more). · Brings the labels {names}. Any you don't have yet are made for you. · Left out: {name} ({reason}); … | Import {count} note(s) / Cancel |
+| Why a file is left out | Helpful Alert | Hint (in the preview) | Left out | not a Markdown file or bundle · too long for one note · not a Focus Space bundle · made by a newer Focus Space; update to open it · couldn't be read · {count} note(s) inside couldn't be read | — |
+| Nothing in the files can become a note | Helpful Alert | Inline error | Nothing to import | None of these can come in as notes. Pick Markdown files (.md) or a Focus Space bundle. | — |
+| An import past the note limit | Helpful Alert | Inline error | Over the limit | That's {count} notes, and there's room for {room} more. Emptying the Trash makes room, or import fewer. | Empty Trash |
+| Import done | Success | Toast | Imported | {count} note(s) imported into {place}. · {count} notes imported into {collections} new collections. | — (the new collection opens) |
+| Import stopped partway | Helpful Alert | Toast | Import stopped | The import stopped partway. What came in is in its new collection; importing again adds the rest as copies. | — |
+| Import failed before anything came in | Helpful Alert | Toast | Nothing imported | Nothing was imported this time. Check your connection and try again. | — |
+| Files that can't be read | Helpful Alert | Toast | Can't read files | We couldn't read those files. Try picking them again. | — |
+| Export, how | Informational | Modal (Export) | Export | Save a copy of this note as a file. The note stays here as it is. · Save a copy of {count} notes as files. They stay here as they are. | Markdown file · A folder of Markdown files · Focus Space bundle |
+| A browser that can't save folders | Helpful Alert | Hint | No folder saving | This browser can't save a folder. A bundle keeps everything, or the desktop app can save the folder. | Focus Space bundle |
+| Export in progress | Status | Hint | Saving | Saving your notes… | — |
+| Export done | Success | Toast | Saved as files | Note saved as a file. · {count} notes saved as files. · {count} note(s) saved in the folder "{folder}". | — |
+| Export failed | Helpful Alert | Toast | Export didn't finish | That export didn't finish. Your notes are unchanged; try again. | — |
 
 ---
 

@@ -647,7 +647,8 @@ export const strings = {
       labels: 'Labels…',
       moveToTrash: 'Move to Trash',
       restore: 'Restore',
-      deleteForever: 'Delete for good'
+      deleteForever: 'Delete for good',
+      export: 'Export…'
     },
     editor: {
       back: 'Back to notes',
@@ -692,7 +693,55 @@ export const strings = {
       notePlaceholder: 'Untitled note',
       create: 'Create'
     },
-    sideMenu: { rename: 'Rename', delete: 'Delete', moreActions: 'Actions for "{name}"' },
+    sideMenu: { rename: 'Rename', export: 'Export…', delete: 'Delete', moreActions: 'Actions for "{name}"' },
+    // Bringing notes in from files and saving them out as files (components/notes/NoteTransferDialogs).
+    transfer: {
+      import: 'Import',
+      importTitle: 'Import notes',
+      importIntro: 'Bring in Markdown files, a folder of them (an Obsidian vault works), or a Focus Space bundle. Your files stay as they are, and the notes arrive in a new collection.',
+      fromFiles: 'Files',
+      fromFilesHint: 'Markdown files (.md) or a bundle (.focusbundle.json)',
+      fromFolder: 'A folder',
+      fromFolderHint: 'Every Markdown file inside it, subfolders included',
+      dropHint: 'You can also drop files or a folder onto the notes page.',
+      dropHere: 'Drop to bring these in as notes, in a new collection.',
+      reading: 'Reading your files…',
+      previewTitle: 'Ready to import',
+      collectionLabel: { one: 'New collection for {count} note', other: 'New collection for {count} notes' },
+      includes: 'Includes {titles}.',
+      includesMore: 'Includes {titles} and {count} more.',
+      labels: 'Brings the labels {names}. Any you don’t have yet are made for you.',
+      skipped: 'Left out: {list}.',
+      skippedItem: '{name} ({reason})',
+      skipReasons: {
+        notSupported: 'not a Markdown file or bundle',
+        tooLarge: 'too long for one note',
+        notBundle: 'not a Focus Space bundle',
+        newerBundle: 'made by a newer Focus Space; update to open it',
+        unreadable: 'couldn’t be read',
+        damaged: { one: '{count} note inside couldn’t be read', other: '{count} notes inside couldn’t be read' }
+      },
+      nothing: 'None of these can come in as notes. Pick Markdown files (.md) or a Focus Space bundle.',
+      overLimit: 'That’s {count} notes, and there’s room for {room} more. Emptying the Trash makes room, or import fewer.',
+      importButton: { one: 'Import {count} note', other: 'Import {count} notes' },
+      importing: 'Importing…',
+      looseName: 'Imported {date}',
+      exportTitle: 'Export',
+      exportIntro: {
+        one: 'Save a copy of this note as a file. The note stays here as it is.',
+        other: 'Save a copy of {count} notes as files. They stay here as they are.'
+      },
+      asMarkdown: 'Markdown file',
+      asMarkdownHint: 'Opens in Obsidian and any text editor',
+      asFolder: 'A folder of Markdown files',
+      asFolderHint: 'One .md file per note, in a new folder where you choose',
+      asBundle: 'Focus Space bundle',
+      asBundleHint: 'One file with titles, labels and collections, to bring back in whole',
+      folderUnavailable: 'This browser can’t save a folder. A bundle keeps everything, or the desktop app can save the folder.',
+      exporting: 'Saving your notes…',
+      bundleTitle: 'Focus Space notes, {date}',
+      fileTypes: { markdown: 'Markdown', bundle: 'Focus Space bundle', notes: 'Notes and bundles' }
+    },
     confirm: {
       deleteForeverTitle: 'Delete for good?',
       deleteForeverOne: 'Delete "{title}" for good? This can’t be undone.',
@@ -721,6 +770,14 @@ export const strings = {
       labelRenamed: 'Label renamed.',
       labelDeleted: 'Label deleted.',
       noteRenamed: 'Note renamed.',
+      imported: { one: '{count} note imported into {place}.', other: '{count} notes imported into {place}.' },
+      importedMany: '{count} notes imported into {collections} new collections.',
+      importStopped: 'The import stopped partway. What came in is in its new collection; importing again adds the rest as copies.',
+      importFailed: 'Nothing was imported this time. Check your connection and try again.',
+      readFailed: 'We couldn’t read those files. Try picking them again.',
+      exported: { one: 'Note saved as a file.', other: '{count} notes saved as files.' },
+      exportedFolder: { one: 'Note saved in the folder "{folder}".', other: '{count} notes saved in the folder "{folder}".' },
+      exportFailed: 'That export didn’t finish. Your notes are unchanged; try again.',
       failed: 'That change didn’t save this time. Your notes are as they were; try again.'
     }
   },

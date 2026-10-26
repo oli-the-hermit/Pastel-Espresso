@@ -15,14 +15,23 @@ import { MenuList, type MenuItem } from '../ui/Menu';
 import { Modal } from '../ui/Modal';
 import { Select } from '../ui/Select';
 import { useNoteActions } from './useNoteActions';
+import { ExportChooser, ImportChooser, ImportPreview } from './NoteTransferDialogs';
+import type { ImportPlan } from '../../lib/noteFiles';
 
 export type NameMode = 'new-collection' | 'rename-collection' | 'new-label' | 'rename-label' | 'rename-note';
 
-/** The dialogs of the Notes screen. `name` asks for a name; `move` and `labels` act on the notes they're given. */
+/**
+ * The dialogs of the Notes screen. `name` asks for a name; `move`, `labels` and `export` act
+ * on the notes they're given; `import` asks where from, and `import-preview` shows what an
+ * import will create.
+ */
 export type NotesDialogState =
   | { kind: 'name'; mode: NameMode; id?: string; initial?: string; /** Notes to move into a collection made here. */ moveIds?: string[] }
   | { kind: 'move'; ids: string[] }
-  | { kind: 'labels'; ids: string[] };
+  | { kind: 'labels'; ids: string[] }
+  | { kind: 'export'; ids: string[]; /** The bundle's title or folder's name. */ title?: string }
+  | { kind: 'import' }
+  | { kind: 'import-preview'; plan: ImportPlan };
 
 const NAME_COPY: Record<NameMode, { title: string; label: string; placeholder: string; primary: string }> = {
   'new-collection': { title: strings.notes.nameDialog.newCollection, label: strings.notes.nameDialog.collectionName, placeholder: strings.notes.nameDialog.collectionPlaceholder, primary: strings.notes.nameDialog.create },
@@ -160,10 +169,12 @@ const LabelsEditor: React.FC<{ ids: string[]; onClose: () => void }> = ({ ids, o
 export interface NotesDialogsProps {
   dialog: NotesDialogState | null;
   onDialog: (next: NotesDialogState | null) => void;
+  /** After an import, with the first collection it created. */
+  onImported?: (collectionId: string | null) => void;
 }
 
 /** Hosts the Notes screen's dialogs. Each opening gets its own key, so a form never keeps what was typed last time. */
-export const NotesDialogs: React.FC<NotesDialogsProps> = ({ dialog, onDialog }) => {
+export const NotesDialogs: React.FC<NotesDialogsProps> = ({ dialog, onDialog, onImported }) => {
   const [openCount, setOpenCount] = useState(0);
   const [last, setLast] = useState<NotesDialogState | null>(dialog);
   if (dialog && dialog !== last) {
@@ -189,13 +200,24 @@ export const NotesDialogs: React.FC<NotesDialogsProps> = ({ dialog, onDialog }) 
         onNewCollection={() => onDialog({ kind: 'name', mode: 'new-collection', moveIds: shown.ids })}
       />
     );
-  } else {
+  } else if (shown.kind === 'labels') {
     title = strings.notes.labelPrompt.title;
     content = <LabelsEditor key={openCount} ids={shown.ids} onClose={close} />;
+  } else if (shown.kind === 'export') {
+    title = strings.notes.transfer.exportTitle;
+    content = <ExportChooser key={openCount} ids={shown.ids} title={shown.title} onClose={close} />;
+  } else if (shown.kind === 'import') {
+    title = strings.notes.transfer.importTitle;
+    content = <ImportChooser key={openCount} onPlan={plan => onDialog({ kind: 'import-preview', plan })} />;
+  } else {
+    title = strings.notes.transfer.previewTitle;
+    content = <ImportPreview key={openCount} plan={shown.plan} onClose={close} onImported={id => onImported?.(id)} />;
   }
 
+  // Forms keep what's typed until it's saved or cancelled, so Escape doesn't close them.
+  const isForm = shown.kind === 'name' || shown.kind === 'import-preview';
   return (
-    <Modal isOpen={!!dialog} title={title} onClose={close} dismissible={shown.kind !== 'name'}>
+    <Modal isOpen={!!dialog} title={title} onClose={close} dismissible={!isForm}>
       {content}
     </Modal>
   );
