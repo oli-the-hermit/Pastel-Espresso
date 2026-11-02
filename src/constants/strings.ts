@@ -568,6 +568,10 @@ export const strings = {
     privacyBody: 'Everything is stored on this device and encrypted with your password, and it never leaves it. The desktop app only goes online to see whether an update is out.',
     credits: 'Made by San Milano.',
     licenseNote: 'Free to use and change, including for your work. Selling it, or a version built from it, isn’t allowed.',
+    licensesTitle: 'Third-party licenses',
+    licensesIntro: 'Focus Space is built on open-source work. Here is every package it ships with, and its license.',
+    licensesLoading: 'Opening the licenses…',
+    licensesError: 'The licenses couldn’t be opened. Close Help and try again.',
     githubLabel: 'GitHub',
     reportBody: 'Version: {version}\nPlatform: {platform}\n\nWhat happened?\n\nWhat did you expect?\n',
     /** The Platform line of bug reports (lib/platform). */

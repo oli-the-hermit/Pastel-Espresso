@@ -8,12 +8,32 @@ import { IconBook, IconBug, IconChevronLeft, IconGithub, IconInfo, IconKeyboard,
 import { TextButton } from '../ui/TextButton';
 import { ListRow } from '../ui/ListRow';
 import { format } from '../../lib/i18n';
+import { reflowText } from '../../lib/reflowText';
 import { platformLabel } from '../../lib/platform';
 import { EDITOR_SHORTCUTS, SHORTCUTS, modifierCaps } from '../../constants/shortcuts';
 
-type HelpView = 'home' | 'shortcuts' | 'whatsNew' | 'about';
+type HelpView = 'home' | 'shortcuts' | 'whatsNew' | 'about' | 'licenses';
 
 const version = __APP_VERSION__;
+
+/** public/third-party-notices.txt (scripts/licenses/generate.ts), loaded when it's opened. */
+const ThirdPartyNotices: React.FC = () => {
+  const [text, setText] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    let live = true;
+    fetch('third-party-notices.txt')
+      .then(res => (res.ok ? res.text() : Promise.reject(new Error(String(res.status)))))
+      .then(t => live && setText(reflowText(t.replace(/\r\n/g, '\n'))))
+      .catch(() => live && setFailed(true));
+    return () => {
+      live = false;
+    };
+  }, []);
+  if (failed) return <p className="help-note" role="alert">{strings.help.licensesError}</p>;
+  if (text === null) return <p className="help-note" role="status">{strings.help.licensesLoading}</p>;
+  return <pre className="licenses-text">{text}</pre>;
+};
 
 /** Help hub: tour, shortcuts, what's new, about and GitHub links. */
 export const HelpModal: React.FC = () => {
@@ -34,13 +54,14 @@ export const HelpModal: React.FC = () => {
     home: strings.help.title,
     shortcuts: strings.help.shortcutsTitle,
     whatsNew: strings.help.whatsNewTitle,
-    about: strings.help.aboutTitle
+    about: strings.help.aboutTitle,
+    licenses: strings.help.licensesTitle
   };
 
   return (
     <Modal isOpen={helpOpen} title={titles[view]} onClose={close} dismissible>
       {view !== 'home' && (
-        <TextButton className="help-back" onClick={() => setView('home')}>
+        <TextButton className="help-back" onClick={() => setView(view === 'licenses' ? 'about' : 'home')}>
           <IconChevronLeft size={16} />
           {strings.help.back}
         </TextButton>
@@ -177,7 +198,12 @@ export const HelpModal: React.FC = () => {
               <p>{strings.help.privacyBody}</p>
             </div>
           </div>
-          <p className="help-note">{strings.help.licenseNote}</p>
+          <p className="help-note">
+            {strings.help.licenseNote}
+            <TextButton className="about-github" onClick={() => setView('licenses')}>
+              {strings.help.licensesTitle}
+            </TextButton>
+          </p>
           <p className="help-note">
             {strings.help.credits}
             {GITHUB_URL && (
@@ -187,6 +213,13 @@ export const HelpModal: React.FC = () => {
               </TextButton>
             )}
           </p>
+        </div>
+      )}
+
+      {view === 'licenses' && (
+        <div className="help-sub" key="licenses">
+          <p className="help-note">{strings.help.licensesIntro}</p>
+          <ThirdPartyNotices />
         </div>
       )}
     </Modal>

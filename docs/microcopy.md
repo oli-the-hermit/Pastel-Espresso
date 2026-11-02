@@ -192,6 +192,7 @@ The single reference for every user-facing message in Focus Space: what the app 
 | Tour finished | Success | Tour, final slide | You're all set | Replay this tour anytime from Help, the ? at the top right. | Start focusing |
 | Help hub | Status | Modal | Help | Take the tour · Keyboard shortcuts · What's new · About · Report a problem · Star on GitHub | — |
 | About: privacy | Status | Panel | Your data stays here | Everything is stored on this device and encrypted with your password, and it never leaves it. The desktop app only goes online to see whether an update is out. | — |
+| About → Third-party licenses | Status | Help sub-view | Third-party licenses | Focus Space is built on open-source work. Here is every package it ships with, and its license. Loading: Opening the licenses… Failed: The licenses couldn't be opened. Close Help and try again. | Back |
 | Shortcuts paused | Status | Helper text | Shortcuts paused | Shortcuts pause while you're typing or a dialog is open. | — |
 
 ## Menus & window

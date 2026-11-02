@@ -440,6 +440,12 @@ async function main() {
         await page.locator('[data-tour="help-btn"]').click();
         await page.locator('.list-row', { hasText: strings.help.shortcutsDesc }).click();
       });
+      await shot(theme, '69-help-licenses', async () => {
+        await page.getByRole('button', { name: strings.help.back }).click();
+        await page.locator('.list-row', { hasText: strings.help.aboutDesc }).click();
+        await page.getByRole('button', { name: strings.help.licensesTitle }).click();
+        await page.locator('.licenses-text').waitFor({ timeout: 10_000 });
+      });
       await closeOverlays();
     }
     await page.emulateMedia({ colorScheme: 'dark' });

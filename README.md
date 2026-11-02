@@ -164,3 +164,5 @@ Focus Space is free and will stay free. Use it for personal or professional work
 ## License
 
 Free to use, modify and build on, including for your own commercial work. You may not sell Focus Space or anything built from it, including as paid hosting or support. This is the MIT License with the [Commons Clause](https://commonsclause.com/); see [LICENSE](LICENSE). Because of that restriction, Focus Space is source-available rather than open source.
+
+The open-source packages it ships with, and their licenses, are listed in [public/third-party-notices.txt](public/third-party-notices.txt) (also in the app: Help → About → Third-party licenses). `npm run licenses` regenerates the list after a dependency change, and `npm run check` fails while it is out of date.
