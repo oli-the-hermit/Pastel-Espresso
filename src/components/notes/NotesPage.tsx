@@ -174,22 +174,21 @@ export const NotesPage: React.FC = () => {
                 summary={format(s.selected, { count: selection.count })}
                 clearLabel={s.clearSelection}
                 onClear={selection.clear}
-              >
-                {selection.count < visible.length && <Button size="sm" onClick={selection.selectAll}>{s.selectAll}</Button>}
-                {inTrash ? (
-                  <>
-                    <Button size="sm" onClick={() => void actions.restore(selectedIds)}>{s.menu.restore}</Button>
-                    <Button size="sm" variant="danger" onClick={() => actions.confirmDeleteForever(selectedIds)}>{s.menu.deleteForever}</Button>
-                  </>
-                ) : (
-                  <>
-                    <Button size="sm" onClick={() => setDialog({ kind: 'move', ids: selectedIds })}>{s.menu.moveTo}</Button>
-                    <Button size="sm" onClick={() => setDialog({ kind: 'labels', ids: selectedIds })}>{s.menu.labels}</Button>
-                    <Button size="sm" onClick={() => setDialog({ kind: 'export', ids: selectedIds, title: scopeTitle })}>{s.menu.export}</Button>
-                    <Button size="sm" variant="danger" onClick={() => void actions.trash(selectedIds)}>{s.menu.moveToTrash}</Button>
-                  </>
-                )}
-              </SelectionBar>
+                actions={[
+                  ...(selection.count < visible.length ? [{ key: 'all', label: s.selectAll, onSelect: selection.selectAll }] : []),
+                  ...(inTrash
+                    ? [
+                      { key: 'restore', label: s.menu.restore, onSelect: () => void actions.restore(selectedIds) },
+                      { key: 'delete', label: s.menu.deleteForever, danger: true, onSelect: () => actions.confirmDeleteForever(selectedIds) }
+                    ]
+                    : [
+                      { key: 'move', label: s.menu.moveTo, onSelect: () => setDialog({ kind: 'move', ids: selectedIds }) },
+                      { key: 'labels', label: s.menu.labels, onSelect: () => setDialog({ kind: 'labels', ids: selectedIds }) },
+                      { key: 'export', label: s.menu.export, onSelect: () => setDialog({ kind: 'export', ids: selectedIds, title: scopeTitle }) },
+                      { key: 'trash', label: s.menu.moveToTrash, danger: true, onSelect: () => void actions.trash(selectedIds) }
+                    ])
+                ]}
+              />
             )}
 
             {dropping ? (

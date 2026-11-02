@@ -1,5 +1,6 @@
 /* ── Selection bar (ui/SelectionBar) ─────────────────────── */
 .selection-bar {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-12);
@@ -10,4 +11,13 @@
   animation: pop-in var(--dur-2) var(--ease-decel);
 }
 .selection-bar-summary { font-size: var(--text-md); font-weight: var(--weight-bold); white-space: nowrap; }
-.selection-bar-actions { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-6); }
+.selection-bar-actions { flex: 1; min-width: 0; display: flex; justify-content: flex-end; gap: var(--space-6); }
+/* Sizes every action off-screen, so the ones that don't fit can move into the More menu. */
+.selection-bar-measure {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  display: flex;
+  gap: var(--space-6);
+  white-space: nowrap;
+}

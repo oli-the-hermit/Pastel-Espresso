@@ -427,6 +427,14 @@ async function main() {
       await settle(page);
       await page.setViewportSize({ width: 800, height: 900 });
       await shot(theme, '68-notes-narrow');
+      // Too narrow for every bulk action: the last ones move into the bar's ⋮.
+      await page.setViewportSize({ width: 1000, height: 900 });
+      await shot(theme, '70-notes-selection-overflow', async () => {
+        await tile('Loose idea').click({ modifiers: ['Control'] });
+        await page.locator('.selection-bar-actions [aria-haspopup="menu"]').click();
+      });
+      await page.keyboard.press('Escape');
+      await page.locator('.selection-bar').getByRole('button', { name: strings.notes.clearSelection }).click();
       await page.setViewportSize(VIEWPORT);
       await shot(theme, '57-help-shortcuts', async () => {
         await page.locator('[data-tour="help-btn"]').click();
