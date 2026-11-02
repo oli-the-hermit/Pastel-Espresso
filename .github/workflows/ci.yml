@@ -1,0 +1,39 @@
+# Checks every push and pull request: types, lint, tests, audits, both API backends
+# (the web server and its Rust port) and a production build. Windows, like the release,
+# since the desktop app is built for Windows.
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+permissions:
+  contents: read
+
+# A newer push to the same branch replaces a run still going.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+      - run: npm run test:rust

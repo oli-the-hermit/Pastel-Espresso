@@ -30,7 +30,7 @@ Publish test versions as **normal releases, not pre-releases**: installed apps l
 ## Each release
 
 1. **Bump the version** in `package.json` and `src-tauri/Cargo.toml` (`npm run audit:versions` checks they match; `tauri.conf.json` reads `package.json`). Update the "What's new" list (`help.whatsNew` in `src/constants/strings.ts`).
-2. **Check it:** `npm run check`, `npm run test:rust`, `npm run check:csp`, and the visual diff.
+2. **Check it:** `npm run check`, `npm run test:rust`, `npm run check:csp`, and the visual diff. The CI workflow (`.github/workflows/ci.yml`) runs all but the last two on every push. If a dependency changed, `npm run licenses` updates the third-party notices (`npm run check` fails until it has).
 3. **Commit, then tag and push the tag:**
    ```bash
    git tag v1.2.0
