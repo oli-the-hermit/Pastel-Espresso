@@ -418,6 +418,7 @@ fn route(b: &Backend, method: &str, path: &str, body: &Value, token: Option<&str
         ("GET", ["documents", id]) => get_document(b, &require_auth(b, token)?, id),
         ("PUT", ["documents", id]) => put_document(b, &require_auth(b, token)?, id, body),
         ("POST", ["documents", "batch"]) => batch_documents(b, &require_auth(b, token)?, body),
+        ("POST", ["documents", "meta"]) => update_document_metas(b, &require_auth(b, token)?, body),
         ("POST", ["documents", "purge"]) => purge_documents(b, &require_auth(b, token)?, body),
 
         ("PUT", ["profile"]) => update_profile(b, &require_auth(b, token)?, body),
@@ -706,6 +707,59 @@ fn batch_documents(b: &Backend, ctx: &AuthCtx, body: &Value) -> Reply {
     let created: Vec<Value> =
         docs.iter().map(|d| json!({ "id": d["id"], "createdAt": now, "updatedAt": now })).collect();
     Ok((201, json!({ "documents": created })))
+}
+
+/// Bulk move, label, pin, trash or restore: new metadata for notes that exist, all of them or none.
+fn update_document_metas(b: &Backend, ctx: &AuthCtx, body: &Value) -> Reply {
+    let docs = match body.get("documents").and_then(Value::as_array) {
+        Some(docs) if !docs.is_empty() => docs,
+        _ => return Err(fail(400, errors::SAVE_FAILED)),
+    };
+    if docs.len() > LIMITS.documents.max_batch {
+        return Err(fail(400, errors::BATCH_TOO_LARGE));
+    }
+    let mut seen = std::collections::HashSet::new();
+    for d in docs {
+        let id = d.get("id").and_then(Value::as_str);
+        if !d.is_object() || !valid_doc_id(id) || !seen.insert(id.unwrap_or_default()) {
+            return Err(fail(400, errors::SAVE_FAILED));
+        }
+        check_doc_parts(d.get("meta"), None, false)?;
+    }
+
+    let mut conn = db(b)?;
+    let mut created_at = Vec::with_capacity(docs.len());
+    for d in docs {
+        let id = d.get("id").and_then(Value::as_str).unwrap_or_default();
+        let created: Option<i64> = conn
+            .query_row("SELECT created_at FROM documents WHERE profile_id = ? AND id = ?", params![ctx.id, id], |r| r.get(0))
+            .optional()?;
+        created_at.push(created.ok_or_else(|| fail(404, errors::DOCUMENT_NOT_FOUND))?);
+    }
+
+    let now = now_ms();
+    let tx = conn.transaction()?;
+    {
+        let mut update =
+            tx.prepare("UPDATE documents SET meta_iv = ?, meta_cipher = ?, updated_at = ? WHERE profile_id = ? AND id = ?")?;
+        for d in docs {
+            let meta = d.get("meta");
+            update.execute(params![
+                sealed_field(meta, "iv"),
+                sealed_field(meta, "cipher"),
+                now,
+                ctx.id,
+                d.get("id").and_then(Value::as_str).unwrap_or_default()
+            ])?;
+        }
+    }
+    tx.commit()?;
+    let updated: Vec<Value> = docs
+        .iter()
+        .zip(created_at)
+        .map(|(d, created)| json!({ "id": d["id"], "createdAt": created, "updatedAt": now }))
+        .collect();
+    ok(json!({ "documents": updated }))
 }
 
 /// Deleting for good (Trash is a flag inside the sealed metadata). Unknown ids just don't count.

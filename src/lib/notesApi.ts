@@ -26,6 +26,11 @@ export interface NewStoredNote {
   body: SealedBlob;
 }
 
+export interface NoteMetaUpdate {
+  id: string;
+  meta: SealedBlob;
+}
+
 /** JSON per batch request, kept under the web server's 2 MB body limit (express.json in server/app.js). */
 export const MAX_REQUEST_CHARS = 1_900_000;
 
@@ -51,7 +56,7 @@ export function chunk<T>(items: T[], maxCount: number, maxSize: number, size: (i
   return runs;
 }
 
-const requestChars = (doc: NewStoredNote) => JSON.stringify(doc).length + 1;
+const requestChars = (doc: NewStoredNote | NoteMetaUpdate) => JSON.stringify(doc).length + 1;
 
 export const notesApi = {
   /** Every note's sealed metadata, newest stored first. */
@@ -73,6 +78,18 @@ export const notesApi = {
     const saved: NoteSaved[] = [];
     for (const run of chunk(docs, LIMITS.documents.maxBatch, MAX_REQUEST_CHARS, requestChars)) {
       saved.push(...(await api.post<{ documents: NoteSaved[] }>('/api/documents/batch', { documents: run }, token)).documents);
+    }
+    return saved;
+  },
+
+  /**
+   * New metadata for notes already stored (bulk move, label, pin, Trash), in as few requests as
+   * the limits allow. Each request is all or nothing, and fails if one of its notes is gone.
+   */
+  async updateMetas(token: string | null, docs: NoteMetaUpdate[]): Promise<NoteSaved[]> {
+    const saved: NoteSaved[] = [];
+    for (const run of chunk(docs, LIMITS.documents.maxBatch, MAX_REQUEST_CHARS, requestChars)) {
+      saved.push(...(await api.post<{ documents: NoteSaved[] }>('/api/documents/meta', { documents: run }, token)).documents);
     }
     return saved;
   },

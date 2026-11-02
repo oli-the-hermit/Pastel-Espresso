@@ -108,13 +108,13 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setStatus(next);
     };
 
-    /** Runs `task` after every earlier write of the same note. */
-    const queueWrite = (id: string, task: () => Promise<void>): Promise<void> => {
-      const run = (writesRef.current.get(id) ?? Promise.resolve()).then(task);
+    /** Runs `task` after every earlier write of these notes; later writes of any of them wait for it. */
+    const queueWrite = (ids: string[], task: () => Promise<void>): Promise<void> => {
+      const run = Promise.all(ids.map(id => writesRef.current.get(id))).then(task);
       const tail = run.catch(() => {});
-      writesRef.current.set(id, tail);
+      for (const id of ids) writesRef.current.set(id, tail);
       tail.then(() => {
-        if (writesRef.current.get(id) === tail) writesRef.current.delete(id);
+        for (const id of ids) if (writesRef.current.get(id) === tail) writesRef.current.delete(id);
       });
       return run;
     };
@@ -145,24 +145,22 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     const ensureLoaded = () => (statusRef.current === 'ready' ? Promise.resolve() : loadNotes());
 
-    /** Saves each note's metadata after `change`; on any failure the list reloads from the server. */
+    /** Saves the notes' metadata after `change`, together; on a failure the list reloads from the server. */
     const patchNotes = async (ids: string[], change: (note: Note) => Partial<NoteMeta>) => {
       const targets = new Set(ids);
       changeNotes(list => list.map(n => (targets.has(n.id) ? { ...n, ...change(n) } : n)));
-      const results = await Promise.allSettled(
-        ids.map(id =>
-          queueWrite(id, async () => {
-            const note = notesRef.current.find(n => n.id === id);
-            if (!note) return;
-            const saved = await notesApi.save(token(), id, await sealNoteMeta(metaOf(note), await key()));
-            changeNotes(list => list.map(n => (n.id === id ? { ...n, savedAt: saved.updatedAt } : n)));
-          })
-        )
-      );
-      const failed = results.find((r): r is PromiseRejectedResult => r.status === 'rejected');
-      if (failed) {
+      try {
+        await queueWrite(ids, async () => {
+          const changed = notesRef.current.filter(n => targets.has(n.id));
+          if (changed.length === 0) return;
+          const k = await key();
+          const docs = await Promise.all(changed.map(async n => ({ id: n.id, meta: await sealNoteMeta(metaOf(n), k) })));
+          const saved = new Map((await notesApi.updateMetas(token(), docs)).map(s => [s.id, s.updatedAt]));
+          changeNotes(list => list.map(n => (saved.has(n.id) ? { ...n, savedAt: saved.get(n.id)! } : n)));
+        });
+      } catch (err) {
         await loadNotes().catch(() => {});
-        throw failed.reason;
+        throw err;
       }
     };
 
@@ -190,7 +188,7 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       saveNote(id, body) {
         const version = ++versionRef.current;
         pendingBodyRef.current.set(id, { body, version });
-        return queueWrite(id, async () => {
+        return queueWrite([id], async () => {
           if (pendingBodyRef.current.get(id)?.version !== version) return; // a newer save writes instead
           const note = notesRef.current.find(n => n.id === id);
           if (!note) return;

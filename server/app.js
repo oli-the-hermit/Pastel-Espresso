@@ -398,6 +398,36 @@ function createApp() {
     }
   });
 
+  // Bulk move, label, pin, trash or restore: new metadata for notes that exist, all of them or none.
+  app.post('/api/documents/meta', requireAuth, (req, res, next) => {
+    try {
+      const docs = req.body?.documents;
+      if (!Array.isArray(docs) || docs.length === 0) return fail(res, 400, E.SAVE_FAILED);
+      if (docs.length > LIMITS.documents.maxBatch) return fail(res, 400, E.BATCH_TOO_LARGE);
+      const seen = new Set();
+      for (const d of docs) {
+        if (!d || typeof d !== 'object' || !validateDocId(d.id) || seen.has(d.id)) return fail(res, 400, E.SAVE_FAILED);
+        seen.add(d.id);
+        const partsError = checkDocParts(d.meta, null, false);
+        if (partsError) return fail(res, ...partsError);
+      }
+
+      const db = getDb();
+      const created = db.prepare('SELECT created_at FROM documents WHERE profile_id = ? AND id = ?');
+      const createdAt = docs.map(d => created.get(req.profile.id, d.id)?.created_at);
+      if (createdAt.includes(undefined)) return fail(res, 404, E.DOCUMENT_NOT_FOUND);
+
+      const now = Date.now();
+      const update = db.prepare('UPDATE documents SET meta_iv = ?, meta_cipher = ?, updated_at = ? WHERE profile_id = ? AND id = ?');
+      db.transaction(() => {
+        for (const d of docs) update.run(d.meta.iv, d.meta.cipher, now, req.profile.id, d.id);
+      })();
+      res.json({ documents: docs.map((d, i) => ({ id: d.id, createdAt: createdAt[i], updatedAt: now })) });
+    } catch (err) {
+      next(err);
+    }
+  });
+
   // Deleting for good (Trash is a flag inside the sealed metadata). Unknown ids just don't count.
   app.post('/api/documents/purge', requireAuth, (req, res, next) => {
     try {
