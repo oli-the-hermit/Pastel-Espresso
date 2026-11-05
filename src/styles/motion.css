@@ -6,7 +6,7 @@
 
 /* ── Phase colours cross-fade everywhere at once ─────────── */
 /* The --phase* variables are registered as colours in tokens.css, so the
-   play button, scrubber, art tile and chips all shift together when
+   play button, scrubber and art tile all shift together when
    focus becomes break (or the timer starts). */
 .player-card,
 .mini-player {
@@ -14,12 +14,9 @@
     --phase var(--dur-3) var(--ease-standard),
     --phase-hover var(--dur-3) var(--ease-standard),
     --on-phase var(--dur-3) var(--ease-standard),
-    --on-phase-2 var(--dur-3) var(--ease-standard),
     --phase-text var(--dur-3) var(--ease-standard);
 }
 .player-art { transition: background var(--dur-3) var(--ease-standard), color var(--dur-3) var(--ease-standard), transform var(--dur-3) var(--ease-emphasized); }
-.player-art-foot { transition: color var(--dur-3) var(--ease-standard); }
-.phase-chip { transition: background var(--dur-3) var(--ease-standard), color var(--dur-3) var(--ease-standard); }
 
 /* Starting the timer gives the art tile a small "breath". */
 .player-card.is-running .player-art { animation: art-start var(--dur-4) var(--ease-emphasized); }

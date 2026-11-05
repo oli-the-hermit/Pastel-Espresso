@@ -17,6 +17,8 @@ Notes: a place to keep what your focus produced.
 - **The editor.** Headings, bold, italic, strikethrough, code, lists, checklists, quotes, code blocks, tables and links, from a toolbar or the keyboard (the shortcuts are listed in Help). Notes save as you type: there's no Save button.
 - **Import and export.** Open or drop Markdown files, folders and Focus Space bundles; a preview shows what will come in before anything does. Export a note, a selection or a collection as a Markdown file, a folder of Markdown files, or one bundle file.
 - **Narrow windows.** The Notes places fold into one dropdown.
+- **A calmer timer.** The countdown stands alone on its tile: the FOCUS label and the count of sessions done today are gone, and the phase shows through its colour. The current task is now the large line, with the session under it. The Focus chip became a ⋮ menu with the timer's actions (the same as a right-click). *Up next* heads the block under the controls like a card's overline, and the reward row keeps only its gift icon.
+- **The top bar runs edge to edge.** The logo tile moved into it, over the drawer, and opens the app menu (create anything, start the timer, open help). The drawer starts just under the bar and has its own expand button. On narrow windows the bar's tools no longer get cut off.
 - **Third-party licenses.** Help → About lists every open-source package Focus Space ships with, and its license.
 
 ### Under the hood

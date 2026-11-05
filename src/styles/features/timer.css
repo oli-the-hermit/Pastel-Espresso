@@ -38,31 +38,16 @@
   --phase: var(--accent);
   --phase-hover: var(--accent-hover);
   --on-phase: var(--on-accent);
-  --on-phase-2: var(--on-accent-2);
   --phase-text: var(--accent-text);
 }
 .player-card.is-break {
   --phase: var(--break);
   --phase-hover: var(--break-hover);
   --on-phase: var(--on-break);
-  --on-phase-2: var(--on-break-2);
   --phase-text: var(--break-text);
 }
 
 .player-head { display: flex; align-items: center; justify-content: space-between; }
-
-.phase-chip {
-  height: 26px;
-  display: inline-flex;
-  align-items: center;
-  padding: 0 var(--space-12);
-  border-radius: var(--radius-pill);
-  background: var(--accent-container);
-  color: var(--on-accent-container);
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-bold);
-}
-.phase-chip.is-break { background: var(--break-container); color: var(--on-break-container); }
 
 /* Artwork tile */
 .player-art {
@@ -71,7 +56,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: var(--space-22);
   border-radius: var(--radius-2xl);
   background: var(--surface-2);
@@ -80,12 +65,6 @@
 }
 .player-card.is-running .player-art { background: var(--phase); color: var(--on-phase); }
 
-.player-art-phase {
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-heavy);
-  letter-spacing: var(--tracking-caps-wide);
-  text-transform: uppercase;
-}
 .player-art-time {
   font-size: clamp(3.4rem, 5.6vw, 5.4rem);
   font-weight: var(--weight-semibold);
@@ -93,8 +72,6 @@
   letter-spacing: var(--tracking-tightest);
   font-variant-numeric: tabular-nums;
 }
-.player-art-foot { font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--text-2); }
-.player-card.is-running .player-art-foot { color: var(--on-phase-2); }
 
 /* Track info */
 .player-track { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; text-align: center; }
@@ -156,7 +133,8 @@
 .player-controls { display: flex; align-items: center; justify-content: space-between; padding: 0 var(--space-2); }
 
 
-/* Up next / reward */
+/* Up next: an overline heading like the card's own head, then the next phase and the reward
+   as label/value rows (the reward's label is only its icon). */
 .player-foot {
   display: flex;
   flex-direction: column;

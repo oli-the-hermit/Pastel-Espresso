@@ -49,6 +49,7 @@
 @import url('./styles/components/window-button.css') layer(app);
 @import url('./styles/components/status-chip.css') layer(app);
 @import url('./styles/components/nav-rail.css') layer(app);
+@import url('./styles/components/app-mark.css') layer(app);
 @import url('./styles/components/avatar-picker.css') layer(app);
 @import url('./styles/components/list-row.css') layer(app);
 @import url('./styles/components/queue.css') layer(app);

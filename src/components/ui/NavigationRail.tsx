@@ -19,12 +19,7 @@ export interface NavigationRailProps {
   onSelect: (key: string) => void;
   /** `rail`: icons over small labels. `expanded`: labels beside the icons. */
   variant?: 'rail' | 'expanded';
-  /** The brand mark at the top; its name shows as an overline when expanded. */
-  brand: { mark: React.ReactNode; name: string; attrs?: Record<string, unknown> };
-  /**
-   * Makes the brand mark the expand/collapse button: it shows the mark in the rail and a
-   * side-panel icon when expanded. Without it the mark is only a logo.
-   */
+  /** A side-panel button at the top that expands and collapses the drawer. */
   toggle?: { expandLabel: string; collapseLabel: string; onToggle: () => void };
   /** Pinned to the bottom, e.g. the account. */
   footer?: React.ReactNode;
@@ -34,8 +29,9 @@ export interface NavigationRailProps {
 }
 
 /**
- * Material 3 navigation rail / drawer (styles: components/nav-rail.css). The items sit
- * centered between the brand and the footer; each carries data-tab={key}. The active pill is its own element, named for a view
+ * Material 3 navigation rail / drawer (styles: components/nav-rail.css). The app's mark lives
+ * in the top bar (ui/AppMark), so the head holds only the toggle. The items sit
+ * centered between the head and the footer; each carries data-tab={key}. The active pill is its own element, named for a view
  * transition, so page changes can slide it between items.
  */
 export const NavigationRail: React.FC<NavigationRailProps> = ({
@@ -44,7 +40,6 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({
   activeKey,
   onSelect,
   variant = 'rail',
-  brand,
   toggle,
   footer,
   'data-tour': dataTour,
@@ -53,26 +48,20 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({
   const expanded = variant === 'expanded';
   return (
     <nav className="nav-rail" data-variant={variant} aria-label={ariaLabel} data-tour={dataTour}>
-      {/* Expanded: the name as an overline at the start, the mark at the end (like a card's head). */}
-      <div className="nav-rail-head">
-        {expanded && <span className="overline nav-rail-brand-name" aria-hidden="true" {...brand.attrs}>{brand.name}</span>}
-        {toggle ? (
+      {toggle && (
+        <div className="nav-rail-head">
           <button
             type="button"
-            className="nav-rail-brand is-toggle"
+            className="nav-rail-toggle"
             aria-label={expanded ? toggle.collapseLabel : toggle.expandLabel}
             title={expanded ? toggle.collapseLabel : toggle.expandLabel}
             aria-expanded={expanded}
             onClick={toggle.onToggle}
           >
-            {expanded ? <IconSidebar size={16} /> : brand.mark}
+            <IconSidebar size={16} />
           </button>
-        ) : (
-          <div className="nav-rail-brand" title={brand.name} {...brand.attrs}>
-            {brand.mark}
-          </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="nav-rail-items">
         {items.map(item => {

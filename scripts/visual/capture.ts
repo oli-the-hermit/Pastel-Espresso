@@ -614,13 +614,13 @@ async function main() {
         await focusMain();
         await live.keyboard.press('s');
         await settle(live, 300);
-        return (await live.locator('.phase-chip').getAttribute('class'))?.split(' ').includes('is-break') ?? false;
+        return (await live.locator('.player-card').getAttribute('class'))?.split(' ').includes('is-break') ?? false;
       });
       await check('R resets to an idle focus phase', async () => {
         await focusMain();
         await live.keyboard.press('r');
         await settle(live, 300);
-        const phase = (await live.locator('.phase-chip').getAttribute('class'))?.split(' ') ?? [];
+        const phase = (await live.locator('.player-card').getAttribute('class'))?.split(' ') ?? [];
         return !phase.includes('is-break')
           && (await live.locator('#headerStatus .status-chip-label').textContent())?.trim() === strings.status.ready
           && (await time.textContent())?.trim() === before;
@@ -753,7 +753,7 @@ async function main() {
         await focusMain();
         await live.keyboard.press(' ');
         await live.clock.fastForward('25:01');
-        await live.locator('.phase-chip.is-break').waitFor({ timeout: 4000 });
+        await live.locator('.player-card.is-break').waitFor({ timeout: 4000 });
         // The phase-end island shows with its countdown ring (ui/ProgressRing), partly full.
         const fill = live.locator('.alert-card .alert-ring .progress-ring-fill');
         await fill.waitFor({ timeout: 3000 });

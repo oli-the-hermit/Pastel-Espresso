@@ -1,14 +1,18 @@
-/* App shell grid: navigation drawer | column */
+/* App shell grid: the top bar edge to edge, then navigation drawer | column */
 
 .app-shell {
   display: grid;
-  /* The drawer floats with the page margin on its top, left and bottom (the column's own
-     margin is on its right). */
+  /* The drawer floats with the page margin on its left and bottom (the column's own margin
+     is on its right); the top bar shares these columns (subgrid), so its mark sits over the
+     drawer and its title over the page. */
   grid-template-columns: calc(var(--drawer-width) + var(--grid-margin)) minmax(0, 1fr);
+  grid-template-rows: var(--topbar-height) minmax(0, 1fr);
   height: 100vh;
   background: var(--bg);
 }
-.app-shell > .nav-rail { margin: var(--grid-margin) 0 var(--grid-margin) var(--grid-margin); }
+.app-shell > .top-bar { grid-column: 1 / -1; }
+/* No top margin: the drawer starts where the page's content does, just under the bar. */
+.app-shell > .nav-rail { margin: var(--space-4) 0 var(--grid-margin) var(--grid-margin); }
 /* The expanded drawer only applies from lg up; below it the rail stays. */
 @media (min-width: 1024px) {
   .app-shell:has(.nav-rail[data-variant='expanded']) { --drawer-width: var(--drawer-expanded); }

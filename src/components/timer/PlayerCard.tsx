@@ -17,19 +17,20 @@ import {
 } from '../ui/icons';
 import { IconSwap } from '../ui/IconSwap';
 import { useContextMenu } from '../ui/ContextMenu';
-import { MenuItem } from '../ui/Menu';
+import { Menu, MenuItem, tidyMenuItems } from '../ui/Menu';
 import { Card } from '../ui/Card';
 import { PlayerControl } from '../ui/PlayerControl';
 import { Scrubber } from './Scrubber';
 import { cx } from '../../lib/cx';
-import { format, plural } from '../../lib/i18n';
+import { format } from '../../lib/i18n';
 import { shortcutHint } from '../../constants/shortcuts';
 import { phaseMinutes } from '../../lib/sessionTime';
 
 /**
  * The timer, laid out like a music player: artwork tile with the countdown,
- * session as the "track", the current task as the "artist", a scrubber and
- * transport controls.
+ * the current task as the "track", the session as the "artist", a scrubber and
+ * transport controls. The phase shows through colour (and the next phase in "Up next");
+ * the head's ⋮ holds the same actions as a right-click.
  */
 export const PlayerCard: React.FC = () => {
   const { state, toggleTimer, resetTimer, skipPhase, toggleSound, openModal, alertRinging } = useApp();
@@ -90,26 +91,25 @@ export const PlayerCard: React.FC = () => {
     >
       <div className="player-head">
         <span className="overline">{strings.timer.nowPlaying}</span>
-        <span className={`phase-chip ${isBreak ? 'is-break' : ''}`}>
-          {isBreak ? strings.timer.breakPhase : strings.timer.focusPhase}
-        </span>
+        <Menu ariaLabel={strings.timer.moreTimerActions} items={tidyMenuItems(menuItems())} />
       </div>
 
       <div className="player-art" aria-live="off">
-        <span className="player-art-phase">
-          {isBreak ? strings.timer.breakPhase : strings.timer.focusPhase}
-        </span>
-        <span className="player-art-time" role="timer" aria-label={format(strings.timer.remainingAria, { time: formatClock(remaining) })}>
+        <span
+          className="player-art-time"
+          role="timer"
+          aria-label={format(strings.timer.remainingAria, {
+            phase: isBreak ? strings.timer.breakPhase : strings.timer.focusPhase,
+            time: formatClock(remaining)
+          })}
+        >
           {formatClock(remaining)}
-        </span>
-        <span className="player-art-foot">
-          {plural(state.timer.sessionsCompletedToday, strings.timer.completedToday)}
         </span>
       </div>
 
       <div className="player-track">
-        <h2 className="player-title" title={session?.name}>{session ? session.name : strings.timer.noSession}</h2>
-        <p className="player-subtitle" title={currentTask || ''}>{currentTask || strings.timer.noOpenTasks}</p>
+        <h2 className="player-title" title={currentTask || ''}>{currentTask || strings.timer.noOpenTasks}</h2>
+        <p className="player-subtitle" title={session?.name}>{session ? session.name : strings.timer.noSession}</p>
       </div>
 
       <div className="player-scrubber">
@@ -157,17 +157,15 @@ export const PlayerCard: React.FC = () => {
       </div>
 
       <div className="player-foot">
+        <span className="overline">{strings.timer.upNext}</span>
         <div className="player-foot-row">
-          <span className="player-foot-label">{strings.timer.upNext}</span>
-          <span className="player-foot-value">
-            {nextPhaseLabel} · {formatClock(nextPhaseMins * 60)}
-          </span>
+          <span className="player-foot-label">{nextPhaseLabel}</span>
+          <span className="player-foot-value">{formatClock(nextPhaseMins * 60)}</span>
         </div>
         {reward && (
           <div className="player-foot-row" id="sessionRewardHint">
-            <span className="player-foot-label">
+            <span className="player-foot-label" role="img" aria-label={strings.timer.rewardOnCompletion} title={strings.timer.rewardOnCompletion}>
               <IconGift size={14} />
-              {strings.timer.rewardOnCompletion.replace(':', '')}
             </span>
             <span className="player-foot-value" title={reward.name}>
               {reward.emoji} {reward.name}

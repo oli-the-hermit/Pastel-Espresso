@@ -145,7 +145,7 @@ The single reference for every user-facing message in Focus Space: what the app 
 | Settings: manual check didn't go through | Error Recovery | Inline status | Couldn't check | We couldn't check for updates right now. Check your connection and try again. | Check for updates |
 | Mini player waiting for the main window | Status | Mini window | Connecting | Connecting to Focus Space… | — |
 | Mini player: session tasks (large layout) | Status | Tile with checkboxes | Session tasks | Every task of the session, ticked off from the mini player too. Empty: No tasks for this session yet. | Tick a task |
-| Focus sessions finished today (under the timer) | Status | Label | Sessions today | {count} focus session done today · {count} focus sessions done today | — |
+| Player card (Timer page) | Status | Card: overline and ⋮ in the head; the countdown alone on the art tile (the phase shows through its colour, and screen readers hear it); the current task as the large line, the session under it; an Up next block at the bottom | Now playing | Overline: Now playing. ⋮ (Timer actions): the same items as a right-click on the player. Countdown (screen readers): {phase}: {time} remaining. Up next (overline), then the next phase and its length; the reward row shows only the gift icon (tooltip: Reward on completion) and the reward | Open the ⋮ |
 | Auto-save didn't go through *(needs wiring)* | Helpful Alert | Toast | Changes not saved yet | We couldn't save your latest changes. We'll try again with your next edit. | Keep the app open |
 | All changes saved *(needs wiring)* | Status | Status bar | Saved | All changes saved | — |
 
@@ -199,11 +199,11 @@ The single reference for every user-facing message in Focus Space: what the app 
 
 | Feature Context / Trigger | Category | UI Component | Semantic Title | Message Body | Suggested Action / CTA |
 |---|---|---|---|---|---|
-| Right-click on empty space | Status | Context menu | Actions | New session · New task list · New task · Schedule session · New goal · New reward · Start timer · Open mini player · Help and tutorial | — |
+| Right-click on empty space, or the app mark (the logo tile at the start of the top bar) | Status | Context menu; the mark opens the same items as a menu (tooltip: App menu) | Actions | New session · New task list · New task · New note · Schedule session · New goal · New reward · Start timer · Open mini player · Help and tutorial | — |
 | Right-click on the player | Status | Context menu | Actions | Start timer / Pause timer · Reset timer · Skip to break / Skip to focus · Turn sound on / off · Open mini player · Edit session | — |
 | Right-click on an item | Status | Context menu | Actions | The item's own actions, e.g. Start session · Edit · Duplicate · Delete, or Mark as complete / Mark as not done | — |
 | Desktop title bar | Status | Window buttons | Window | Minimize · Maximize / Restore · Close | — |
-| Navigation drawer toggle (windows 1024px and wider) | Status | The logo tile at the top of the drawer is the button (tooltip): the clock in the rail, a side-panel icon when expanded, with the overline FOCUS SPACE at the start. On narrower windows the tile is only the logo | Menu width | Expand menu (labels beside the icons) · Collapse menu (back to the rail). Remembered on this device | Click to switch |
+| Navigation drawer toggle (windows 1024px and wider) | Status | A side-panel button at the top of the drawer (tooltip), under the app mark: quiet in the rail, lime when expanded. Narrower windows keep the rail and show no toggle | Menu width | Expand menu (labels beside the icons) · Collapse menu (back to the rail). Remembered on this device | Click to switch |
 | Profile form edited | Status | Footer button | Discard changes | Discard changes (shown only after an edit) | Save changes |
 | Form edited (any other form modal) | Status | Footer button | Cancel | Cancel (shown only after an edit; the X closes an untouched form) | Primary action |
 

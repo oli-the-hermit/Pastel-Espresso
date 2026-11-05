@@ -1,9 +1,7 @@
 /* ── Top bar as desktop title bar ───────────────────────── */
 .top-bar-spacer { flex: 1; align-self: stretch; }
 .top-bar-tools { margin-left: 0; }
-.top-bar.has-window-controls { padding-right: var(--space-10); }
-.nav-rail-brand svg,
+.top-bar-main.has-window-controls { padding-right: var(--space-10); }
 .top-bar-title { user-select: none; -webkit-user-select: none; }
-.nav-rail-brand svg { pointer-events: none; }
 
 .window-controls { display: flex; align-items: center; gap: var(--space-2); margin-left: var(--space-10); }

@@ -12,23 +12,22 @@
   overflow-y: auto;
 }
 
-.nav-rail-brand {
+/* The expand/collapse button: quiet in the rail, a lime icon when expanded (like the player's
+   volume button). */
+.nav-rail-toggle {
   width: var(--icon-button-size-sm);
   height: var(--icon-button-size-sm);
   flex: none;
   display: grid;
   place-items: center;
-  border-radius: var(--radius-md);
-  background: var(--accent);
-  color: var(--on-accent);
-  transition: background var(--transition);
+  border-radius: var(--radius-round);
+  color: var(--text-2);
+  transition: background var(--transition), color var(--transition);
 }
-.nav-rail-brand.is-toggle:hover { background: var(--accent-hover); }
-/* Expanded, the toggle drops the tile: a lime icon like the player's volume button. */
-.nav-rail[data-variant='expanded'] .nav-rail-brand.is-toggle { border-radius: var(--radius-round); background: transparent; color: var(--accent-text); }
-.nav-rail[data-variant='expanded'] .nav-rail-brand.is-toggle:hover { background: var(--drawer-hover); }
+.nav-rail-toggle:hover { background: var(--drawer-hover); color: var(--text-1); }
+.nav-rail[data-variant='expanded'] .nav-rail-toggle { color: var(--accent-text); }
 
-/* Centered between the brand and the footer; the rail's gap keeps them apart on short windows. */
+/* Centered between the head and the footer; the rail's gap keeps them apart on short windows. */
 .nav-rail-items { display: flex; flex-direction: column; gap: var(--space-10); margin-block: auto; }
 
 .nav-rail-item {
@@ -87,14 +86,13 @@
 }
 
 .nav-rail-footer { display: flex; flex-direction: column; align-items: center; gap: var(--space-8); }
-/* Expanded, the head lines up like a card's (e.g. Now playing): the overline and the mark sit
-   at the edges, the card padding (24px) from the drawer's sides. */
-.nav-rail-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-12); }
-.nav-rail[data-variant='expanded'] .nav-rail-head { padding-inline: calc(var(--space-24) - var(--space-16)); }
+/* Expanded, the toggle stays over the items' icons (and under the app mark in the top bar):
+   12px + the drawer's 16px puts its centre 44px in, as in the rail. */
+.nav-rail-head { display: flex; align-items: center; }
+.nav-rail[data-variant='expanded'] .nav-rail-head { padding-inline: var(--space-12); }
 
 /* ── Expanded drawer: labels beside the icons (lg and up) ── */
 .nav-rail[data-variant='expanded'] { align-items: stretch; padding-inline: var(--space-16); }
-.nav-rail-brand-name { white-space: nowrap; user-select: none; }
 .nav-rail[data-variant='expanded'] .nav-rail-item {
   position: relative;
   width: auto;

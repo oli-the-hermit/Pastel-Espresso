@@ -1,0 +1,15 @@
+/* ── App mark: the logo tile that opens the app's menu ──── */
+.app-mark {
+  width: var(--icon-button-size-sm);
+  height: var(--icon-button-size-sm);
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  color: var(--on-accent);
+  transition: background var(--transition);
+}
+.app-mark:hover,
+.app-mark.is-active { background: var(--accent-hover); }
+.app-mark svg { pointer-events: none; }

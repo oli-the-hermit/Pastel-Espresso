@@ -109,11 +109,10 @@ const AppShell: React.FC = () => {
   return (
     <ContextMenuProvider getGlobalItems={getGlobalItems}>
       <div className="app-shell">
+        <TopBar onOpenNotifications={() => setIsNotifModalOpen(true)} />
         <NavRail />
 
         <div className="app-column">
-          <TopBar onOpenNotifications={() => setIsNotifModalOpen(true)} />
-
           <main className="app-main">
             {/* ── TAB: TIMER & SESSIONS ─────────────────────────── */}
             <section className={`tab-page ${activeTab === 'timer' ? 'active' : ''}`} id="tab-timer">

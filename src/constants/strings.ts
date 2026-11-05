@@ -73,6 +73,7 @@ export const strings = {
     paused: 'Paused'
   },
   header: {
+    appMenu: 'App menu',
     notifTooltip: 'Notification settings',
     soundToggleTooltip: 'Toggle sound',
     helpTooltip: 'Help'
@@ -103,15 +104,14 @@ export const strings = {
     breakPhase: 'Break',
     noSession: 'Pick a session to start',
     sessionProgress: 'Session progress',
-    rewardOnCompletion: 'Reward on completion:',
+    rewardOnCompletion: 'Reward on completion',
     sessionsTitle: 'Sessions',
     skipTooltip: 'Skip phase',
     playTooltip: 'Start',
     pauseTooltip: 'Pause',
     nowPlaying: 'Now playing',
     upNext: 'Up next',
-    /** Focus sessions finished today (not tasks). */
-    completedToday: { one: '{count} focus session done today', other: '{count} focus sessions done today' },
+    moreTimerActions: 'Timer actions',
     noOpenTasks: 'No open tasks',
     soundOnTooltip: 'Sound on',
     soundOffTooltip: 'Sound off',
@@ -141,7 +141,7 @@ export const strings = {
     listMeta: '{total} · {left}',
     suggestedNames: 'Suggested names',
     listNameStarters: { today: 'Today', thisWeek: 'This week', errands: 'Errands' },
-    remainingAria: '{time} remaining'
+    remainingAria: '{phase}: {time} remaining'
   },
   mini: {
     pin: 'Pin position',
