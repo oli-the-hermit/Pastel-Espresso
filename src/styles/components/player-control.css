@@ -14,8 +14,15 @@
 .player-ctrl:active:not(:disabled) { transform: scale(0.94); }
 .player-ctrl:disabled { color: var(--text-3); cursor: not-allowed; }
 
-/* Main player (md) */
-.player-ctrl:not(.player-ctrl--sm) { flex: none; }
+/* Main player (md): full size when the row has room; in a narrow card all of them shrink
+   in proportion (round, through aspect-ratio) instead of overflowing it. */
+.player-ctrl:not(.player-ctrl--sm) {
+  flex: 0 1 var(--pc-size);
+  width: auto;
+  height: auto;
+  min-width: 0;
+  aspect-ratio: 1;
+}
 .player-ctrl--ghost { --pc-size: 44px; background: transparent; color: var(--text-2); }
 .player-ctrl--ghost:hover:not(:disabled) { background: var(--surface-2); color: var(--text-1); }
 .player-ctrl--ghost.is-on { color: var(--phase-text); }

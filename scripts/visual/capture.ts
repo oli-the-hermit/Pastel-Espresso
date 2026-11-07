@@ -287,6 +287,10 @@ async function main() {
       await page.setViewportSize(VIEWPORT);
       await page.locator('.nav-rail [data-tab="timer"]').click();
       await settle(page);
+      // Narrowest window: the player's controls shrink to fit the card.
+      await page.setViewportSize({ width: 380, height: 900 });
+      await shot(theme, '71-timer-narrow');
+      await page.setViewportSize(VIEWPORT);
     }
 
     // ── Behavior checks: keyboard shortcuts pause while a menu is open ──
@@ -294,6 +298,18 @@ async function main() {
       checks++;
       try { if (!(await fn())) failures.push(`check: ${name}`); } catch (err) { failures.push(`check: ${name}: ${(err as Error).message.split('\n')[0]}`); }
     };
+    await check("At 380px the player's controls fit inside the card", async () => {
+      await page.setViewportSize({ width: 380, height: 900 });
+      await settle(page);
+      const fits = await page.locator('.player-controls').evaluate(row => {
+        const card = row.closest('.player-card')!.getBoundingClientRect();
+        return row.scrollWidth <= row.clientWidth
+          && [...row.children].every(b => b.getBoundingClientRect().right <= card.right);
+      });
+      await page.setViewportSize(VIEWPORT);
+      await settle(page);
+      return fits;
+    });
     await check("A toast lights the bell's dot, and opening the bell clears it", async () => {
       // The Settings saves above just showed success toasts.
       const dot = page.locator('.bell-dot');
