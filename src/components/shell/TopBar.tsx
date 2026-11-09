@@ -47,15 +47,8 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenNotifications }) => {
   const isRunning = state.timer.status === 'running';
   const isPaused = state.timer.status === 'paused';
 
-  let statusClass: StatusTone = 'idle';
-  let statusText: string = strings.status.ready;
-  if (isRunning) {
-    statusClass = isBreak ? 'break' : 'running';
-    statusText = isBreak ? strings.status.onBreak : strings.status.focusing;
-  } else if (isPaused) {
-    statusClass = 'paused';
-    statusText = strings.status.paused;
-  }
+  const statusClass: StatusTone = isPaused ? 'paused' : isBreak ? 'break' : 'running';
+  const statusText = isPaused ? strings.status.paused : isBreak ? strings.status.onBreak : strings.status.focusing;
 
   const showCountdown = activeTab !== 'timer' && (isRunning || isPaused);
 
@@ -68,24 +61,23 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenNotifications }) => {
       <div className={cx('top-bar-main', desktop && 'has-window-controls')} {...drag}>
         <h1 className="top-bar-title" {...drag}>{PAGE_TITLES[activeTab]}</h1>
 
-        <StatusChip
-          id="headerStatus"
-          data-tour="status-chip"
-          tone={statusClass}
-          label={statusText}
-          value={showCountdown ? formatClock(state.timer.remaining) : undefined}
-          onOpen={() => setActiveTab('timer')}
-          openTitle={strings.tabs.timer}
-          action={
-            showCountdown
-              ? {
-                  label: isRunning ? strings.timer.pauseTooltip : strings.timer.playTooltip,
-                  icon: <IconSwap on={isRunning} onIcon={<IconPause size={14} />} offIcon={<IconPlay size={14} />} />,
-                  onClick: toggleTimer
-                }
-              : undefined
-          }
-        />
+        {/* Only while the timer runs or waits paused on another page: idle says nothing, and
+            the Timer page shows the player itself. A link back to the timer, with play/pause. */}
+        {showCountdown && (
+          <StatusChip
+            id="headerStatus"
+            tone={statusClass}
+            label={statusText}
+            value={formatClock(state.timer.remaining)}
+            onOpen={() => setActiveTab('timer')}
+            openTitle={strings.tabs.timer}
+            action={{
+              label: isRunning ? strings.timer.pauseTooltip : strings.timer.playTooltip,
+              icon: <IconSwap on={isRunning} onIcon={<IconPause size={14} />} offIcon={<IconPlay size={14} />} />,
+              onClick: toggleTimer
+            }}
+          />
+        )}
 
         <div className="top-bar-spacer" {...drag} />
 

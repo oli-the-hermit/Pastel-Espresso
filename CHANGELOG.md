@@ -20,17 +20,23 @@ Notes: a place to keep what your focus produced.
 - **A calmer timer.** The countdown stands alone on its tile: the FOCUS label and the count of sessions done today are gone, and the phase shows through its colour. The current task is now the large line, with the session under it. The Focus chip became a ⋮ menu with the timer's actions (the same as a right-click). *Up next* heads the block under the controls like a card's overline, and the reward row keeps only its gift icon.
 - **The top bar runs edge to edge.** The logo tile moved into it, over the drawer, and opens the app menu (create anything, start the timer, open help). The drawer starts just under the bar and has its own expand button. On narrow windows the bar's tools no longer get cut off, and the timer's controls shrink to fit the card instead of running past it.
 - **Third-party licenses.** Help → About lists every open-source package Focus Space ships with, and its license.
+- **A clearer hierarchy.** The page title is now the largest text in view, card titles sit one step below it, and labels, text and hints each have one size and weight, so what matters reads first. Fields, selects and steppers are pills like the buttons; rows, tiles and cards each have one corner size.
+- **The accent means "do this" or "you are here".** The lime fill is kept for the main action and your place in the app; a selected session, list or notes place is now a soft tint, so picking something never looks like a button. Counts, percentages, period chips, the stats cards and Help's icons went neutral, and "Saved" in a note is quiet text.
+- **Less said twice.** The Timer page shows the task count once (the list's progress row, now with its bar on top like the timer's scrubber); the player keeps reset, play and skip (sound and the mini player are in the top bar); the top bar's status appears only while the timer runs on another page; a list's actions sit in one ⋮; the mini player drops its FOCUS label and "Done today" like the main card; an empty week in Stats is one sentence instead of seven empty bars.
+- **Tidier layout.** The drawer's icons start at the top; cards side by side line up their labels; the Timer's task lists are sections of the card instead of boxes inside it; an open note sits on a card; the sample sessions, lists, goals and rewards are in sentence case.
+- **Easier to read.** Hints, counts, timestamps and empty messages moved to the stronger secondary text colour, and the faintest colour was nudged so check boxes and placeholders stay visible on every surface.
 
 ### Under the hood
 
 - **Notes are encrypted one by one**, title and text sealed separately, with a key of their own kept inside your encrypted profile, so changing your password never touches them. Both backends (the web server and the desktop app's Rust port) store them the same way, checked by new steps in the shared API scenarios. Moving, labelling or trashing many notes at once is one request per hundred notes, all or nothing.
 - **Upgrading** from 1.3 keeps everything: a 1.3 profile opens in 1.4 as it was, and its first note adds the notes key to it.
 - **The editor** is TipTap (ProseMirror) wearing the app's own components, loaded only when you open a note, with its styles in the app's stylesheet so the desktop's strict Content Security Policy holds. Markdown is escaped only where it could be misread, so "R&D", snake_case and Windows paths stay as typed.
-- **Accessibility:** the Grid/List switch and the pinned mark gained names for screen readers.
+- **Accessibility:** the Grid/List switch and the pinned mark gained names for screen readers. The mini player's countdown now says its phase to screen readers, as the main player does.
+- **Design rules, enforced:** the stylesheets use type roles (`--type-*`), three weights, a 4px spacing grid and role radii; `npm run audit:scale` fails on anything else, and a new test checks every text colour against every surface in both themes. The rules are written down in `docs/patterns.md`.
 - **Dependencies:** security updates for Express's `body-parser`, `proxy-addr` and `qs`; Vite 8 and Vitest 5, which clear the last advisories in the development tools (`npm audit` finds none).
 - **License notices:** `public/third-party-notices.txt` is generated from the packages that ship (`npm run licenses`): the app's and the web server's npm packages and the desktop app's Rust crates, each with its own license files. `npm run check` fails when it's out of date.
 - **CI:** every push and pull request runs the checks, a production build and the Rust tests on GitHub Actions.
-- **Checks:** 175 unit tests, 22 browser behavior checks and 108 screenshots compared pixel by pixel on every change, including the Notes screens, a check that the database holds no note text, and one that a note opens unchanged after a password change.
+- **Checks:** 181 unit tests, 23 browser behavior checks and 110 screenshots compared pixel by pixel on every change, including the Notes screens, a check that the database holds no note text, and one that a note opens unchanged after a password change.
 
 ## 1.3.0 (alpha)
 

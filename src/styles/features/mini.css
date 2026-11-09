@@ -52,23 +52,16 @@ html.mini-root #root {
   align-items: center;
   justify-content: center;
   gap: var(--space-4);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   background: var(--surface-2);
   color: var(--phase-text);
   transition: background var(--dur-3) var(--ease-standard), color var(--dur-3) var(--ease-standard);
 }
 .mini-player.is-running .mini-art { background: var(--phase); color: var(--on-phase); }
-.mini-art-phase {
-  position: relative;
-  font-size: var(--text-3xs);
-  font-weight: var(--weight-heavy);
-  letter-spacing: var(--tracking-caps-wide);
-  text-transform: uppercase;
-}
 .mini-art-time {
   position: relative;
   font-size: clamp(1.5rem, 20cqh, 2.4rem);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-title);
   line-height: var(--leading-none);
   letter-spacing: var(--tracking-tightest);
   font-variant-numeric: tabular-nums;
@@ -87,20 +80,20 @@ html.mini-root #root {
 }
 
 /* ── Right column ───────────────────────────────────────── */
-.mini-main { min-width: 0; min-height: 0; display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-6); }
+.mini-main { min-width: 0; min-height: 0; display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-8); }
 
-.mini-top { display: flex; align-items: flex-start; gap: var(--space-6); min-width: 0; }
+.mini-top { display: flex; align-items: flex-start; gap: var(--space-8); min-width: 0; }
 .mini-titles { flex: 1; min-width: 0; display: flex; flex-direction: column; padding-top: var(--space-1); }
 .mini-title {
-  font-size: var(--text-md);
-  font-weight: var(--weight-bold);
+  font-size: var(--type-body);
+  font-weight: var(--weight-label);
   line-height: var(--leading-snug);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .mini-subtitle {
-  font-size: var(--text-2xs);
+  font-size: var(--type-meta);
   color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;
@@ -114,13 +107,13 @@ html.mini-root #root {
 .mini-scrubber .scrubber-track { height: 6px; background: var(--surface-3); }
 .mini-scrubber .scrubber-fill { background: var(--phase); }
 
-.mini-bottom { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); }
-.mini-time-small { font-size: var(--text-3xs); color: var(--text-3); font-variant-numeric: tabular-nums; min-width: 38px; }
+.mini-bottom { display: flex; align-items: center; justify-content: space-between; gap: var(--space-8); }
+.mini-time-small { font-size: var(--type-overline); color: var(--text-2); font-variant-numeric: tabular-nums; min-width: 38px; }
 .mini-time-small:last-child { text-align: right; }
 .mini-controls { display: flex; align-items: center; gap: var(--space-8); }
 
 .mini-player.is-waiting { display: flex; align-items: center; justify-content: center; }
-.mini-waiting { font-size: var(--text-sm); color: var(--text-2); }
+.mini-waiting { font-size: var(--type-meta); color: var(--text-2); }
 .mini-close-solo { position: absolute; top: 8px; right: 8px; }
 
 /* Very narrow compact: drop the elapsed/total labels before anything else. */
@@ -139,8 +132,8 @@ html.mini-root #root {
       'art'
       'titles'
       'bottom';
-    gap: var(--space-14);
-    padding: var(--space-12) var(--space-16) var(--space-18);
+    gap: var(--space-16);
+    padding: var(--space-12) var(--space-16) var(--space-16);
   }
   /* Flatten the wrappers so their children can be placed on the grid. */
   .mini-main,
@@ -164,48 +157,42 @@ html.mini-root #root {
   .mini-art-sub {
     display: block;
     position: relative;
-    font-size: var(--text-2xs);
-    color: var(--text-3);
+    font-size: var(--type-meta);
+    color: var(--text-2);
     font-variant-numeric: tabular-nums;
   }
   .mini-titles { grid-area: titles; align-items: center; text-align: center; padding: 0 var(--space-4); }
-  .mini-title { font-size: var(--text-base); max-width: 100%; }
+  .mini-title { font-size: var(--type-heading); max-width: 100%; }
   .mini-subtitle { max-width: 100%; }
   .mini-scrubber { display: none; }
   .mini-bottom { grid-area: bottom; justify-content: center; }
   .mini-time-small { display: none; }
-  .mini-controls { gap: var(--space-18); --player-ctrl-sm: 44px; --player-ctrl-sm-primary: 60px; }
+  .mini-controls { gap: var(--space-16); --player-ctrl-sm: 44px; --player-ctrl-sm-primary: 60px; }
 }
 
 /* ── Large: the space above the timeline becomes tiles ── */
 @container mini (min-width: 560px) and (min-height: 260px) {
   .mini-player {
     grid-template-columns: clamp(180px, 32cqw, 300px) minmax(0, 1fr);
-    gap: var(--space-14);
-    padding: var(--space-14);
+    gap: var(--space-16);
+    padding: var(--space-16);
   }
-  .mini-art { border-radius: var(--radius-2xl); gap: var(--space-8); }
+  .mini-art { border-radius: var(--radius-xl); gap: var(--space-8); }
   .mini-art-time { font-size: clamp(2.4rem, 11cqw, 4.2rem); }
-  .mini-art-phase { font-size: var(--text-3xs); }
-  .mini-art-sub {
-    display: block;
-    position: relative;
-    font-size: var(--text-2xs);
-    font-variant-numeric: tabular-nums;
-  }
+  /* The elapsed / total times show once, in the bottom row (the art's copy stays hidden). */
   .mini-main { gap: var(--space-12); }
-  .mini-title { font-size: var(--text-lg); }
-  .mini-subtitle { font-size: var(--text-xs); }
+  .mini-title { font-size: var(--type-heading); }
+  .mini-subtitle { font-size: var(--type-meta); }
 
   .mini-cards {
     flex: 1;
     min-height: 0;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     /* Stats take a third (two thirds of an even split), session tasks the rest;
        the stats never shrink below their three lines. */
     grid-template-rows: minmax(84px, 1fr) minmax(0, 2fr);
-    gap: var(--space-10);
+    gap: var(--space-8);
   }
   .mini-tile {
     min-width: 0;
@@ -214,24 +201,31 @@ html.mini-root #root {
     flex-direction: column;
     justify-content: space-between;
     gap: var(--space-4);
-    padding: var(--space-12) var(--space-14);
-    border-radius: var(--radius-lg);
+    padding: var(--space-12) var(--space-16);
+    border-radius: var(--radius-xl);
     background: var(--surface-2);
     overflow: hidden;
   }
   .mini-tile--progress { background: var(--accent-container); color: var(--on-accent-container); }
   .mini-player.is-break .mini-tile--progress { background: var(--break-container); color: var(--on-break-container); }
   .mini-tile--tasks { grid-column: 1 / -1; justify-content: flex-start; }
-  .mini-tile-label { font-size: var(--text-3xs); font-weight: var(--weight-semibold); color: var(--text-2); }
+  /* Caps overlines, like every panel label in the app. */
+  .mini-tile-label {
+    font-size: var(--type-overline);
+    font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
   .mini-tile--progress .mini-tile-label { color: inherit; }
   .mini-tile-value {
     font-size: clamp(1.2rem, 4.2cqw, 1.9rem);
-    font-weight: var(--weight-bold);
+    font-weight: var(--weight-title);
     line-height: var(--leading-none);
     letter-spacing: var(--tracking-tighter);
     font-variant-numeric: tabular-nums;
   }
-  .mini-tile-meta { font-size: var(--text-2xs); color: var(--text-2); }
+  .mini-tile-meta { font-size: var(--type-meta); color: var(--text-2); }
   .mini-tile-bar { display: block; height: 6px; border-radius: var(--radius-pill); background: var(--surface-1); overflow: hidden; }
   .mini-tile-bar > span {
     display: block;
@@ -251,16 +245,16 @@ html.mini-root #root {
   .mini-task-list { min-height: 0; overflow-y: auto; --row-bg: color-mix(in oklab, var(--surface-2) 50%, var(--bg)); }
   /* Exception (sizes): the app's add-task form, a size smaller than sm (32px) to fit the mini
      player; the list picker shows with several lists. */
-  .mini-add-task { margin: var(--space-6) 0 var(--space-4); gap: var(--space-6); }
+  .mini-add-task { margin: var(--space-8) 0 var(--space-4); gap: var(--space-8); }
   .mini-add-task .form-input,
   .mini-add-task .select-trigger,
-  .mini-add-task .btn-action { height: 32px; font-size: var(--text-xs); }
+  .mini-add-task .btn-action { height: 32px; font-size: var(--type-meta); }
   .mini-add-task .form-input { user-select: text; -webkit-user-select: text; }
   .mini-add-task .select { flex: 0 1 160px; min-width: 0; }
   .mini-list-name {
-    padding: var(--space-6) var(--space-4) var(--space-2);
-    font-size: var(--text-3xs);
-    font-weight: var(--weight-semibold);
+    padding: var(--space-8) var(--space-4) var(--space-2);
+    font-size: var(--type-overline);
+    font-weight: var(--weight-label);
     color: var(--text-2);
   }
   .mini-task-list .task-row {
@@ -268,13 +262,13 @@ html.mini-root #root {
     gap: var(--space-8);
     padding: var(--space-2) var(--space-4) var(--space-2) var(--grip-edge);
   }
-  .mini-task-list .task-text { font-size: var(--text-xs); }
+  .mini-task-list .task-text { font-size: var(--type-meta); }
   .mini-task-edit { padding-left: var(--space-4); }
   /* Exception (sizes): editing a task in place keeps the mini row's height (30px). */
   .mini-task-edit .form-input {
     height: 30px;
-    padding: 0 var(--space-10);
-    font-size: var(--text-xs);
+    padding: 0 var(--space-8);
+    font-size: var(--type-meta);
     user-select: text;
     -webkit-user-select: text;
   }
@@ -287,6 +281,6 @@ html.mini-root #root {
 
 /* Large but short: keep one row of tiles. */
 @container mini (min-width: 560px) and (min-height: 260px) and (max-height: 340px) {
-  .mini-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); }
+  .mini-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); }
   .mini-tile--tasks { display: none; }
 }

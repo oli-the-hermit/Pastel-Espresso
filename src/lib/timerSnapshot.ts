@@ -14,7 +14,6 @@ export interface TimerSnapshot {
   currentTask: string | null;
   /** Length of the phase that follows the current one, in seconds. */
   nextPhaseSeconds: number;
-  completedToday: number;
   /** Every task of the session's lists, in list order (large mini-player layout). */
   tasks: SnapshotTask[];
   /** The session's lists, in order: where the mini player can add tasks. */
@@ -98,7 +97,6 @@ export function buildTimerSnapshot(state: AppState, noSessionLabel: string): Tim
     sessionName: session?.name || noSessionLabel,
     currentTask: getCurrentTask(state, session),
     nextPhaseSeconds: nextMins * 60,
-    completedToday: state.timer.sessionsCompletedToday,
     tasks: getSessionTasks(state, session),
     taskLists: getSessionLists(state, session),
     sound: state.sound,

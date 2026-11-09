@@ -5,7 +5,6 @@ import { strings } from '../../constants/strings';
 import { IconEdit, IconExpand, IconList, IconPlus, IconTasks } from '../ui/icons';
 import { Card, CardHeader } from '../ui/Card';
 import { EmptyState } from '../ui/EmptyState';
-import { Chip } from '../ui/Chip';
 import { Menu, tidyMenuItems } from '../ui/Menu';
 import { ListPicker, ListPickerTrigger, type ListPickerItem, type ListPickerSort } from '../ui/ListPicker';
 import { format, plural } from '../../lib/i18n';
@@ -32,7 +31,6 @@ export const SessionTaskLists: React.FC = () => {
   const attachedIds = (session?.taskListIds || []).filter(id => state.taskLists.some(l => l.id === id));
   const lists = attachedIds.map(id => state.taskLists.find(l => l.id === id)!);
   const available = state.taskLists.filter(l => !attachedIds.includes(l.id));
-  const remaining = lists.reduce((sum, l) => sum + openCount(l), 0);
   const drag = useDragReorder((sourceId, targetId) => {
     const next = moveById(attachedIds.map(id => ({ id })), sourceId, targetId);
     if (next && session) setSessionTaskLists(session.id, next.map(x => x.id));
@@ -141,11 +139,6 @@ export const SessionTaskLists: React.FC = () => {
         overline={strings.timer.sessionOverline}
         title={session.name}
         titleTooltip={session.name}
-        titleAddon={lists.length > 0 && (
-          <Chip tone="accent">
-            {plural(remaining, strings.tasks.tasksRemaining)}
-          </Chip>
-        )}
         actions={<Menu ariaLabel={strings.timer.moreSessionActions} items={sessionMenuItems} />}
       />
 

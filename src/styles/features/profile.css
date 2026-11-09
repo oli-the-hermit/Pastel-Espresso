@@ -1,23 +1,23 @@
 /* ── Profile & settings ─────────────────────────────────── */
-.section-title { font-size: var(--text-base); font-weight: var(--weight-bold); }
+.section-title { font-size: var(--type-heading); font-weight: var(--weight-label); }
 .section-title.danger-text,
 .danger-text { color: var(--danger); }
 .section-divider { height: 0; margin: var(--space-12) 0 !important; }
-.settings-subtitle { font-size: var(--text-sm); color: var(--text-2); margin-top: var(--space-4) !important; }
+.settings-subtitle { font-size: var(--type-meta); color: var(--text-2); margin-top: var(--space-4) !important; }
 
 /* ── Appearance: accent swatches ── */
 .swatch-section { display: flex; flex-direction: column; gap: var(--space-12); }
-.swatch-section-title { font-size: var(--text-sm); font-weight: var(--weight-semibold); }
+.swatch-section-title { font-size: var(--type-body); font-weight: var(--weight-label); }
 .swatch-group { display: flex; flex-direction: column; gap: var(--space-8); }
-.swatch-group-label { font-size: var(--text-xs); color: var(--text-2); }
+.swatch-group-label { font-size: var(--type-meta); color: var(--text-2); }
 
-.profile-list { display: flex; flex-direction: column; gap: var(--space-6); }
+.profile-list { display: flex; flex-direction: column; gap: var(--space-8); }
 .profile-row {
   display: flex;
   align-items: center;
   gap: var(--space-12);
-  padding: var(--space-10) var(--space-12);
-  border-radius: var(--radius-lg);
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-md);
   background: var(--surface-2);
   --field-bg: var(--surface-1);
 }
@@ -29,29 +29,29 @@
   place-items: center;
   border-radius: var(--radius-round);
   background: var(--surface-3);
-  font-size: var(--text-xs);
-  font-weight: var(--weight-heavy);
+  font-size: var(--type-meta);
+  font-weight: var(--weight-label);
   overflow: hidden;
 }
 .profile-row-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .profile-row-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.profile-row-name { display: flex; align-items: center; gap: var(--space-6); font-size: var(--text-md); font-weight: var(--weight-semibold); }
-.profile-row-meta { font-size: var(--text-2xs); color: var(--text-2); }
-.profile-row-actions { display: flex; gap: var(--space-6); flex: none; }
+.profile-row-name { display: flex; align-items: center; gap: var(--space-8); font-size: var(--type-body); font-weight: var(--weight-label); }
+.profile-row-meta { font-size: var(--type-meta); color: var(--text-2); }
+.profile-row-actions { display: flex; gap: var(--space-8); flex: none; }
 .role-badge {
   height: 20px;
   display: inline-flex;
   align-items: center;
   padding: 0 var(--space-8);
   border-radius: var(--radius-pill);
-  background: var(--accent-container);
-  color: var(--on-accent-container);
-  font-size: var(--text-3xs);
-  font-weight: var(--weight-heavy);
+  background: var(--surface-3);
+  color: var(--text-2);
+  font-size: var(--type-overline);
+  font-weight: var(--weight-label);
 }
 /* The signed-in profile. */
 .role-badge.is-active { background: var(--success-container); color: var(--success); }
-.rename-inline { display: flex; gap: var(--space-6); }
+.rename-inline { display: flex; gap: var(--space-8); }
 /* Exception (sizes): the rename field matches the sm buttons next to it (34px). */
 .rename-inline .form-input { height: 34px; }
 
@@ -60,7 +60,7 @@
   flex-direction: column;
   gap: var(--space-12);
   padding: var(--space-16);
-  border-radius: var(--radius-2xl);
+  border-radius: var(--radius-xl);
   background: var(--surface-2);
   --field-bg: var(--surface-1);
   --field-hover: var(--surface-1);
@@ -71,12 +71,12 @@
   flex-direction: column;
   gap: var(--space-12);
   padding: var(--space-16);
-  border-radius: var(--radius-2xl);
+  border-radius: var(--radius-xl);
   background: var(--danger-container);
   --field-bg: var(--surface-1);
 }
-.danger-panel-title { font-size: var(--text-md); font-weight: var(--weight-bold); color: var(--danger); }
-.danger-panel-msg { font-size: var(--text-sm); color: var(--text-1); }
+.danger-panel-title { font-size: var(--type-body); font-weight: var(--weight-label); color: var(--danger); }
+.danger-panel-msg { font-size: var(--type-meta); color: var(--text-1); }
 
 /* ── Profile ────────────────────────────────────────────── */
 .profile-identity {
@@ -90,8 +90,8 @@
 .password-block {
   display: flex;
   flex-direction: column;
-  padding: var(--space-14) var(--space-16);
-  border-radius: var(--radius-lg);
+  padding: var(--space-16) var(--space-16);
+  border-radius: var(--radius-xl);
   background: var(--surface-2);
   --field-bg: var(--surface-1);
   --field-hover: var(--surface-1);
@@ -108,12 +108,12 @@
   color: var(--text-2);
 }
 .password-row-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.password-row-title { font-size: var(--text-md); font-weight: var(--weight-semibold); }
-.password-row-hint { font-size: var(--text-xs); color: var(--text-2); }
+.password-row-title { font-size: var(--type-body); font-weight: var(--weight-label); }
+.password-row-hint { font-size: var(--type-meta); color: var(--text-2); }
 .password-fields { display: flex; flex-direction: column; gap: var(--space-16); padding-top: var(--space-16); }
 
-.pw-rules { display: flex; flex-wrap: wrap; gap: var(--space-8) var(--space-16); margin: 0; padding: 0; list-style: none; font-size: var(--text-xs); color: var(--text-3); }
-.pw-rules li { display: inline-flex; align-items: center; gap: var(--space-6); transition: color var(--dur-2) var(--ease-standard); }
+.pw-rules { display: flex; flex-wrap: wrap; gap: var(--space-8) var(--space-16); margin: 0; padding: 0; list-style: none; font-size: var(--type-meta); color: var(--text-2); }
+.pw-rules li { display: inline-flex; align-items: center; gap: var(--space-8); transition: color var(--dur-2) var(--ease-standard); }
 .pw-rules li svg { transform: scale(0.8); color: var(--text-3); transition: transform var(--dur-2) var(--ease-decel), color var(--dur-2) var(--ease-standard); }
 .pw-rules li.is-met { color: var(--text-1); }
 .pw-rules li.is-met svg { transform: scale(1); color: var(--accent-text); }

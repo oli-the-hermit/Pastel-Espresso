@@ -1,5 +1,8 @@
 /* ── Queue panel and rows (ui/QueuePanel, ui/QueueItem): sessions, task lists ── */
-.queue-panel { padding: var(--space-20) var(--space-14) var(--space-14); }
+/* Narrower sides than a card, so rows get the width; the head row keeps the card's top and its
+   label lines up with the other cards' content. */
+.queue-panel { padding: var(--space-24) var(--space-16) var(--space-16); }
+.queue-panel .panel-card-header { padding-inline: var(--space-8) 0; }
 .queue-list { display: flex; flex-direction: column; gap: var(--space-8); }
 
 .queue-item {
@@ -8,7 +11,7 @@
   flex-direction: column;
   gap: var(--space-2);
   padding: var(--space-12) var(--space-12) var(--space-8) calc(var(--grip-edge) + var(--grip-width) + var(--grip-gap));
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   background: var(--surface-2);
   color: var(--text-1);
   cursor: pointer;
@@ -17,7 +20,7 @@
 .queue-item:hover { background: var(--surface-3); }
 .queue-item:focus-visible { outline-offset: 1px; }
 /* One row (no meta): the same height top and bottom. */
-.queue-item--single { padding-block: var(--space-14); }
+.queue-item--single { padding-block: var(--space-16); }
 
 .queue-item-grip { position: absolute; left: var(--grip-edge); top: 50%; transform: translateY(-50%); }
 
@@ -25,22 +28,22 @@
 .queue-item-name {
   flex: 1;
   min-width: 0;
-  font-size: var(--text-md);
-  font-weight: var(--weight-bold);
+  font-size: var(--type-body);
+  font-weight: var(--weight-label);
   line-height: var(--leading-snug);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.queue-item-trailing { flex: none; font-size: var(--text-2xs); color: var(--text-2); font-variant-numeric: tabular-nums; }
+.queue-item-trailing { flex: none; font-size: var(--type-meta); color: var(--text-2); font-variant-numeric: tabular-nums; }
 
-.queue-item-meta-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); min-height: 28px; }
+.queue-item-meta-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-8); min-height: 28px; }
 .queue-item-meta {
   display: flex;
   align-items: center;
-  gap: var(--space-10);
+  gap: var(--space-8);
   min-width: 0;
-  font-size: var(--text-2xs);
+  font-size: var(--type-meta);
   color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;
@@ -50,7 +53,16 @@
 .queue-item-actions { display: flex; gap: var(--space-1); flex: none; visibility: hidden; }
 .queue-item:hover .queue-item-actions,
 .queue-item:focus-within .queue-item-actions { visibility: visible; }
-/* Without a meta row the tools float over the row's end, on the row's hover color. */
+/* The tools float over the row's end, on the row's hover color, so they never take width from
+   the name or the meta: on the meta line when there is one, else centred on the row. */
+.queue-item-meta-row > .queue-item-actions {
+  position: absolute;
+  right: var(--space-8);
+  bottom: var(--space-8);
+  padding-left: var(--space-8);
+  border-radius: var(--radius-md);
+  background: var(--surface-3);
+}
 .queue-item-actions.is-floating {
   position: absolute;
   top: 50%;
@@ -61,9 +73,11 @@
   background: var(--surface-3);
 }
 
-.queue-item.active { background: var(--accent); color: var(--on-accent); }
-.queue-item.active:hover { background: var(--accent-hover); }
+/* Selected: the tonal container, so "you picked this" never looks like "do this" (a solid fill). */
+.queue-item.active,
+.queue-item.active:hover { background: var(--accent-container); color: var(--on-accent-container); }
 .queue-item.active .queue-item-meta,
 .queue-item.active .queue-item-trailing,
-.queue-item.active .drag-handle { color: var(--on-accent-2); }
-.queue-item.active .queue-item-actions.is-floating { background: var(--accent-hover); }
+.queue-item.active .drag-handle { color: var(--on-accent-container); }
+.queue-item.active .queue-item-actions.is-floating,
+.queue-item.active .queue-item-meta-row > .queue-item-actions { background: var(--accent-container); }

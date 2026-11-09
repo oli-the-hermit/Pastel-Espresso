@@ -17,7 +17,7 @@
   grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: center;
   gap: var(--space-12);
-  padding: var(--space-10) var(--space-10) var(--space-10) var(--space-12);
+  padding: var(--space-8) var(--space-8) var(--space-8) var(--space-12);
   border-radius: var(--radius-3xl);
   background: var(--surface-3);
   color: var(--text-1);
@@ -40,9 +40,9 @@
 .alert-card.is-focus-next .alert-icon { background: var(--accent); }
 .alert-card.is-break-next .alert-icon { background: var(--break); color: var(--on-break); }
 .alert-text { min-width: 0; }
-.alert-title { font-size: var(--text-md); font-weight: var(--weight-bold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.alert-body { font-size: var(--text-xs); color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.alert-actions { display: flex; gap: var(--space-6); }
+.alert-title { font-size: var(--type-body); font-weight: var(--weight-label); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.alert-body { font-size: var(--type-meta); color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.alert-actions { display: flex; gap: var(--space-8); }
 /* Exceptions (sizes): the island's actions are 36px, between sm and md. */
 .alert-actions .btn-action { height: 36px; }
 .alert-dismiss { position: relative; width: 36px; height: 36px; }
@@ -65,12 +65,12 @@ html.island-root #root {
   height: 100vh;
   border-radius: 0;
   box-shadow: none;
-  padding: var(--space-14) var(--space-14) var(--space-14) var(--space-16);
+  padding: var(--space-16) var(--space-16) var(--space-16) var(--space-16);
   grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-areas:
     'icon text dismiss'
     'icon actions actions';
-  row-gap: var(--space-10);
+  row-gap: var(--space-8);
   animation: none;
 }
 .alert-card.is-standalone .alert-icon { grid-area: icon; align-self: start; }

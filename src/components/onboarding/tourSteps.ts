@@ -40,7 +40,6 @@ export const TOUR_STEPS: TourStep[] = [
   { id: 'rewards', kind: 'spot', chapter: 'rewards', tab: 'rewards', target: 'rewards', ...s.rewards },
 
   { id: 'nav', kind: 'spot', chapter: 'space', tab: 'timer', target: 'nav', ...s.nav },
-  { id: 'status', kind: 'spot', chapter: 'space', tab: 'timer', target: 'status-chip', ...s.status },
   { id: 'mini', kind: 'spot', chapter: 'space', tab: 'timer', target: 'mini-player-btn', ...s.mini },
   { id: 'alerts', kind: 'spot', chapter: 'space', tab: 'timer', target: 'alerts-btn', ...s.alerts },
   { id: 'help', kind: 'spot', chapter: 'space', tab: 'timer', target: 'help-btn', ...s.help },

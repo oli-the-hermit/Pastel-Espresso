@@ -25,25 +25,41 @@ export interface CardHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   aside?: React.ReactNode;
 }
 
-/** Large card header: title (with optional overline and subtitle row) and trailing actions. */
-export const CardHeader: React.FC<CardHeaderProps> = ({ title, titleTooltip, overline, titleAddon, subtitle, actions, aside, className, ...rest }) => (
-  <div className={cx('card-header', className)} {...rest}>
-    <div className="card-header-main">
-      {overline && <span className="overline">{overline}</span>}
-      {titleAddon ? (
-        <div className="card-title-row">
-          <h2 className="card-title" title={titleTooltip}>{title}</h2>
-          {titleAddon}
+/**
+ * Large card header: title (with optional overline and subtitle row) and trailing actions.
+ * With an overline, the overline and the actions share a first row of the same height as every
+ * card's head row (PanelHeader, the player's), so overlines line up across columns.
+ */
+export const CardHeader: React.FC<CardHeaderProps> = ({ title, titleTooltip, overline, titleAddon, subtitle, actions, aside, className, ...rest }) => {
+  const side = (
+    <>
+      {aside}
+      {actions && <div className="card-header-actions">{actions}</div>}
+    </>
+  );
+  return (
+    <div className={cx('card-header', !!overline && 'has-overline', className)} {...rest}>
+      {overline && (
+        <div className="card-header-top">
+          <span className="overline">{overline}</span>
+          {side}
         </div>
-      ) : (
-        <h2 className="card-title" title={titleTooltip}>{title}</h2>
       )}
-      {subtitle && <div className="card-subtitle-row">{subtitle}</div>}
+      <div className="card-header-main">
+        {titleAddon ? (
+        <div className="card-title-row">
+            <h2 className="card-title" title={titleTooltip}>{title}</h2>
+            {titleAddon}
+          </div>
+        ) : (
+          <h2 className="card-title" title={titleTooltip}>{title}</h2>
+        )}
+        {subtitle && <div className="card-subtitle-row">{subtitle}</div>}
+      </div>
+      {!overline && side}
     </div>
-    {aside}
-    {actions && <div className="card-header-actions">{actions}</div>}
-  </div>
-);
+  );
+};
 
 export interface PanelHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   title: React.ReactNode;

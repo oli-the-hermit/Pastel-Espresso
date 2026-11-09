@@ -1,5 +1,14 @@
 /* ── Doc editor (ui/DocEditor, ui/DocEditorToolbar) ───────── */
-.doc-editor { display: flex; flex-direction: column; gap: var(--space-12); min-width: 0; }
+/* Knobs: --doc-editor-fill (the toolbar, quotes, code blocks, table cells) and --doc-editor-code
+   (inline code), one and two steps above whatever the editor sits on. */
+.doc-editor {
+  --doc-editor-fill: var(--surface-1);
+  --doc-editor-code: var(--surface-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  min-width: 0;
+}
 
 .doc-editor-toolbar {
   position: sticky;
@@ -9,13 +18,13 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-6) var(--space-10);
+  padding: var(--space-8) var(--space-8);
   border-radius: var(--radius-pill);
-  background: var(--surface-1);
+  background: var(--doc-editor-fill);
 }
-.doc-editor-sep { flex: none; width: 1px; height: 20px; margin: 0 var(--space-6); background: var(--surface-4); }
+.doc-editor-sep { flex: none; width: 1px; height: 20px; margin: 0 var(--space-8); background: var(--surface-4); }
 .doc-editor-link-panel { padding: var(--space-12); min-width: 280px; }
-.doc-editor-link-form { display: flex; flex-direction: column; gap: var(--space-10); }
+.doc-editor-link-form { display: flex; flex-direction: column; gap: var(--space-8); }
 
 .doc-editor-content { min-width: 0; }
 
@@ -53,7 +62,7 @@
   min-height: 50vh;
   padding: var(--space-8) var(--space-4) var(--space-48);
   color: var(--text-1);
-  font-size: var(--text-base);
+  font-size: var(--type-body);
   line-height: var(--leading-normal);
 }
 .doc-editor-content .ProseMirror > * + * { margin-top: var(--space-12); }
@@ -64,33 +73,33 @@
   color: var(--text-3);
   pointer-events: none;
 }
-.doc-editor-content h1, .doc-editor-content h2, .doc-editor-content h3 { font-weight: var(--weight-bold); line-height: var(--leading-tight); }
-.doc-editor-content h1 { font-size: var(--text-3xl); margin-top: var(--space-24); }
-.doc-editor-content h2 { font-size: var(--text-2xl); margin-top: var(--space-20); }
-.doc-editor-content h3 { font-size: var(--text-xl); margin-top: var(--space-16); }
+.doc-editor-content h1, .doc-editor-content h2, .doc-editor-content h3 { font-weight: var(--weight-title); line-height: var(--leading-tight); }
+.doc-editor-content h1 { font-size: var(--type-page); margin-top: var(--space-24); }
+.doc-editor-content h2 { font-size: var(--type-title); margin-top: var(--space-20); }
+.doc-editor-content h3 { font-size: var(--type-heading); margin-top: var(--space-16); }
 .doc-editor-content a { color: var(--accent-text); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
-.doc-editor-content strong { font-weight: var(--weight-heavy); }
+.doc-editor-content strong { font-weight: var(--weight-label); }
 .doc-editor-content ul, .doc-editor-content ol { padding-left: var(--space-24); }
 .doc-editor-content ul { list-style: disc; }
 .doc-editor-content ol { list-style: decimal; }
 .doc-editor-content li > p { margin: 0; }
 .doc-editor-content li + li { margin-top: var(--space-4); }
 .doc-editor-content ul[data-type='taskList'] { list-style: none; padding-left: 0; }
-.doc-editor-content ul[data-type='taskList'] li { display: flex; align-items: flex-start; gap: var(--space-10); }
-.doc-editor-content ul[data-type='taskList'] li > label { flex: none; display: flex; align-items: center; height: calc(var(--text-base) * var(--leading-normal)); user-select: none; }
+.doc-editor-content ul[data-type='taskList'] li { display: flex; align-items: flex-start; gap: var(--space-8); }
+.doc-editor-content ul[data-type='taskList'] li > label { flex: none; display: flex; align-items: center; height: calc(var(--type-body) * var(--leading-normal)); user-select: none; }
 .doc-editor-content ul[data-type='taskList'] li > div { flex: 1; min-width: 0; }
 .doc-editor-content ul[data-type='taskList'] input[type='checkbox'] { accent-color: var(--accent); width: var(--checkbox-size); height: var(--checkbox-size); cursor: pointer; }
 .doc-editor-content ul[data-type='taskList'] li[data-checked='true'] > div { color: var(--text-3); text-decoration: line-through; }
-.doc-editor-content blockquote { padding: var(--space-4) var(--space-16); border-radius: var(--radius-md); background: var(--surface-1); color: var(--text-2); }
-.doc-editor-content code { padding: 0 var(--space-6); border-radius: var(--radius-xs); background: var(--surface-2); font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: var(--text-sm); }
-.doc-editor-content pre { padding: var(--space-14) var(--space-16); border-radius: var(--radius-lg); background: var(--surface-1); overflow-x: auto; }
+.doc-editor-content blockquote { padding: var(--space-4) var(--space-16); border-radius: var(--radius-md); background: var(--doc-editor-fill); color: var(--text-2); }
+.doc-editor-content code { padding: 0 var(--space-8); border-radius: var(--radius-sm); background: var(--doc-editor-code); font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: var(--type-body); }
+.doc-editor-content pre { padding: var(--space-16) var(--space-16); border-radius: var(--radius-md); background: var(--doc-editor-fill); overflow-x: auto; }
 .doc-editor-content pre code { padding: 0; background: none; }
 .doc-editor-content hr { height: 2px; border: none; background: var(--surface-3); margin: var(--space-20) 0; }
 
 /* Tables: cells are tiles with a gap between them, not ruled lines. */
 .doc-editor-content .tableWrapper { overflow-x: auto; }
 .doc-editor-content table { border-collapse: separate; border-spacing: var(--space-2); width: 100%; table-layout: fixed; }
-.doc-editor-content th, .doc-editor-content td { position: relative; min-width: 80px; padding: var(--space-8) var(--space-10); border-radius: var(--radius-xs); background: var(--surface-1); text-align: left; vertical-align: top; }
-.doc-editor-content th { background: var(--surface-3); font-weight: var(--weight-bold); }
+.doc-editor-content th, .doc-editor-content td { position: relative; min-width: 80px; padding: var(--space-8) var(--space-8); border-radius: var(--radius-sm); background: var(--doc-editor-fill); text-align: left; vertical-align: top; }
+.doc-editor-content th { background: var(--surface-3); font-weight: var(--weight-label); }
 .doc-editor-content th > p, .doc-editor-content td > p { margin: 0; }
 .doc-editor-content .selectedCell { background: var(--accent-container); }

@@ -608,7 +608,9 @@ async function main() {
       await live.locator('.app-shell').waitFor({ timeout: 15_000 });
       await live.locator('.nav-rail [data-tab="timer"]').click();
       const time = live.locator('.player-art-time');
-      const status = live.locator('.status-chip');
+      // The player's own state (the top bar's status pill only shows away from the Timer page).
+      const card = live.locator('.player-card');
+      const isRunning = async () => (await card.getAttribute('class'))?.split(' ').includes('is-running') ?? false;
       const focusMain = () => live.locator('.app-main').click({ position: { x: 12, y: 12 } });
       const before = (await time.textContent())?.trim();
 
@@ -617,14 +619,13 @@ async function main() {
         await live.keyboard.press(' ');
         await live.waitForTimeout(2500);
         const after = (await time.textContent())?.trim();
-        const running = (await status.getAttribute('class'))?.split(' ').includes('is-running');
-        return !!before && after !== before && !!running;
+        return !!before && after !== before && (await isRunning());
       });
       await check('Space again pauses the timer', async () => {
         await focusMain();
         await live.keyboard.press(' ');
         await settle(live, 300);
-        return (await live.locator('#headerStatus .status-chip-label').textContent())?.trim() === strings.status.paused;
+        return !(await isRunning()) && (await time.textContent())?.trim() !== before;
       });
       await check('S skips to the break', async () => {
         await focusMain();
@@ -638,10 +639,9 @@ async function main() {
         await settle(live, 300);
         const phase = (await live.locator('.player-card').getAttribute('class'))?.split(' ') ?? [];
         return !phase.includes('is-break')
-          && (await live.locator('#headerStatus .status-chip-label').textContent())?.trim() === strings.status.ready
+          && !phase.includes('is-running')
           && (await time.textContent())?.trim() === before;
       });
-      const isRunning = async () => (await status.getAttribute('class'))?.split(' ').includes('is-running') ?? false;
       await check('A reload resumes the running timer', async () => {
         await focusMain();
         await live.keyboard.press(' ');
@@ -761,7 +761,7 @@ async function main() {
       });
       // Last: it completes a phase and changes rewards and stats.
       await check("Finishing a focus phase unlocks the session's reward and shows the alert ring", async () => {
-        // The seeded active session ("Pomodoro Classic") unlocks the seeded reward r1.
+        // The seeded active session ("Pomodoro classic") unlocks the seeded reward r1.
         const reward = live.locator('.reward-card[data-rid="r1"]');
         await live.locator('.nav-rail [data-tab="rewards"]').click();
         const lockedBefore = !((await reward.getAttribute('class'))?.split(' ').includes('ready'));

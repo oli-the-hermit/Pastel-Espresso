@@ -136,7 +136,7 @@ export const TaskListPanel: React.FC<TaskListPanelProps> = ({
               onCreate: name => onSwap(createList(name, { activate: false }))
             }}
             recent={{ values: recentLists(), label: strings.timer.recentLists }}
-            valueAddon={<Chip tone="accent">{format(strings.tasks.tasksLeft, { count: remaining })}</Chip>}
+            valueAddon={<Chip>{format(strings.tasks.tasksLeft, { count: remaining })}</Chip>}
           />
         </div>
 

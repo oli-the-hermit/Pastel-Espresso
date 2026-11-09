@@ -13,7 +13,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-10);
+  gap: var(--space-8);
   padding: var(--space-40) var(--space-32) var(--space-32);
   border-radius: var(--radius-3xl);
   background: var(--accent);
@@ -22,10 +22,11 @@
   box-shadow: var(--elev-overlay);
   animation: modal-in var(--dur-3) var(--ease-emphasized);
 }
+/* Exception (scale: an emoji shown as a picture, not text, so above the type roles on purpose) */
 .celebration-emoji { font-size: var(--text-6xl); line-height: var(--leading-none); animation: celebrate var(--dur-celebrate) var(--ease-emphasized); }
-.celebration-title { font-size: var(--text-3xl); font-weight: var(--weight-heavy); }
+.celebration-title { font-size: var(--type-page); font-weight: var(--weight-title); }
 .celebration-desc { color: var(--on-accent-2); }
-.celebration-confirm-btn { margin-top: var(--space-14); }
+.celebration-confirm-btn { margin-top: var(--space-16); }
 
 @keyframes celebrate {
   0% { transform: scale(0.4) rotate(-12deg); }

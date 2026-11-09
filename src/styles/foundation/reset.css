@@ -19,7 +19,7 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
 button:disabled { cursor: default; }
 input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
 a { color: var(--accent-text); text-decoration: none; }
-h1, h2, h3, h4 { font-weight: var(--weight-bold); letter-spacing: var(--tracking-tight); }
+h1, h2, h3, h4 { font-weight: var(--weight-title); letter-spacing: var(--tracking-tight); }
 
 :focus { outline: none; }
 :focus-visible { outline: var(--ring-width) solid var(--focus-ring); outline-offset: var(--ring-width); }

@@ -116,21 +116,13 @@ export const PlayerCard: React.FC = () => {
         <Scrubber value={pct} label={strings.timer.sessionProgress} knob />
         <div className="scrubber-times">
           <span>{formatClock(elapsed)}</span>
-          <span className="scrubber-pct">{Math.round(pct)}%</span>
+          <span>{Math.round(pct)}%</span>
           <span>{formatClock(total)}</span>
         </div>
       </div>
 
+      {/* Reset, play, skip: sound and the mini player live in the top bar, on every page. */}
       <div className="player-controls" data-tour="player-controls">
-        <PlayerControl
-          variant="ghost"
-          pressed={state.sound}
-          onClick={toggleSound}
-          label={strings.header.soundToggleTooltip}
-          title={state.sound ? strings.timer.soundOnTooltip : strings.timer.soundOffTooltip}
-        >
-          <IconSwap on={state.sound} onIcon={<IconSoundOn size={19} />} offIcon={<IconSoundOff size={19} />} />
-        </PlayerControl>
         <PlayerControl id="resetBtn" onClick={resetTimer} label={strings.actions.resetTimer}>
           <IconReset size={20} />
         </PlayerControl>
@@ -144,15 +136,6 @@ export const PlayerCard: React.FC = () => {
         </PlayerControl>
         <PlayerControl id="skipBtn" onClick={skipPhase} label={strings.timer.skipTooltip}>
           <IconSkip size={20} />
-        </PlayerControl>
-        <PlayerControl
-          variant="ghost"
-          pressed={mini.isOpen}
-          onClick={mini.toggle}
-          disabled={!mini.supported}
-          label={mini.isOpen ? strings.actions.closeMini : strings.actions.openMini}
-        >
-          <IconMiniPlayer size={19} />
         </PlayerControl>
       </div>
 

@@ -9,15 +9,15 @@ export const DEFAULT_FOCUS_MINUTES = 25;
 export const DEFAULT_BREAK_MINUTES = 5;
 
 export const DEFAULT_SESSIONS: Session[] = [
-  { id: 's1', name: 'Pomodoro Classic', focusMinutes: 25, breakMinutes: 5, rewardId: 'r1' },
-  { id: 's2', name: 'Deep Work', focusMinutes: 50, breakMinutes: 10, rewardId: 'r2' },
-  { id: 's3', name: 'Quick Sprint', focusMinutes: 15, breakMinutes: 3, rewardId: null }
+  { id: 's1', name: 'Pomodoro classic', focusMinutes: 25, breakMinutes: 5, rewardId: 'r1' },
+  { id: 's2', name: 'Deep work', focusMinutes: 50, breakMinutes: 10, rewardId: 'r2' },
+  { id: 's3', name: 'Quick sprint', focusMinutes: 15, breakMinutes: 3, rewardId: null }
 ];
 
 export const DEFAULT_TASK_LISTS: TaskList[] = [
   {
     id: 'tl1',
-    name: 'Project Tasks',
+    name: 'Project tasks',
     tasks: [
       { id: 't1', text: 'Review sprint deliverables', completed: false, createdAt: Date.now() - 3600000, durationSeconds: null },
       { id: 't2', text: 'Write feature documentation', completed: false, createdAt: Date.now() - 7200000, durationSeconds: null },
@@ -29,7 +29,7 @@ export const DEFAULT_TASK_LISTS: TaskList[] = [
 export const DEFAULT_GOALS: Goal[] = [
   {
     id: 'g1',
-    name: 'Complete 4 Focus Sessions',
+    name: 'Complete 4 focus sessions',
     frequency: 'daily',
     target: 4,
     current: 1,
@@ -42,7 +42,7 @@ export const DEFAULT_GOALS: Goal[] = [
   },
   {
     id: 'g2',
-    name: 'Clear 10 Tasks this Week',
+    name: 'Clear 10 tasks this week',
     frequency: 'weekly',
     target: 10,
     current: 3,
@@ -55,7 +55,7 @@ export const DEFAULT_GOALS: Goal[] = [
 export const DEFAULT_REWARDS: Reward[] = [
   {
     id: 'r1',
-    name: '15-Minute Coffee Break',
+    name: '15-minute coffee break',
     description: 'Enjoy a warm cup of coffee or tea completely guilt-free.',
     emoji: '☕',
     frequency: 'daily',
@@ -64,7 +64,7 @@ export const DEFAULT_REWARDS: Reward[] = [
   },
   {
     id: 'r2',
-    name: 'Favorite Podcast Episode',
+    name: 'Favorite podcast episode',
     description: 'Listen to 1 episode of your favorite podcast.',
     emoji: '🎧',
     frequency: 'daily',
@@ -73,7 +73,7 @@ export const DEFAULT_REWARDS: Reward[] = [
   },
   {
     id: 'r3',
-    name: 'Walk in the Park',
+    name: 'Walk in the park',
     description: 'Take a relaxing 20-minute walk outside.',
     emoji: '🌿',
     frequency: 'weekly',
@@ -85,7 +85,7 @@ export const DEFAULT_REWARDS: Reward[] = [
 export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
   {
     id: 'ev1',
-    title: 'Deep Work Session',
+    title: 'Deep work session',
     date: getTodayStr(),
     startTime: '09:00',
     durationMins: 50,
@@ -95,7 +95,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
   },
   {
     id: 'ev2',
-    title: 'Sprint Review',
+    title: 'Sprint review',
     date: getTodayStr(),
     startTime: '11:30',
     durationMins: 25,

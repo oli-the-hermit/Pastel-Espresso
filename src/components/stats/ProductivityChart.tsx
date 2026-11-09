@@ -2,6 +2,7 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { strings } from '../../constants/strings';
 import { Card, PanelHeader } from '../ui/Card';
+import { EmptyState } from '../ui/EmptyState';
 import { weekdayNames } from '../../lib/i18n';
 import { DEFAULT_FOCUS_MINUTES } from '../../constants/defaults';
 
@@ -25,31 +26,37 @@ export const ProductivityChart: React.FC = () => {
 
   const maxMins = Math.max(...minsPerDay, 1);
   const displayOrder = [1, 2, 3, 4, 5, 6, 0]; // Mon to Sun
+  const isEmpty = minsPerDay.every(m => m === 0);
 
   return (
     <Card className="stats-chart-card">
       <PanelHeader title={strings.stats.productiveDaysTitle} />
 
-      <div className="productive-days-chart" id="productiveDaysChart">
-        {displayOrder.map(dIdx => {
-          const valMins = minsPerDay[dIdx];
-          const pct = Math.round((valMins / maxMins) * 100);
-          const isTop = valMins === maxMins && valMins > 0;
+      {/* Nothing recorded yet: one sentence, not seven empty bars. */}
+      {isEmpty ? (
+        <EmptyState size="sm">{strings.stats.emptyDays}</EmptyState>
+      ) : (
+        <div className="productive-days-chart" id="productiveDaysChart">
+          {displayOrder.map(dIdx => {
+            const valMins = minsPerDay[dIdx];
+            const pct = Math.round((valMins / maxMins) * 100);
+            const isTop = valMins === maxMins && valMins > 0;
 
-          return (
-            <div key={dIdx} className="day-bar-wrap">
-              <span className="day-bar-val">{valMins}m</span>
-              <div className="day-bar-track">
-                <div
-                  className={`day-bar-fill ${isTop ? 'top-day' : ''}`}
-                  style={{ height: `${pct}%` }}
-                />
+            return (
+              <div key={dIdx} className="day-bar-wrap">
+                <span className="day-bar-val">{valMins}m</span>
+                <div className="day-bar-track">
+                  <div
+                    className={`day-bar-fill ${isTop ? 'top-day' : ''}`}
+                    style={{ height: `${pct}%` }}
+                  />
+                </div>
+                <span className="day-bar-lbl">{DAY_NAMES[dIdx]}</span>
               </div>
-              <span className="day-bar-lbl">{DAY_NAMES[dIdx]}</span>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </Card>
   );
 };

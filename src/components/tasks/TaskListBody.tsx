@@ -101,11 +101,12 @@ export const TaskListBody: React.FC<TaskListBodyProps> = ({ list }) => {
     <div className="task-list-body">
       {total > 0 && (
         <div className="list-progress">
+          {/* Like the timer's scrubber: the bar, then one row of numbers under it. */}
+          <ProgressBar value={pct} label={completedLabel} />
           <div className="list-progress-row">
             <span>{completedLabel}</span>
-            <span className="list-progress-pct">{pct}%</span>
+            <span>{pct}%</span>
           </div>
-          <ProgressBar value={pct} label={completedLabel} />
         </div>
       )}
 

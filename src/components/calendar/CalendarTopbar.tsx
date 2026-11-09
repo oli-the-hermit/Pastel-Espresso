@@ -66,7 +66,7 @@ export const CalendarTopbar: React.FC = () => {
   return (
     <div className="calendar-topbar">
       <div className="cal-nav-group">
-        <Button variant="tonal" id="calTodayBtn" onClick={handleToday}>{strings.calendar.todayBtn}</Button>
+        <Button id="calTodayBtn" onClick={handleToday}>{strings.calendar.todayBtn}</Button>
         <div className="cal-step-group">
           <IconButton label={strings.calendar.prevBtn} id="calPrevBtn" surface={0} onClick={handlePrev}>
             <IconChevronLeft size={20} />

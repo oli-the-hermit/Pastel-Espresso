@@ -1,15 +1,15 @@
 /* ── Menu ───────────────────────────────────────────────── */
-.menu { min-width: 208px; padding: var(--space-6); overflow-y: auto; }
+.menu { min-width: 208px; padding: var(--space-8); overflow-y: auto; }
 .menu-item {
   width: 100%;
   min-height: 40px;
   display: flex;
   align-items: center;
-  gap: var(--space-10);
+  gap: var(--space-8);
   padding: 0 var(--space-12);
   border-radius: var(--radius-md);
   color: var(--text-1);
-  font-size: var(--text-md);
+  font-size: var(--type-body);
   text-align: left;
   white-space: nowrap;
 }
@@ -26,10 +26,10 @@
 .menu-item-hint {
   flex: none;
   margin-left: var(--space-16);
-  color: var(--text-3);
+  color: var(--text-2);
   font: inherit;
-  font-size: var(--text-2xs);
+  font-size: var(--type-meta);
   font-variant-numeric: tabular-nums;
 }
-.menu-divider { height: 1px; margin: var(--space-6) var(--space-4); background: var(--menu-hover, var(--surface-4)); }
+.menu-divider { height: 1px; margin: var(--space-8) var(--space-4); background: var(--menu-hover, var(--surface-4)); }
 .context-menu { min-width: 224px; }

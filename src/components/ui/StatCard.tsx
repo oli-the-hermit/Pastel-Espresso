@@ -1,19 +1,15 @@
 import React from 'react';
-import { cx } from '../../lib/cx';
 import { Card } from './Card';
 
 export interface StatCardProps {
-  icon: React.ReactNode;
   value: string;
   label: string;
-  /** Highlights the tile with the accent fill. */
-  accent?: boolean;
 }
 
-export const StatCard: React.FC<StatCardProps> = ({ icon, value, label, accent = false }) => {
+/** A number and what it counts: the value leads, the label explains it. */
+export const StatCard: React.FC<StatCardProps> = ({ value, label }) => {
   return (
-    <Card className={cx('stat-card', accent && 'is-accent')}>
-      <div className="stat-card-icon">{icon}</div>
+    <Card className="stat-card">
       <div className="stat-card-val">{value}</div>
       <div className="stat-card-lbl">{label}</div>
     </Card>

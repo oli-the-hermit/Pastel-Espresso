@@ -4,20 +4,20 @@
   display: flex;
   align-items: center;
   gap: var(--space-12);
-  padding: var(--space-6) var(--space-8) var(--space-6) var(--space-20);
+  padding: var(--space-8) var(--space-8) var(--space-8) var(--space-20);
   border-radius: var(--radius-pill);
   background: var(--accent-container);
   color: var(--on-accent-container);
   animation: pop-in var(--dur-2) var(--ease-decel);
 }
-.selection-bar-summary { font-size: var(--text-md); font-weight: var(--weight-bold); white-space: nowrap; }
-.selection-bar-actions { flex: 1; min-width: 0; display: flex; justify-content: flex-end; gap: var(--space-6); }
+.selection-bar-summary { font-size: var(--type-body); font-weight: var(--weight-label); white-space: nowrap; }
+.selection-bar-actions { flex: 1; min-width: 0; display: flex; justify-content: flex-end; gap: var(--space-8); }
 /* Sizes every action off-screen, so the ones that don't fit can move into the More menu. */
 .selection-bar-measure {
   position: absolute;
   visibility: hidden;
   pointer-events: none;
   display: flex;
-  gap: var(--space-6);
+  gap: var(--space-8);
   white-space: nowrap;
 }

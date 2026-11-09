@@ -28,7 +28,7 @@ import { LoginScreen } from './components/auth/LoginScreen';
 import { MiniPlayerProvider } from './mini/MiniPlayerProvider';
 import { strings } from './constants/strings';
 import { formatDuration } from './lib/formatUtils';
-import { IconCheck, IconClock, IconLogo, IconTimer } from './components/ui/icons';
+import { IconLogo } from './components/ui/icons';
 import { ContextMenuProvider } from './components/ui/ContextMenu';
 import { useGlobalMenuItems } from './components/shell/globalMenu';
 import { HelpModal } from './components/help/HelpModal';
@@ -146,10 +146,10 @@ const AppShell: React.FC = () => {
             {/* ── TAB: STATS ────────────────────────────────────── */}
             <section className={`tab-page ${activeTab === 'stats' ? 'active' : ''}`} id="tab-stats" data-tour="stats">
               <div className="stats-overview-grid">
-                <StatCard icon={<IconTimer size={20} />} value={avgSessions} label={strings.stats.avgSessionsDay} />
-                <StatCard icon={<IconClock size={20} />} value={formatDuration(avgWorkedSecs)} label={strings.stats.avgWorkedDay} />
-                <StatCard icon={<IconCheck size={20} />} value={avgTasks} label={strings.stats.avgTasksCompletedDay} />
-                <StatCard icon={<IconClock size={20} />} value={formatDuration(avgTaskSec)} label={strings.stats.avgTimePerTask} accent />
+                <StatCard value={avgSessions} label={strings.stats.avgSessionsDay} />
+                <StatCard value={formatDuration(avgWorkedSecs)} label={strings.stats.avgWorkedDay} />
+                <StatCard value={avgTasks} label={strings.stats.avgTasksCompletedDay} />
+                <StatCard value={formatDuration(avgTaskSec)} label={strings.stats.avgTimePerTask} />
               </div>
 
               <div className="stats-row">

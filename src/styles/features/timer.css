@@ -47,7 +47,7 @@
   --phase-text: var(--break-text);
 }
 
-.player-head { display: flex; align-items: center; justify-content: space-between; }
+.player-head { min-height: var(--icon-button-size); display: flex; align-items: center; justify-content: space-between; }
 
 /* Artwork tile */
 .player-art {
@@ -57,8 +57,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--space-22);
-  border-radius: var(--radius-2xl);
+  padding: var(--space-24);
+  border-radius: var(--radius-xl);
   background: var(--surface-2);
   color: var(--phase-text);
   transition: background var(--transition-md), color var(--transition-md);
@@ -67,7 +67,7 @@
 
 .player-art-time {
   font-size: clamp(3.4rem, 5.6vw, 5.4rem);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-label);
   line-height: var(--leading-none);
   letter-spacing: var(--tracking-tightest);
   font-variant-numeric: tabular-nums;
@@ -76,8 +76,8 @@
 /* Track info */
 .player-track { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; text-align: center; }
 .player-title {
-  font-size: var(--text-xl);
-  font-weight: var(--weight-bold);
+  font-size: var(--type-title);
+  font-weight: var(--weight-title);
   line-height: var(--leading-tight);
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -86,7 +86,7 @@
   word-break: break-word;
 }
 .player-subtitle {
-  font-size: var(--text-md);
+  font-size: var(--type-body);
   color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;
@@ -122,15 +122,14 @@
 .scrubber-times {
   display: flex;
   justify-content: space-between;
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-semibold);
+  font-size: var(--type-meta);
+  font-weight: var(--weight-label);
   color: var(--text-2);
   font-variant-numeric: tabular-nums;
 }
-.scrubber-pct { color: var(--phase-text); font-weight: var(--weight-bold); }
 
-/* Transport controls */
-.player-controls { display: flex; align-items: center; justify-content: space-between; padding: 0 var(--space-2); }
+/* Reset · play · skip, grouped around play (they shrink together in a narrow card). */
+.player-controls { display: flex; align-items: center; justify-content: center; gap: var(--space-24); }
 
 
 /* Up next: an overline heading like the card's own head, then the next phase and the reward
@@ -140,7 +139,7 @@
   flex-direction: column;
   gap: var(--space-8);
   padding: var(--space-12) var(--space-16);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   background: var(--surface-2);
 }
 .player-foot-row {
@@ -148,12 +147,12 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-12);
-  font-size: var(--text-sm);
+  font-size: var(--type-body);
   min-width: 0;
 }
-.player-foot-label { display: inline-flex; align-items: center; gap: var(--space-6); color: var(--text-2); flex: none; }
+.player-foot-label { display: inline-flex; align-items: center; gap: var(--space-8); color: var(--text-2); flex: none; }
 .player-foot-value {
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-label);
   font-variant-numeric: tabular-nums;
   min-width: 0;
   white-space: nowrap;

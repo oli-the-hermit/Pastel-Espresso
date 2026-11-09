@@ -3,6 +3,7 @@ import { TimerSnapshot } from '../lib/timerSnapshot';
 import { MiniCommand } from '../lib/desktop';
 import { formatClock } from '../lib/formatUtils';
 import { strings } from '../constants/strings';
+import { format } from '../lib/i18n';
 import {
   IconClose,
   IconExpand,
@@ -141,10 +142,18 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ snapshot, onCommand, con
       >
         <div className="mini-art" {...drag}>
           <ProgressRing className="mini-ring" value={pct / 100} box={100} radius={46} />
-          <span className="mini-art-phase" {...drag}>
-            {isBreak ? strings.timer.breakPhase : strings.timer.focusPhase}
+          {/* The phase shows through colour, as on the main player (no FOCUS label). */}
+          <span
+            className="mini-art-time"
+            role="timer"
+            aria-label={format(strings.timer.remainingAria, {
+              phase: isBreak ? strings.timer.breakPhase : strings.timer.focusPhase,
+              time: formatClock(remaining)
+            })}
+            {...drag}
+          >
+            {formatClock(remaining)}
           </span>
-          <span className="mini-art-time" {...drag}>{formatClock(remaining)}</span>
           <span className="mini-art-sub" {...drag}>
             {formatClock(total - remaining)} / {formatClock(total)}
           </span>
@@ -203,11 +212,6 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ snapshot, onCommand, con
               <span className="mini-tile-label" {...drag}>{strings.mini.upNext}</span>
               <span className="mini-tile-value" {...drag}>{formatClock(snapshot.nextPhaseSeconds)}</span>
               <span className="mini-tile-meta" {...drag}>{nextLabel}</span>
-            </div>
-            <div className="mini-tile" {...drag}>
-              <span className="mini-tile-label" {...drag}>{strings.mini.doneToday}</span>
-              <span className="mini-tile-value" {...drag}>{snapshot.completedToday}</span>
-              <span className="mini-tile-meta" {...drag}>{strings.timer.sessionsTitle}</span>
             </div>
             <div className="mini-tile mini-tile--tasks" {...drag}>
               <span className="mini-tile-label" {...drag}>{strings.timer.sessionTasksTitle}</span>

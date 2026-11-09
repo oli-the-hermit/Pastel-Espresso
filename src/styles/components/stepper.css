@@ -5,7 +5,7 @@
   align-items: center;
   height: var(--field-height);
   padding: var(--space-2);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-pill);
   background: var(--field-bg);
   transition: box-shadow var(--transition);
 }
@@ -13,7 +13,7 @@
 .stepper-btn {
   width: var(--icon-button-size);
   height: var(--icon-button-size);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-round);
   display: grid;
   place-items: center;
   color: var(--text-1);
@@ -27,9 +27,9 @@
   background: none;
   color: var(--text-1);
   text-align: right;
-  font-size: var(--text-base);
-  font-weight: var(--weight-bold);
+  font-size: var(--type-heading);
+  font-weight: var(--weight-label);
   font-variant-numeric: tabular-nums;
   outline: none;
 }
-.stepper-suffix { font-size: var(--text-xs); color: var(--text-2); }
+.stepper-suffix { font-size: var(--type-meta); color: var(--text-2); }

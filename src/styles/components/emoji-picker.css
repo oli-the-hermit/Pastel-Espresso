@@ -3,7 +3,7 @@
   --emoji-cell: 36px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-8);
   padding: var(--space-8);
 }
 .emoji-picker .select-search { margin-bottom: 0; }
@@ -16,7 +16,7 @@
   place-items: center;
   border-radius: var(--radius-sm);
   color: var(--text-2);
-  font-size: var(--text-lg);
+  font-size: var(--type-heading);
   line-height: var(--leading-none);
   transition: background var(--transition);
 }
@@ -25,8 +25,8 @@
 
 .emoji-section-title {
   padding: var(--space-4) var(--space-4) 0;
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-semibold);
+  font-size: var(--type-meta);
+  font-weight: var(--weight-label);
   color: var(--text-2);
 }
 .emoji-grid {
@@ -42,7 +42,7 @@
   display: grid;
   place-items: center;
   border-radius: var(--radius-sm);
-  font-size: var(--text-2xl);
+  font-size: var(--type-title);
   line-height: var(--leading-none);
   transition: background var(--transition);
 }
@@ -51,7 +51,7 @@
   grid-column: 1 / -1;
   grid-row: span 2;
   align-self: center;
-  font-size: var(--text-sm);
+  font-size: var(--type-meta);
   color: var(--text-2);
   text-align: center;
 }

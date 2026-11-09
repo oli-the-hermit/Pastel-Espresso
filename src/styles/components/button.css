@@ -14,8 +14,8 @@
   border-radius: var(--radius-pill);
   background: var(--btn-fill);
   color: var(--text-1);
-  font-size: var(--text-md);
-  font-weight: var(--weight-semibold);
+  font-size: var(--type-body);
+  font-weight: var(--weight-label);
   white-space: nowrap;
   transition: background var(--transition), color var(--transition);
 }
@@ -42,12 +42,12 @@
 .btn-action.primary.on-accent-container,
 .btn-action.primary.on-accent-container:hover:not(:disabled) { background: var(--on-accent-container); color: var(--accent-container); }
 
-.btn-action.sm { height: var(--button-height-sm); padding: 0 var(--space-14); font-size: var(--text-xs); gap: var(--space-6); }
+.btn-action.sm { height: var(--button-height-sm); padding: 0 var(--space-16); font-size: var(--type-meta); gap: var(--space-8); }
 /* The one call to action on a card (e.g. Claim reward). */
-.btn-action.lg { height: var(--button-height-lg); padding: 0 var(--space-24); font-weight: var(--weight-bold); }
+.btn-action.lg { height: var(--button-height-lg); padding: 0 var(--space-24); font-weight: var(--weight-label); }
 .btn-action.block { width: 100%; }
 /* For compact cards: taller than a chip, smaller than a title. */
-.btn-action.xs { height: var(--button-height-xs); padding: 0 var(--space-12); font-size: var(--text-xs); gap: var(--space-6); }
+.btn-action.xs { height: var(--button-height-xs); padding: 0 var(--space-12); font-size: var(--type-meta); gap: var(--space-8); }
 
 /* Collapsible buttons show only their icon on phones (the name and tooltip keep the full action). */
 @media (max-width: 600px) {
@@ -61,18 +61,18 @@
   --text-btn-hover: var(--surface-3);
   display: inline-flex;
   align-items: center;
-  gap: var(--space-6);
-  padding: var(--space-6) var(--space-10);
-  border-radius: var(--radius-md);
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-8);
+  border-radius: var(--radius-pill);
   color: var(--text-2);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-semibold);
+  font-size: var(--type-body);
+  font-weight: var(--weight-label);
   transition: background var(--transition), color var(--transition);
 }
 .btn-text:hover { background: var(--text-btn-hover); color: var(--text-1); }
 .btn-text.on-3 { --text-btn-hover: var(--surface-4); }
 /* Tiny inline link inside dense grids (e.g. "+3 more" in a month cell). */
-.btn-text.xs { padding: var(--space-1) var(--space-6); border-radius: var(--radius-xs); font-size: var(--text-2xs); font-weight: var(--weight-bold); }
+.btn-text.xs { padding: var(--space-1) var(--space-8); border-radius: var(--radius-pill); font-size: var(--type-meta); font-weight: var(--weight-label); }
 .btn-text.accent { color: var(--accent-text); }
 .btn-text.accent:hover { background: var(--accent-container); color: var(--on-accent-container); }
 
@@ -89,7 +89,7 @@
 }
 .icon-btn:hover:not(:disabled) { background: var(--icon-btn-hover); color: var(--text-1); }
 .icon-btn.sm { width: var(--icon-button-size-sm); height: var(--icon-button-size-sm); }
-.icon-btn.xs { width: var(--icon-button-size-xs); height: var(--icon-button-size-xs); border-radius: var(--radius-md); }
+.icon-btn.xs { width: var(--icon-button-size-xs); height: var(--icon-button-size-xs); border-radius: var(--radius-pill); }
 .icon-btn.danger:hover:not(:disabled) { background: var(--danger-container); color: var(--danger); }
 .icon-btn.is-active { background: var(--accent-container); color: var(--on-accent-container); }
 

@@ -67,7 +67,6 @@ export const strings = {
     minutesSeconds: '{m}m {s}s'
   },
   status: {
-    ready: 'Ready',
     focusing: 'Focusing…',
     onBreak: 'On a break',
     paused: 'Paused'
@@ -113,8 +112,6 @@ export const strings = {
     upNext: 'Up next',
     moreTimerActions: 'Timer actions',
     noOpenTasks: 'No open tasks',
-    soundOnTooltip: 'Sound on',
-    soundOffTooltip: 'Sound off',
     sessionTasksTitle: 'Session tasks',
     addAnotherList: 'Add another task list',
     pickListPlaceholder: 'Choose a task list…',
@@ -153,7 +150,6 @@ export const strings = {
     windowTitle: 'Focus Space · Mini player',
     progress: 'Progress',
     upNext: 'Up next',
-    doneToday: 'Done today',
     noSessionLists: 'This session has no task lists yet. Add one in the app.',
     addToList: 'Add to list'
   },
@@ -169,7 +165,6 @@ export const strings = {
     deleteListTitle: 'Delete list?',
     untitledList: 'Task list',
     emptyLists: 'No lists yet. Create one to get started.',
-    tasksRemaining: { one: '{count} task remaining', other: '{count} tasks remaining' },
     completedOf: '{done} of {total} completed',
     emptyListPrompt: 'Pick or create a list in the sidebar to start tracking tasks.',
     emptyTasks: 'No tasks yet. Add your first one above.',
@@ -198,7 +193,8 @@ export const strings = {
     avgTimePerTask: 'Avg time per task',
     productiveDaysTitle: 'Most productive days of the week',
     completionLogsTitle: 'Task completion log',
-    emptyLogs: 'No completed tasks yet. Check off tasks during a session and your timing stats will show up here.'
+    emptyLogs: 'No completed tasks yet. Check off tasks during a session and your timing stats will show up here.',
+    emptyDays: 'No focus time yet. Finish a session and your week fills in here.'
   },
   goals: {
     deleteGoalTitle: 'Delete goal?',
@@ -615,7 +611,6 @@ export const strings = {
       goals: { title: 'Goals and landmarks', body: 'Break bigger goals into landmarks and tick them off as you go.' },
       rewards: { title: 'Treat yourself', body: 'Link rewards to sessions or goals. They unlock when you finish, then you claim them here.' },
       nav: { title: 'Get around', body: 'Jump between sections here. Your profile and settings live at the bottom.' },
-      status: { title: 'Always in view', body: 'Shows what the timer is doing, even from another page.' },
       mini: { title: 'Mini player', body: 'Keep a small timer on top of other windows while you work.' },
       alerts: { title: 'Alerts', body: 'Choose when we nudge you: when a phase ends and before scheduled sessions.' },
       help: { title: 'Help', body: 'Shortcuts, what’s new and this tour live here.' }

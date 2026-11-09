@@ -230,7 +230,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, dragProps, isDragging 
           </span>
           {/* Reads Complete, then Done; a goal with landmarks completes on its own. */}
           <Button
-            variant="primary"
+            variant="tonal"
             size="sm"
             className="goal-complete-btn"
             icon={<IconCheck size={14} strokeWidth={2.6} />}

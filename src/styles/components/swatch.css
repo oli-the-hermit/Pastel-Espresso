@@ -5,7 +5,7 @@
   --swatch-size: 36px;
   display: grid;
   grid-template-columns: repeat(var(--swatch-columns, 8), var(--swatch-size));
-  gap: var(--space-10);
+  gap: var(--space-8);
 }
 .swatch {
   position: relative;

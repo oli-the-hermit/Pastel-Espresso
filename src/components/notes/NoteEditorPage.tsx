@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
 import { useNotes } from '../../context/NotesContext';
 import { strings } from '../../constants/strings';
-import { Chip } from '../ui/Chip';
+import { cx } from '../../lib/cx';
 import { EmptyState } from '../ui/EmptyState';
 import { IconButton } from '../ui/IconButton';
 import { InlineTextArea } from '../ui/InlineTextArea';
@@ -111,8 +111,8 @@ export const NoteEditorPage: React.FC<NoteEditorPageProps> = ({ id, onBack, onDi
             onSave={title => void actions.run(() => updateNotes([id], { title }))}
           />
         </div>
-        <span role="status" aria-live="polite">
-          <Chip tone={saveState === 'error' ? undefined : 'accent'}>{status[saveState]}</Chip>
+        <span role="status" aria-live="polite" className={cx('note-editor-status', saveState === 'error' && 'is-error')}>
+          {status[saveState]}
         </span>
         <Menu items={menuFor(note).filter(item => item.key !== 'open')} ariaLabel={strings.notes.menu.moreActions} />
       </div>

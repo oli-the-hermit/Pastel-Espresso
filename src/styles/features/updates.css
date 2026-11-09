@@ -22,15 +22,15 @@
   background: var(--accent-container);
   color: var(--on-accent-container);
 }
-.update-card-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-6); }
-.update-card-title { font-size: var(--text-md); font-weight: var(--weight-bold); }
+.update-card-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-8); }
+.update-card-title { font-size: var(--type-body); font-weight: var(--weight-label); }
 .update-card-body,
-.update-status-text { font-size: var(--text-sm); color: var(--text-2); }
+.update-status-text { font-size: var(--type-meta); color: var(--text-2); }
 .update-card-status,
 .update-settings-status { display: flex; flex-direction: column; gap: var(--space-8); }
-.update-card-actions { display: flex; justify-content: flex-end; gap: var(--space-8); margin-top: var(--space-6); }
+.update-card-actions { display: flex; justify-content: flex-end; gap: var(--space-8); margin-top: var(--space-8); }
 
 /* Settings */
-.update-settings-ready { margin-top: var(--space-12); font-size: var(--text-md); font-weight: var(--weight-semibold); }
+.update-settings-ready { margin-top: var(--space-12); font-size: var(--type-body); font-weight: var(--weight-label); }
 .update-settings-status { margin-top: var(--space-12); }
 .update-settings-actions { margin-top: var(--space-12); }

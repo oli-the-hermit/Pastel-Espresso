@@ -5,6 +5,7 @@
   width: var(--checkbox-size);
   height: var(--checkbox-size);
   flex: none;
+  /* Exception (scale: a 20px box; 8px would read as a radio button) */
   border-radius: var(--radius-xs);
   background: transparent;
   box-shadow: inset 0 0 0 var(--ring-width) var(--text-3);
