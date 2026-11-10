@@ -1,0 +1,367 @@
+/* Component lab: lists, round 5. Unlayered, so these rules sit above the app's "app" layer.
+   Every size and colour is one of the app's tokens (src/styles/foundation/tokens.css).
+   One option now, A7: what rounds 1 to 4 settled, in one place. */
+
+/* ── The page ───────────────────────────────────────────── */
+html, body { height: auto; overflow: auto; }
+.lab {
+  max-width: 1760px;
+  margin: 0 auto;
+  padding: var(--space-32) var(--space-24) var(--space-48);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+}
+.lab-top { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: var(--space-16); }
+.lab-intro { display: flex; flex-direction: column; gap: var(--space-4); }
+.lab-title { font-size: var(--type-page); font-weight: var(--weight-title); line-height: var(--leading-tight); }
+.lab-sub { max-width: 68ch; font-size: var(--type-body); color: var(--text-2); }
+.lab-tools { display: flex; gap: var(--space-8); }
+.lab-tools [aria-pressed='true'] { background: var(--accent-container); color: var(--on-accent-container); }
+
+.lab-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 600px)); gap: var(--space-48); align-items: start; }
+@media (max-width: 1240px) {
+  .lab-grid { grid-template-columns: minmax(0, 560px); gap: var(--space-48); }
+}
+.lab-col { display: flex; flex-direction: column; gap: var(--space-12); min-width: 0; }
+.lab-col > [data-slot] { margin-bottom: var(--space-16); }
+.lab-col-head { display: flex; flex-direction: column; gap: var(--space-4); min-height: 4rem; }
+.lab-col-name { font-size: var(--type-title); font-weight: var(--weight-title); line-height: var(--leading-tight); }
+.lab-col-desc { font-size: var(--type-meta); color: var(--text-2); }
+.lab-narrow { max-width: 340px; }
+
+.lab-notes { display: flex; flex-direction: column; gap: var(--space-8); }
+.lab-notes ol,
+.lab-notes ul {
+  margin: 0;
+  padding-left: var(--space-20);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  font-size: var(--type-meta);
+  color: var(--text-2);
+}
+.lab-notes ol { list-style: decimal; }
+.lab-notes ul { list-style: disc; }
+.lab-notes b { color: var(--text-1); font-weight: var(--weight-label); }
+.lab-empty { font-size: var(--type-meta); color: var(--text-2); }
+
+.lab-toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-24);
+  transform: translate(-50%, var(--space-8));
+  max-width: calc(100vw - var(--space-48));
+  padding: var(--space-12) var(--space-20);
+  border-radius: var(--radius-pill);
+  background: var(--surface-4);
+  color: var(--text-1);
+  font-size: var(--type-meta);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition), transform var(--transition);
+}
+.lab-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+/* The page redraws a column after every action: only the box just ticked plays the app's pop. */
+.lab-col .checkbox:checked:not(.is-fresh) { animation: none; }
+.lab-meta { display: flex; align-items: center; gap: var(--space-8); min-width: 0; white-space: nowrap; overflow: hidden; }
+.lab-meta-item { display: inline-flex; align-items: center; gap: var(--space-4); }
+/* The app's picker sizes itself from its Popover; here it gets a width. */
+.list-picker { width: min(21rem, calc(100vw - var(--space-16))); }
+
+/* ── The check box: an empty hole ────────────────────────── */
+/* Empty: the app's 20px box filled a step darker than anything it sits on (the tone the grip
+   had), with a soft hairline rim (below). Ticked: the accent, as it is today. Its click
+   area is 36px. */
+.lab-check {
+  position: relative;
+  background: var(--grip-color);
+  box-shadow: none;
+}
+.lab-check::before { content: ''; position: absolute; inset: calc(var(--space-8) * -1); }
+.lab-check:hover { box-shadow: none; }
+/* Pointing at the hole previews the tick. */
+.lab-check:not(:checked):hover::after {
+  content: '';
+  width: 14px;
+  height: 14px;
+  background: var(--text-2);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.lab-check:checked,
+.lab-check:checked:hover { background: var(--accent); }
+/* A hairline rim, deliberately soft: the row's tone with a little of the mid grey mixed in.
+   It doesn't reach 3:1; it only firms up the hole's edge. */
+.lab-check { --check-rim: color-mix(in oklab, var(--text-3) 35%, var(--surface-2)); }
+.lab-check:not(:checked),
+.lab-check:not(:checked):hover { box-shadow: inset 0 0 0 var(--hairline) var(--check-rim); }
+
+/* ── A card's title block ────────────────────────────────── */
+/* Every card starts the same way: a band one surface step up, holding the overline (in the
+   accent, as text), the card's menu on the same line, and the title under it. The overline
+   and the title are one unit: 8px apart, and clearly more room under the title. A title too
+   long for the card is cut with an ellipsis at the band's padding, the same right as left. */
+.la-card { padding: 0; overflow: hidden; }
+.la-cardhead { padding: var(--space-24) var(--space-24) var(--space-20); background: var(--surface-2); }
+.la-cardbody { padding: var(--space-20) var(--space-24) var(--space-24); }
+.la-card .card-header { margin-bottom: 0; }
+.la-card .card-header-main { margin-top: calc(var(--space-8) * -1); }
+.la-card .overline { color: var(--accent-text); }
+
+/* ── The list ────────────────────────────────────────────── */
+/* One grid for every line: the lead column holds the chevron, the check boxes and the plus;
+   the next holds the list's name, the tasks and the field's text. */
+.la-lists { display: flex; flex-direction: column; gap: var(--space-32); }
+.la-list { display: flex; flex-direction: column; gap: var(--space-12); border-radius: var(--radius-md); }
+
+/* The heading: the list's name as type, with no fill. Everything but its menu folds the list. */
+.la-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: var(--icon-button-size);
+  padding: 0 var(--space-4) 0 var(--space-16);
+  border-radius: var(--radius-md);
+  transition: background var(--transition);
+}
+.la-head:hover { background: var(--surface-2); }
+.la-toggle {
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+}
+.la-caret {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--space-16);
+  height: var(--space-16);
+  color: var(--text-2);
+  transition: transform var(--transition-md);
+}
+.la-toggle[aria-expanded='true'] .la-caret { transform: rotate(90deg); }
+.la-name {
+  min-width: 0;
+  font-size: var(--type-heading);
+  font-weight: var(--weight-title);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.la-count {
+  flex: none;
+  margin-left: auto;
+  font-size: var(--type-meta);
+  font-weight: var(--weight-label);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rows are raised: one step above the card (surface 2), another step when pointed at
+   (surface 3). Tasks and sessions share the tone. What is empty and waiting for you (the
+   check box, the field) is recessed instead. */
+.la-rows { display: flex; flex-direction: column; gap: var(--space-4); }
+.la-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: var(--button-height-lg);
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-16);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  transition: background var(--transition), color var(--transition);
+}
+/* Keyboard focus lights the row as pointing does; a mouse click that leaves focus inside does not. */
+.la-row:hover,
+.la-row:focus-visible,
+.la-row:has(:focus-visible) { background: var(--surface-3); }
+.la-text { flex: 1; min-width: 0; font-size: var(--type-body); word-break: break-word; }
+.la-row.done .la-text { color: var(--text-2); text-decoration: line-through; }
+/* Quiet at rest; the button's own hover colours apply when it is pointed at. */
+.la-more:not(:hover) { color: var(--text-3); }
+
+/* A session: the same row with a second line and the room a two-line row needs. */
+.la-rows--two { gap: var(--space-8); }
+.la-row--two { padding-block: var(--space-16); cursor: pointer; }
+.la-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+.la-title {
+  font-size: var(--type-body);
+  font-weight: var(--weight-label);
+  line-height: var(--leading-snug);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.la-meta { font-size: var(--type-meta); color: var(--text-2); }
+/* Selected: the tint alone says it. */
+.la-row.is-active,
+.la-row.is-active:hover { background: var(--accent-container); color: var(--on-accent-container); }
+.la-row.is-active .la-meta,
+.la-row.is-active .la-more:not(:hover) { color: var(--on-accent-container); }
+/* Its menu button, pointed at: the light disc with dark dots (round 2 left the dots the
+   disc's own colour, so the disc looked empty). */
+.la-row.is-active .la-more:hover { background: var(--on-accent-container); color: var(--accent-container); }
+/* A list ends with its "new" button, as the task card ends with "Add task list". */
+.la-foot { margin-top: var(--space-24); }
+
+/* The field is a well, like the check box: recessed below the card, where rows are raised
+   above it, so "type here" never looks like a task. */
+.la-add {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: var(--button-height-lg);
+  margin-top: var(--space-4);
+  padding: 0 var(--space-8) 0 var(--space-16);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  color: var(--text-2);
+  transition: box-shadow var(--transition);
+}
+.la-add:focus-within { box-shadow: inset 0 0 0 var(--ring-width) var(--focus-ring); }
+.la-add-icon { flex: none; display: grid; place-items: center; width: var(--space-16); }
+.la-add-input {
+  flex: 1;
+  min-width: 0;
+  height: var(--button-height-sm);
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--type-body);
+  color: var(--text-1);
+}
+.la-add-input::placeholder { color: var(--text-2); }
+/* The button is for the mouse; it appears once there is something to add. */
+.la-add-btn { display: none; }
+.la-add.has-text .la-add-btn { display: inline-flex; }
+
+/* ── The grip ────────────────────────────────────────────── */
+/* Outside the row, centred in the card's margin (8px clear on each side), shown while
+   the row is pointed at or has keyboard focus. Its box fills the margin, so moving from the row to the
+   grip never leaves the row. Always shown where there is no hover (touch). */
+.la-grip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 100%;
+  width: var(--space-24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.la-row:hover > .la-grip,
+.la-row:focus-visible > .la-grip,
+.la-row:has(:focus-visible) > .la-grip,
+.la-head:hover > .la-grip,
+.la-head:has(:focus-visible) > .la-grip { opacity: 1; }
+@media (hover: none) {
+  .la-grip { opacity: 1; }
+}
+
+/* ── The list picker, by the list's rules ───────────────── */
+/* A small card, one surface step below the app's menus (surface 2), so it has the cards'
+   own ladder: the band and the rows one step up (3), a highlighted row one more (4), and
+   the search recessed (1), because an empty field is a well. No box around the lists. */
+.lp { --popover-bg: var(--surface-2); --popover-radius: var(--radius-xl); width: min(21rem, calc(100vw - var(--space-16))); }
+/* The title starts on the rows' icon column. */
+.lp-band {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-12) var(--space-12) calc(var(--space-12) + var(--space-16));
+  background: var(--surface-3);
+}
+.lp-title { flex: 1; min-width: 0; font-size: var(--type-heading); font-weight: var(--weight-title); line-height: var(--leading-tight); }
+.lp-body { display: flex; flex-direction: column; gap: var(--space-12); padding: var(--space-12); }
+/* The search: its icon and text on the same two columns as a row's. Its right padding centres
+   the clear button in the pill's end. */
+.lp-search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  height: var(--button-height);
+  padding: 0 calc((var(--button-height) - var(--icon-button-size-xs)) / 2) 0 var(--space-16);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--text-2);
+  transition: box-shadow var(--transition);
+}
+.lp-search:focus-within { box-shadow: inset 0 0 0 var(--ring-width) var(--focus-ring); }
+.lp-search input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--type-body);
+  color: var(--text-1);
+}
+.lp-search input::placeholder { color: var(--text-2); }
+/* Clear: in the accent, like the ring the field has while you type in it. It is there only
+   once something is typed; its place is kept, so the text never shifts. */
+.lp-clear,
+.lp-clear:hover:not(:disabled) { flex: none; color: var(--accent-text); }
+.lp-search:not(.has-text) .lp-clear { visibility: hidden; }
+/* The lists scroll in a fixed height, like the app's, so the picker doesn't jump as the
+   search narrows them. The scroll bar stays inside the body's padding, as far from the
+   picker's right edge as the rows are from its left. Rows give it room (and 4px of air)
+   only when there is one; with a few lists they keep the search's full width. */
+.lp-scroll { height: var(--list-picker-height); overflow-y: auto; }
+.lp-scroll.has-overflow { padding-right: var(--space-4); }
+.lp-scroll > ul { display: flex; flex-direction: column; gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
+/* Rows that scroll past the top or bottom are cut on a rounded corner, the rows' own, not
+   a square one: a frame the size of the scroll area stays put and paints only what lies
+   outside its rounded corners, in the picker's own colour. No border and no fill. */
+.lp-scroll::before {
+  content: '';
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: block;
+  height: var(--list-picker-height);
+  margin-bottom: calc(var(--list-picker-height) * -1);
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 0 var(--space-12) var(--popover-bg);
+  pointer-events: none;
+}
+/* A row: the list's icon (no tile), centred on the two lines of text. */
+.lp-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-md);
+  background: var(--surface-3);
+  color: var(--text-1);
+  text-align: left;
+  transition: background var(--transition);
+}
+.lp-row.is-highlighted { background: var(--surface-4); }
+.lp-icon { flex: none; display: grid; place-items: center; width: var(--space-16); color: var(--text-2); }
+.lp-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.lp-name { overflow: hidden; font-size: var(--type-body); font-weight: var(--weight-label); line-height: var(--leading-snug); white-space: nowrap; text-overflow: ellipsis; }
+.lp-meta { font-size: var(--type-meta); color: var(--text-2); font-variant-numeric: tabular-nums; }
+.lp-empty { padding: var(--space-16); font-size: var(--type-meta); color: var(--text-2); }
+/* The same neutral pill that ends every list ("Add task list", "New session"). */
+.lp-create.is-highlighted { background: var(--btn-fill-hover); }
+
+/* Shown open in the page (not as a popover). */
+.lab-inline { position: static; z-index: auto; animation: none; }

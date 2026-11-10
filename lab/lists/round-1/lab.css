@@ -1,0 +1,325 @@
+/* Component lab: lists. Unlayered, so these rules sit above the app's "app" layer.
+   Every size and colour is one of the app's tokens (src/styles/foundation/tokens.css). */
+
+/* ── The page ───────────────────────────────────────────── */
+html, body { height: auto; overflow: auto; }
+.lab {
+  max-width: 1760px;
+  margin: 0 auto;
+  padding: var(--space-32) var(--space-24) var(--space-48);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+}
+.lab-top { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: var(--space-16); }
+.lab-intro { display: flex; flex-direction: column; gap: var(--space-4); }
+.lab-title { font-size: var(--type-page); font-weight: var(--weight-title); line-height: var(--leading-tight); }
+.lab-sub { max-width: 68ch; font-size: var(--type-body); color: var(--text-2); }
+.lab-tools { display: flex; gap: var(--space-8); }
+.lab-tools [aria-pressed='true'] { background: var(--accent-container); color: var(--on-accent-container); }
+
+.lab-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-32); align-items: start; }
+@media (max-width: 1240px) {
+  .lab-grid { grid-template-columns: minmax(0, 560px); gap: var(--space-48); }
+}
+.lab-col { display: flex; flex-direction: column; gap: var(--space-12); min-width: 0; }
+.lab-col > [data-slot] { margin-bottom: var(--space-16); }
+.lab-col-head { display: flex; flex-direction: column; gap: var(--space-4); min-height: 4rem; }
+.lab-col-name { font-size: var(--type-title); font-weight: var(--weight-title); line-height: var(--leading-tight); }
+.lab-col-desc { font-size: var(--type-meta); color: var(--text-2); }
+.lab-narrow { max-width: 340px; }
+
+.lab-notes { display: flex; flex-direction: column; gap: var(--space-8); }
+.lab-notes ol {
+  margin: 0;
+  padding-left: var(--space-20);
+  list-style: decimal;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  font-size: var(--type-meta);
+  color: var(--text-2);
+}
+.lab-empty { font-size: var(--type-meta); color: var(--text-2); }
+
+.lab-toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-24);
+  transform: translate(-50%, var(--space-8));
+  max-width: calc(100vw - var(--space-48));
+  padding: var(--space-12) var(--space-20);
+  border-radius: var(--radius-pill);
+  background: var(--surface-4);
+  color: var(--text-1);
+  font-size: var(--type-meta);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition), transform var(--transition);
+}
+.lab-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+/* ── Shared by both options ─────────────────────────────── */
+/* The quiet check box: a smaller box with a hairline outline, so the task's text leads.
+   Its click area stays 32px. */
+.lab-check {
+  --checkbox-size: var(--space-16);
+  position: relative;
+  border-radius: var(--radius-2xs);
+  box-shadow: inset 0 0 0 var(--hairline) var(--text-3);
+}
+.lab-check::before { content: ''; position: absolute; inset: calc(var(--space-8) * -1); }
+.lab-check:hover { box-shadow: inset 0 0 0 var(--hairline) var(--text-1); }
+.lab-check:checked { box-shadow: none; }
+.lab-check:checked::after { width: var(--space-12); height: var(--space-12); }
+/* Ticked is a state, not an action: the soft tint, not the solid accent. */
+.lab-check--tonal:checked { background-color: var(--accent-container); }
+.lab-check--tonal:checked::after { background: var(--on-accent-container); }
+/* The page redraws a column after every action: only the box just ticked plays the app's pop. */
+.lab-col .checkbox:checked:not(.is-fresh) { animation: none; }
+
+.lab-meta { display: flex; align-items: center; gap: var(--space-8); min-width: 0; white-space: nowrap; overflow: hidden; }
+.lab-meta-item { display: inline-flex; align-items: center; gap: var(--space-4); }
+
+/* ── Option A: stacked lists that fold ──────────────────── */
+/* One grid for the whole list: the chevron, the check boxes and the plus share the lead
+   column; the list's name, the tasks and the field's text share the next. */
+.la-lists { display: flex; flex-direction: column; gap: var(--space-32); }
+.la-list { display: flex; flex-direction: column; gap: var(--space-12); border-radius: var(--radius-md); }
+
+/* The heading: the list's name as type, with no fill. The whole name folds the list. */
+.la-head { display: flex; align-items: center; gap: var(--space-4); padding-right: var(--space-4); }
+.la-toggle {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: var(--icon-button-size);
+  padding: 0 var(--space-12);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition);
+}
+.la-toggle:hover { background: var(--surface-2); }
+.la-caret {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--space-16);
+  height: var(--space-16);
+  color: var(--text-2);
+  transition: transform var(--transition-md);
+}
+.la-toggle[aria-expanded='true'] .la-caret { transform: rotate(90deg); }
+.la-name {
+  min-width: 0;
+  font-size: var(--type-heading);
+  font-weight: var(--weight-title);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.la-count {
+  flex: none;
+  margin-inline: var(--space-8);
+  font-size: var(--type-meta);
+  font-weight: var(--weight-label);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rows: the only filled things in the list, one tone for tasks and sessions. */
+.la-rows { display: flex; flex-direction: column; gap: var(--space-4); }
+.la-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: var(--button-height-lg);
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-12);
+  border-radius: var(--radius-md);
+  background: var(--row-bg);
+  transition: background var(--transition), color var(--transition);
+}
+.la-row:hover,
+.la-row:focus-within { background: var(--row-hover); }
+.la-text { flex: 1; min-width: 0; font-size: var(--type-body); word-break: break-word; }
+.la-row.done .la-text { color: var(--text-2); text-decoration: line-through; }
+
+/* The grip: visible grey, at the row's end, only while the row is pointed at or focused. */
+.la-grip { flex: none; width: auto; padding: var(--space-8) var(--space-4); color: var(--text-3); opacity: 0; transition: opacity var(--transition); }
+.la-row:hover > .la-grip,
+.la-row:focus-within > .la-grip,
+.la-head:hover > .la-grip,
+.la-head:focus-within > .la-grip { opacity: 1; }
+.la-more { color: var(--text-3); }
+
+/* A session: the same row with a second line. */
+.la-row--two { padding-block: var(--space-8); cursor: pointer; }
+.la-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.la-title {
+  font-size: var(--type-body);
+  font-weight: var(--weight-label);
+  line-height: var(--leading-snug);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.la-meta { font-size: var(--type-meta); color: var(--text-2); }
+.la-playing { flex: none; display: grid; }
+.la-row.is-active,
+.la-row.is-active:hover { background: var(--accent-container); color: var(--on-accent-container); }
+.la-row.is-active .la-meta,
+.la-row.is-active .la-grip,
+.la-row.is-active .la-more { color: var(--on-accent-container); }
+
+/* The field: raised where rows are recessed, so "type here" never looks like a task. */
+.la-add {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: var(--button-height-lg);
+  margin-top: var(--space-4);
+  padding: 0 var(--space-8) 0 var(--space-12);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text-2);
+  transition: background var(--transition), box-shadow var(--transition);
+}
+.la-add:focus-within { box-shadow: inset 0 0 0 var(--ring-width) var(--focus-ring); }
+
+/* ── Option B: lists as tabs, flat rows ─────────────────── */
+.lb-bar { display: flex; align-items: flex-start; gap: var(--space-8); }
+.lb-bar > .icon-btn { flex: none; margin-right: var(--space-4); }
+.lb-tabs { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+.lb-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  max-width: 100%;
+  height: var(--button-height-sm);
+  padding: 0 var(--space-12);
+  border-radius: var(--radius-pill);
+  font-size: var(--type-body);
+  font-weight: var(--weight-label);
+  color: var(--text-2);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition), color var(--transition);
+}
+.lb-tab:hover { background: var(--surface-2); color: var(--text-1); }
+.lb-tab.is-active,
+.lb-tab.is-active:hover { background: var(--accent-container); color: var(--on-accent-container); }
+.lb-tab-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.lb-tab-count { display: inline-grid; place-items: center; font-size: var(--type-meta); font-variant-numeric: tabular-nums; }
+/* Tabs reorder sideways: the drop mark is at the tab's side. */
+.lb-tab.drag-over { box-shadow: inset var(--ring-width-lg) 0 0 var(--accent); }
+.lb-tab-add { color: var(--text-2); }
+.lb-progress { margin-block: var(--space-12) var(--space-8); }
+
+/* Rows have no fill at rest; their hover fill runs a little past the text on both sides, so
+   the check boxes start exactly at the card's edge, under the session's name. */
+.lb-rows { display: flex; flex-direction: column; gap: var(--space-2); margin-inline: calc(var(--space-8) * -1); }
+.lb-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: var(--button-height);
+  padding: var(--space-4) var(--space-12) var(--space-4) var(--space-8);
+  border-radius: var(--radius-md);
+  transition: background var(--transition), color var(--transition);
+}
+.lb-row:hover,
+.lb-row:focus-within { background: var(--surface-2); }
+.lb-text { flex: 1; min-width: 0; font-size: var(--type-body); word-break: break-word; }
+.lb-row.done .lb-text { color: var(--text-2); text-decoration: line-through; }
+
+/* The grip waits in the card's margin and the menu at the row's end; both show on hover
+   or focus, and always where there is no hover (touch). */
+.lb-grip {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  width: auto;
+  padding: var(--space-8) var(--space-4);
+  color: var(--text-3);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.lb-more { opacity: 0; transition: opacity var(--transition); }
+.lb-row:hover > .lb-grip,
+.lb-row:focus-within > .lb-grip,
+.lb-row:hover .lb-more,
+.lb-row:focus-within .lb-more,
+.lb-more[aria-expanded='true'] { opacity: 1; }
+/* A session's last slot: the playing mark at rest, the menu in its place on hover or focus. */
+.la-trail { flex: none; display: grid; }
+.lb-trail { flex: none; display: grid; place-items: center; }
+.lb-trail > * { grid-area: 1 / 1; }
+.lb-playing { transition: opacity var(--transition); }
+.lb-row:hover .lb-playing,
+.lb-row:focus-within .lb-playing { opacity: 0; }
+@media (hover: none) {
+  .lb-more, .la-grip { opacity: 1; }
+  .lb-playing { opacity: 0; }
+}
+
+/* A session: the same row with a second line. */
+.lb-row--two { padding-block: var(--space-8); cursor: pointer; }
+.lb-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.lb-title {
+  font-size: var(--type-body);
+  font-weight: var(--weight-label);
+  line-height: var(--leading-snug);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lb-meta { font-size: var(--type-meta); color: var(--text-2); }
+.lb-row.is-active,
+.lb-row.is-active:hover { background: var(--accent-container); color: var(--on-accent-container); }
+.lb-row.is-active .lb-meta { color: var(--on-accent-container); }
+
+/* Adding is the list's last row: the plus sits in the check boxes' column. */
+.lb-add {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: var(--button-height);
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-md);
+  color: var(--text-2);
+  transition: background var(--transition), box-shadow var(--transition);
+}
+.lb-add:hover { background: var(--surface-2); }
+.lb-add:focus-within { background: var(--surface-2); box-shadow: inset 0 0 0 var(--ring-width) var(--focus-ring); }
+.lb-none { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-12); font-size: var(--type-body); color: var(--text-2); }
+
+/* The add row's parts, the same in both options. */
+.la-add-icon,
+.lb-add-icon { flex: none; display: grid; place-items: center; width: var(--space-16); }
+.la-add-input,
+.lb-add-input {
+  flex: 1;
+  min-width: 0;
+  height: var(--button-height-sm);
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--type-body);
+  color: var(--text-1);
+}
+.la-add-input::placeholder,
+.lb-add-input::placeholder { color: var(--text-2); }
+/* The button is for the mouse; it appears once there is something to add. */
+.la-add-btn,
+.lb-add-btn { display: none; }
+.la-add.has-text .la-add-btn,
+.lb-add.has-text .lb-add-btn { display: inline-flex; }

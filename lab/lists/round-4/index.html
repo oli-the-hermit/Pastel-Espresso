@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en" data-theme="dark" style="color-scheme: dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Component lab: lists, round 4</title>
+  <link rel="icon" href="data:,">
+  <!-- The app's own font, tokens and component styles: "Current" is the real thing. -->
+  <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/geist/index.css">
+  <link rel="stylesheet" href="../../../src/index.css">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <main class="lab">
+    <header class="lab-top">
+      <div class="lab-intro">
+        <span class="overline">Component lab · round 4</span>
+        <h1 class="lab-title">Lists, round 4</h1>
+        <p class="lab-sub">
+          A4 from round 3 with a softer rim on the check box, and the list picker redesigned
+          by the list's own rules. Each picker is also shown open under its column, so the
+          three can be compared without opening them. Everything is live.
+        </p>
+      </div>
+      <div class="lab-tools">
+        <a class="btn-action sm" href="../index.html">Latest round</a>
+        <button type="button" class="btn-action sm" id="themeDark" aria-pressed="true">Dark</button>
+        <button type="button" class="btn-action sm" id="themeLight" aria-pressed="false">Light</button>
+        <button type="button" class="btn-action sm" id="reset">Reset</button>
+      </div>
+    </header>
+
+    <div class="lab-grid">
+      <section class="lab-col" data-variant="cur">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">Current</h2>
+          <p class="lab-col-desc">The list as it is in 1.4, with the app's own styles.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <span class="overline">List picker (opens from "Add another task list")</span>
+        <div data-slot="picker"></div>
+        <div class="lab-notes">
+          <span class="overline">What testing showed</span>
+          <ol>
+            <li>The list's name is a field: the same pill, fill and overline as the things inside it.</li>
+            <li>Three chevrons with three meanings: pick a list, fold the list, add a list.</li>
+            <li>The grip is darker than its row, so it reads as a gap, and row text starts further right than the header's.</li>
+            <li>The check box's outline is the strongest mark in the row.</li>
+            <li>"Add another task list" reads as a link, and its chevron as a dropdown.</li>
+            <li>Session rows are raised and task rows recessed; session tools are loose icons, task tools a menu.</li>
+            <li>The picker boxes its lists in a sunken panel, repeats one icon on every row, and its "New task list" is a lime row unlike any other button.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="lab-col la--band la--gutter la--rim-row" data-variant="a5">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">A5: rim near the row, picker as a menu</h2>
+          <p class="lab-col-desc">The rim starts from the row's tone. The picker is compact: one line a list.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <span class="overline">List picker (opens from "Add task list")</span>
+        <div data-slot="picker"></div>
+        <div class="lab-notes">
+          <span class="overline">Only in A5</span>
+          <ul>
+            <li><b>Rim:</b> the row's tone with a little grey mixed in. In dark it reads as a soft lip, lighter than the row.</li>
+            <li><b>Picker:</b> on the popover's usual surface, like the app's menus. The title sits on a band, the search is a well under it, and rows have no fill until highlighted. One line a list: seven fit where four did.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="lab-col la--band la--gutter la--rim-hole" data-variant="a6">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">A6: rim near the hole, picker as a card</h2>
+          <p class="lab-col-desc">The rim starts from the hole's tone. The picker is built like the cards: raised two-line rows.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <span class="overline">List picker (opens from "Add task list")</span>
+        <div data-slot="picker"></div>
+        <div class="lab-notes">
+          <span class="overline">Only in A6</span>
+          <ul>
+            <li><b>Rim:</b> the hole's tone with a little grey mixed in: the hole's own edge, softened.</li>
+            <li><b>Picker:</b> a small card, one surface step down, so it has the cards' ladder. The band holds the title and the search; each list is a raised two-line row, like a session.</li>
+          </ul>
+        </div>
+        <div class="lab-notes">
+          <span class="overline">In both pickers</span>
+          <ul>
+            <li>No box around the lists and no icon tile on every row.</li>
+            <li>The title on a band, as on the cards.</li>
+            <li>The search is a well: empty things are recessed.</li>
+            <li>"New task list" is the neutral pill that ends every list; typing a new name turns it into "Create …".</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="lab-toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="lab.js"></script>
+</body>
+</html>

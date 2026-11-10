@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" data-theme="dark" style="color-scheme: dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Component lab: lists, round 1</title>
+  <link rel="icon" href="data:,">
+  <!-- The app's own font, tokens and component styles: "Current" is the real thing. -->
+  <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/geist/index.css">
+  <link rel="stylesheet" href="../../../src/index.css">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <main class="lab">
+    <header class="lab-top">
+      <div class="lab-intro">
+        <span class="overline">Component lab</span>
+        <h1 class="lab-title">Lists, round 1</h1>
+        <p class="lab-sub">
+          The current list next to two options, on the app's own tokens. Everything is live:
+          tick, add, fold, drag to reorder, open the menus. Each column keeps its own data.
+        </p>
+      </div>
+      <div class="lab-tools">
+        <a class="btn-action sm" href="../index.html">Latest round</a>
+        <button type="button" class="btn-action sm" id="themeDark" aria-pressed="true">Dark</button>
+        <button type="button" class="btn-action sm" id="themeLight" aria-pressed="false">Light</button>
+        <button type="button" class="btn-action sm" id="reset">Reset</button>
+      </div>
+    </header>
+
+    <div class="lab-grid">
+      <section class="lab-col" data-variant="cur">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">Current</h2>
+          <p class="lab-col-desc">The list as it is in 1.4, with the app's own styles.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <div class="lab-notes">
+          <span class="overline">What testing showed</span>
+          <ol>
+            <li>The list's name is a field: the same pill, fill and overline as the things inside it.</li>
+            <li>Three chevrons with three meanings: pick a list, fold the list, add a list.</li>
+            <li>The grip is darker than its row, so it reads as a gap, and row text starts further right than the header's.</li>
+            <li>The check box's outline is the strongest mark in the row.</li>
+            <li>"Add another task list" reads as a link, and its chevron as a dropdown.</li>
+            <li>Session rows are raised and task rows recessed; session tools are loose icons, task tools a menu.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="lab-col" data-variant="a">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">Option A: tidy</h2>
+          <p class="lab-col-desc">The same structure, each control with one job. Lists stay stacked and fold.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <div class="lab-notes">
+          <span class="overline">What changed</span>
+          <ol>
+            <li>The list's name is a heading, not a field. Only rows are filled, so parent and child differ by type and by surface.</li>
+            <li>One chevron: it leads the heading and folds the list. Switching the list moved into the list's menu.</li>
+            <li>No grip gap: the chevron, check boxes and plus share one column, names share the next. The grip shows on hover, at the row's end.</li>
+            <li>A smaller check box with a hairline outline, so the text leads.</li>
+            <li>"Add task list" is a plain button that opens the picker.</li>
+            <li>Sessions use the same row: one tone, one menu, the same grip.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="lab-col" data-variant="b">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">Option B: tabs</h2>
+          <p class="lab-col-desc">One list in view at a time. Nothing folds, so nothing needs a chevron.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <div class="lab-notes">
+          <span class="overline">What changed</span>
+          <ol>
+            <li>Lists are tabs under the session's name: clearly the parent, with the tasks left to do as a count.</li>
+            <li>No chevrons at all. A tab shows its list; the other lists wait behind their tabs.</li>
+            <li>Rows are flat and start at the card's edge. The grip appears in the margin on hover.</li>
+            <li>The quiet check box; a ticked one is a soft tint, since "done" isn't an action.</li>
+            <li>A plus after the last tab adds a list, as in a browser.</li>
+            <li>Sessions use the same flat row; tools appear on hover in one menu.</li>
+          </ol>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="lab-toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="lab.js"></script>
+</body>
+</html>

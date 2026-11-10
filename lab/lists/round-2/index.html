@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" data-theme="dark" style="color-scheme: dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Component lab: lists, round 2</title>
+  <link rel="icon" href="data:,">
+  <!-- The app's own font, tokens and component styles: "Current" is the real thing. -->
+  <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/geist/index.css">
+  <link rel="stylesheet" href="../../../src/index.css">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <main class="lab">
+    <header class="lab-top">
+      <div class="lab-intro">
+        <span class="overline">Component lab · round 2</span>
+        <h1 class="lab-title">Lists, round 2</h1>
+        <p class="lab-sub">
+          Two variants of Option A, built from the round 1 notes, next to the current list.
+          Everything is live: tick, add, fold, drag to reorder, open the menus, search the
+          list picker. Each column keeps its own data.
+        </p>
+      </div>
+      <div class="lab-tools">
+        <a class="btn-action sm" href="../index.html">Latest round</a>
+        <button type="button" class="btn-action sm" id="themeDark" aria-pressed="true">Dark</button>
+        <button type="button" class="btn-action sm" id="themeLight" aria-pressed="false">Light</button>
+        <button type="button" class="btn-action sm" id="reset">Reset</button>
+      </div>
+    </header>
+
+    <div class="lab-grid">
+      <section class="lab-col" data-variant="cur">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">Current</h2>
+          <p class="lab-col-desc">The list as it is in 1.4, with the app's own styles.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <div class="lab-notes">
+          <span class="overline">What testing showed</span>
+          <ol>
+            <li>The list's name is a field: the same pill, fill and overline as the things inside it.</li>
+            <li>Three chevrons with three meanings: pick a list, fold the list, add a list.</li>
+            <li>The grip is darker than its row, so it reads as a gap, and row text starts further right than the header's.</li>
+            <li>The check box's outline is the strongest mark in the row.</li>
+            <li>"Add another task list" reads as a link, and its chevron as a dropdown.</li>
+            <li>Session rows are raised and task rows recessed; session tools are loose icons, task tools a menu.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="lab-col la--band la--inside" data-variant="a1">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">A1: band, grip in the row</h2>
+          <p class="lab-col-desc">The title block on its own surface. The grip where it was, in a grey you can see.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <div class="lab-notes">
+          <span class="overline">Only in A1</span>
+          <ul>
+            <li><b>Title:</b> the overline and title sit on a band one surface step up, across the card's top. Every card can use it.</li>
+            <li><b>Grip:</b> at the row's leading edge, always visible. It is the grid's first column: grip, then check box, then text. The list's heading keeps the column and shows its grip on hover.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="lab-col la--colour la--gutter" data-variant="a2">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">A2: colour, grip in the margin</h2>
+          <p class="lab-col-desc">The overline in the accent. The grip appears beside the row, on hover.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <div class="lab-notes">
+          <span class="overline">Only in A2</span>
+          <ul>
+            <li><b>Title:</b> no new surface. The overline takes the accent as text, and space does the rest.</li>
+            <li><b>Grip:</b> outside the row, centred in the card's margin with 8px clear on each side, shown on hover or keyboard focus. Rows start with the check box.</li>
+          </ul>
+        </div>
+        <div class="lab-notes">
+          <span class="overline">In both</span>
+          <ul>
+            <li>Half the gap between overline and title, so they read as one block.</li>
+            <li>Check boxes: a grey fill, no outline. Ticked stays the accent.</li>
+            <li>Sessions: 16px padding, 8px between rows, no bars icon; the tint marks the selected one.</li>
+            <li>"Add task list" and "Switch list…" open the app's picker, with its search.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="lab-toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="lab.js"></script>
+</body>
+</html>

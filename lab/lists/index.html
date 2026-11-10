@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" data-theme="dark" style="color-scheme: dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Component lab: lists</title>
+  <link rel="icon" href="data:,">
+  <!-- The app's own font, tokens and component styles: "Current" is the real thing. -->
+  <link rel="stylesheet" href="../../node_modules/@fontsource-variable/geist/index.css">
+  <link rel="stylesheet" href="../../src/index.css">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <main class="lab">
+    <header class="lab-top">
+      <div class="lab-intro">
+        <span class="overline">Component lab · round 5</span>
+        <h1 class="lab-title">Lists</h1>
+        <p class="lab-sub">
+          One option now: everything rounds 1 to 4 settled, next to the current list.
+          Everything is live: tick, add, fold, drag to reorder, open the menus, search the
+          picker. The picker is also shown open under each column.
+        </p>
+      </div>
+      <div class="lab-tools">
+        <a class="btn-action sm" href="round-1/index.html">Round 1</a>
+        <a class="btn-action sm" href="round-2/index.html">Round 2</a>
+        <a class="btn-action sm" href="round-3/index.html">Round 3</a>
+        <a class="btn-action sm" href="round-4/index.html">Round 4</a>
+        <button type="button" class="btn-action sm" id="themeDark" aria-pressed="true">Dark</button>
+        <button type="button" class="btn-action sm" id="themeLight" aria-pressed="false">Light</button>
+        <button type="button" class="btn-action sm" id="reset">Reset</button>
+      </div>
+    </header>
+
+    <div class="lab-grid">
+      <section class="lab-col" data-variant="cur">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">Current</h2>
+          <p class="lab-col-desc">The list as it is in 1.4, with the app's own styles.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <span class="overline">List picker (opens from "Add another task list")</span>
+        <div data-slot="picker"></div>
+        <div class="lab-notes">
+          <span class="overline">What testing showed</span>
+          <ol>
+            <li>The list's name is a field: the same pill, fill and overline as the things inside it.</li>
+            <li>Three chevrons with three meanings: pick a list, fold the list, add a list.</li>
+            <li>The grip is darker than its row, so it reads as a gap, and row text starts further right than the header's.</li>
+            <li>The check box's outline is the strongest mark in the row.</li>
+            <li>"Add another task list" reads as a link, and its chevron as a dropdown.</li>
+            <li>Session rows are raised and task rows recessed; session tools are loose icons, task tools a menu.</li>
+            <li>The picker boxes its lists in a sunken panel, puts one icon in a tile on every row, and its "New task list" is a lime row unlike any other button.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="lab-col" data-variant="a7">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">A7</h2>
+          <p class="lab-col-desc">The list, the sessions card and the picker on one set of rules.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <span class="overline">List picker (opens from "Add task list")</span>
+        <div data-slot="picker"></div>
+        <div class="lab-notes">
+          <span class="overline">The rules</span>
+          <ul>
+            <li><b>Title block:</b> every card starts with a band one surface step up. On it: the overline in the accent, the card's menu on the same line, the title 8px under. A long title is cut with an ellipsis at the band's padding.</li>
+            <li><b>Surfaces:</b> rows are raised one step above what they sit on, one more when pointed at. What is empty and waiting for you is recessed: the check box, the "Add a task" field, the picker's search.</li>
+            <li><b>Check box:</b> a dark hole with a soft hairline rim. Ticked: the accent.</li>
+            <li><b>One grid:</b> chevron, check boxes and plus share a column; names and text share the next.</li>
+            <li><b>Grip:</b> in the card's margin, on hover or keyboard focus.</li>
+            <li><b>Menus:</b> one three-dot menu per thing, at its right end: the card, the list, the row.</li>
+            <li><b>Adding:</b> at the end of what you add to, with the same neutral pill: a task, a list, a session, a new list in the picker.</li>
+            <li><b>Selection:</b> the soft tint.</li>
+          </ul>
+        </div>
+        <div class="lab-notes">
+          <span class="overline">New in this round</span>
+          <ul>
+            <li><b>Sessions card:</b> a title (the selected session's name) and its own menu, like the task card.</li>
+            <li><b>Picker:</b> round 4's A5 header with the search under it, A6's raised rows, the list icon back without its tile, and rows that scroll out of view on a rounded corner.</li>
+            <li><b>Picker's scroll bar:</b> inside the padding, as far from the right edge as the rows are from the left. Rows make room for it only when there is one.</li>
+            <li><b>Search:</b> a clear button in the accent once something is typed. Escape clears first, then closes.</li>
+            <li><b>Overline:</b> in the accent, on the band.</li>
+            <li>The fourth session has a long name, to show how a row and the card's title cut it. Select it to see the title.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="lab-toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="lab.js"></script>
+</body>
+</html>

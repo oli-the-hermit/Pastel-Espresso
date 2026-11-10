@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en" data-theme="dark" style="color-scheme: dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Component lab: lists, round 3</title>
+  <link rel="icon" href="data:,">
+  <!-- The app's own font, tokens and component styles: "Current" is the real thing. -->
+  <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/geist/index.css">
+  <link rel="stylesheet" href="../../../src/index.css">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <main class="lab">
+    <header class="lab-top">
+      <div class="lab-intro">
+        <span class="overline">Component lab · round 3</span>
+        <h1 class="lab-title">Lists, round 3</h1>
+        <p class="lab-sub">
+          A1 from round 2 with raised rows, check boxes as holes and the grip in the margin,
+          next to the current list. The two variants differ only in the empty check box.
+          Everything is live. Each column keeps its own data.
+        </p>
+      </div>
+      <div class="lab-tools">
+        <a class="btn-action sm" href="../index.html">Latest round</a>
+        <button type="button" class="btn-action sm" id="themeDark" aria-pressed="true">Dark</button>
+        <button type="button" class="btn-action sm" id="themeLight" aria-pressed="false">Light</button>
+        <button type="button" class="btn-action sm" id="reset">Reset</button>
+      </div>
+    </header>
+
+    <div class="lab-grid">
+      <section class="lab-col" data-variant="cur">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">Current</h2>
+          <p class="lab-col-desc">The list as it is in 1.4, with the app's own styles.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <div class="lab-notes">
+          <span class="overline">What testing showed</span>
+          <ol>
+            <li>The list's name is a field: the same pill, fill and overline as the things inside it.</li>
+            <li>Three chevrons with three meanings: pick a list, fold the list, add a list.</li>
+            <li>The grip is darker than its row, so it reads as a gap, and row text starts further right than the header's.</li>
+            <li>The check box's outline is the strongest mark in the row.</li>
+            <li>"Add another task list" reads as a link, and its chevron as a dropdown.</li>
+            <li>Session rows are raised and task rows recessed; session tools are loose icons, task tools a menu.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="lab-col la--band la--gutter" data-variant="a3">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">A3: holes</h2>
+          <p class="lab-col-desc">As you described it: an empty check box is a dark hole in a raised row, with no outline.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <div class="lab-notes">
+          <span class="overline">Only in A3</span>
+          <ul>
+            <li><b>Empty check box:</b> the hole alone. Against its row it measures about 1.2:1 in both themes, where 3:1 is the accessibility minimum for finding a control.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="lab-col la--band la--gutter la--rim" data-variant="a4">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">A4: holes with a rim</h2>
+          <p class="lab-col-desc">The same hole, with a hairline rim so it passes the contrast minimum.</p>
+        </header>
+        <span class="overline">Task lists in a session</span>
+        <div data-slot="tasks"></div>
+        <span class="overline">Sessions</span>
+        <div data-slot="queue" class="lab-narrow"></div>
+        <div class="lab-notes">
+          <span class="overline">Only in A4</span>
+          <ul>
+            <li><b>Empty check box:</b> the hole plus a 1px rim in the lightest grey that clears 3:1 on a row, at rest and hovered. The rim is the hole's edge, not a decoration.</li>
+          </ul>
+        </div>
+        <div class="lab-notes">
+          <span class="overline">In both</span>
+          <ul>
+            <li><b>Surfaces:</b> rows are raised one step above the card, and one more when pointed at. What is empty (the check box, the "Add a task" field) is recessed.</li>
+            <li><b>Grip:</b> in the card's margin, on hover or keyboard focus, for tasks, lists and sessions.</li>
+            <li><b>Sessions:</b> the same rows and menu; "New session" ends the list, as "Add task list" ends the task card.</li>
+            <li><b>Selected session's menu:</b> pointed at, a light disc with dark dots.</li>
+            <li>Pointing at an empty check box previews the tick.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="lab-toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="lab.js"></script>
+</body>
+</html>
