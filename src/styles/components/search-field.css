@@ -23,3 +23,6 @@
 .search-field:focus-within { box-shadow: inset 0 0 0 var(--ring-width) var(--accent); }
 /* The clear button sits flush with the field's right padding. */
 .search-field .icon-btn { margin-right: calc(var(--space-8) * -1); }
+/* Clear: in the accent, like the ring the field has while you type in it. */
+.search-field-clear,
+.search-field-clear:hover:not(:disabled) { color: var(--accent-text); }

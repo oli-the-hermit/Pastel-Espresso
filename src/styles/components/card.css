@@ -2,11 +2,29 @@
 
 /* ── Cards ──────────────────────────────────────────────── */
 .card {
+  --card-pad: var(--space-24);
   background: var(--surface-1);
   border-radius: var(--radius-3xl);
-  padding: var(--space-24);
+  padding: var(--card-pad);
   min-width: 0;
 }
+
+/* The title band: every card starts with its header on a band one surface step up, holding
+   the overline (in the accent, as text), the card's menu on the same line, and the title
+   8px under. A long title is cut with an ellipsis at the band's padding, the same right as
+   left. Controls on it take on-2 (surface 2). */
+.card > .card-header:first-child,
+.card > .panel-card-header:first-child {
+  margin: calc(var(--card-pad) * -1) calc(var(--card-pad) * -1) var(--space-20);
+  padding: var(--space-24) var(--card-pad) var(--space-20);
+  border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+  background: var(--surface-2);
+}
+.card > .card-header:first-child .card-overline,
+.card > .panel-card-header:first-child > .panel-card-title { color: var(--accent-text); line-height: var(--leading-snug); }
+.card > .card-header:first-child .chip { background: var(--surface-3); }
+/* A count or note beside the card's menu, on the overline's line. */
+.card-header-count { font-size: var(--type-meta); font-weight: var(--weight-label); color: var(--text-2); font-variant-numeric: tabular-nums; }
 
 .card-header {
   display: flex;
@@ -19,7 +37,7 @@
 .card-title {
   font-size: var(--type-title);
   font-weight: var(--weight-title);
-  line-height: var(--leading-tight);
+  line-height: var(--leading-none);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -29,10 +47,12 @@
 .card-title-row > :not(.card-title) { flex: none; }
 .card-subtitle-row { display: flex; flex-wrap: wrap; gap: var(--space-8); margin-top: var(--space-8); }
 .card-header-actions { display: flex; gap: var(--space-2); flex: none; }
+.card-header-top > .card-header-count { margin-left: auto; }
 
 /* Every card's first row has one height (an icon button), the overline centred in it, so the
    overlines of cards side by side share a line whatever comes under them. */
 .card-header.has-overline { flex-direction: column; align-items: stretch; gap: var(--space-4); }
+.card-header.has-overline > .card-header-main { margin-top: calc(var(--space-8) * -1); }
 .card-header-top,
 .panel-card-header {
   min-height: var(--icon-button-size);

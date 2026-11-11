@@ -1,10 +1,10 @@
-import React, { forwardRef, useEffect, useId, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Popover } from './Popover';
 import { IconButton } from './IconButton';
 import { Button } from './Button';
 import { TextInput } from './Field';
 import { MenuList, handleMenuKeyDown, type MenuItem } from './Menu';
-import { IconCheck, IconChevronDown, IconClose, IconPlus, IconSearch, IconSort } from './icons';
+import { IconCheck, IconClose, IconPlus, IconSearch, IconSort } from './icons';
 import { useUiLabels } from './UiLabels';
 import { cx } from '../../lib/cx';
 import { normalizeName, rankByMatch } from '../../lib/fuzzy';
@@ -27,9 +27,11 @@ export interface ListPickerProps {
   open: boolean;
   onClose: () => void;
   anchorRef: React.RefObject<HTMLElement>;
+  /** Which edge of the anchor it lines up with (default: start). */
+  align?: 'start' | 'end';
   title: string;
   items: ListPickerItem[];
-  /** Shown in each item's tile. */
+  /** Shown at the start of each item's row. */
   icon: React.ReactNode;
   onPick: (id: string) => void;
   /** Ids used lately, newest first: the first 3 that match show on top under `label`. */
@@ -52,15 +54,17 @@ type Row = { kind: 'item'; item: ListPickerItem } | { kind: 'suggestion'; name: 
 const RECENT_MAX = 3;
 
 /**
- * Pick an item from a long list or create one (styles: components/list-picker.css): a title
- * with sort and close, a search that matches loosely, the recently used items on top, a
- * scrollable list that keeps its size, and a create row fixed at the bottom. Arrow keys move
- * through the rows from the search field; Enter picks; Escape steps back (sort, naming, close).
+ * Pick an item from a long list or create one (styles: components/list-picker.css): a small
+ * card with its title, sort and close on a band; a search (a well) that matches loosely, with
+ * a clear button; the recently used items on top; raised rows that scroll in a fixed height;
+ * and the neutral "new" button last. Arrow keys move through the rows from the search field;
+ * Enter picks; Escape steps back (sort, naming, the search's text, close).
  */
 export const ListPicker: React.FC<ListPickerProps> = ({
   open,
   onClose,
   anchorRef,
+  align,
   title,
   items,
   icon,
@@ -80,9 +84,11 @@ export const ListPicker: React.FC<ListPickerProps> = ({
   const [naming, setNaming] = useState(false);
   const [draftName, setDraftName] = useState('');
   const [highlight, setHighlight] = useState(0);
+  const [overflows, setOverflows] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const sortWrapRef = useRef<HTMLDivElement>(null);
   const listboxId = useId();
 
@@ -126,6 +132,18 @@ export const ListPicker: React.FC<ListPickerProps> = ({
   useEffect(() => {
     listRef.current?.querySelector<HTMLElement>(`[data-index="${highlight}"]`)?.scrollIntoView({ block: 'nearest' });
   }, [highlight]);
+
+  // Rows make room for the scroll bar only when there is one.
+  useLayoutEffect(() => {
+    const el = scrollRef.current;
+    if (el) setOverflows(el.scrollHeight > el.clientHeight);
+  }, [open, rows, naming]);
+
+  const clearSearch = () => {
+    setQuery('');
+    setHighlight(0);
+    searchRef.current?.focus();
+  };
 
   const pick = (id: string) => {
     onPick(id);
@@ -171,7 +189,8 @@ export const ListPicker: React.FC<ListPickerProps> = ({
       open={open}
       anchorRef={anchorRef}
       onClose={onClose}
-      onEscape={() => (sortOpen ? setSortOpen(false) : naming ? setNaming(false) : onClose())}
+      onEscape={() => (sortOpen ? setSortOpen(false) : naming ? setNaming(false) : query ? clearSearch() : onClose())}
+      align={align}
       className="list-picker"
       role="dialog"
       ariaLabel={title}
@@ -181,8 +200,8 @@ export const ListPicker: React.FC<ListPickerProps> = ({
         className="list-picker-body"
         onMouseDown={e => sortOpen && !sortWrapRef.current?.contains(e.target as Node) && setSortOpen(false)}
       >
-        <div className="list-picker-head">
-          <h3 className="list-picker-title">{title}</h3>
+        <div className="list-picker-band">
+          <h3 className="list-picker-title" title={title}>{title}</h3>
           {sorts.length > 1 && (
             <div className="list-picker-sort-wrap" ref={sortWrapRef}>
               <IconButton
@@ -208,8 +227,9 @@ export const ListPicker: React.FC<ListPickerProps> = ({
           </IconButton>
         </div>
 
+        <div className="list-picker-content">
         <div className="list-picker-search">
-          <IconSearch size={15} />
+          <IconSearch size={16} />
           <input
             ref={searchRef}
             type="text"
@@ -224,9 +244,12 @@ export const ListPicker: React.FC<ListPickerProps> = ({
             }}
             onKeyDown={onSearchKeyDown}
           />
+          <IconButton label={labels.clear} size="xs" surface={1} className={cx('list-picker-clear', !query && 'is-hidden')} tabIndex={query ? 0 : -1} onClick={clearSearch}>
+            <IconClose size={14} strokeWidth={2.4} />
+          </IconButton>
         </div>
 
-        <div className="list-picker-list">
+        <div className={cx('list-picker-list', overflows && 'has-overflow')} ref={scrollRef}>
           <ul ref={listRef} id={listboxId} role="listbox" aria-label={title}>
             {(showingSuggestions || recentCount > 0) && (
               <li role="presentation" className="list-picker-group">
@@ -248,7 +271,7 @@ export const ListPicker: React.FC<ListPickerProps> = ({
                     onClick={() => activate(index)}
                     onMouseEnter={() => setHighlight(index)}
                   >
-                    <span className="list-picker-tile" aria-hidden="true">
+                    <span className="list-picker-icon" aria-hidden="true">
                       {row.kind === 'item' ? icon : <IconPlus size={16} strokeWidth={2.4} />}
                     </span>
                     <span className="list-picker-text">
@@ -284,46 +307,20 @@ export const ListPicker: React.FC<ListPickerProps> = ({
               </Button>
             </form>
           ) : (
-            <button
-              type="button"
+            <Button
               id={`${listboxId}-${createIndex}`}
-              className={cx('list-picker-row list-picker-create', highlight === createIndex && 'is-highlighted')}
+              surface={2}
+              icon={<IconPlus size={16} strokeWidth={2.4} />}
+              className={cx('list-picker-create', highlight === createIndex && 'is-highlighted')}
               onClick={() => activate(createIndex)}
               onMouseEnter={() => setHighlight(createIndex)}
             >
-              <span className="list-picker-tile" aria-hidden="true"><IconPlus size={18} strokeWidth={2.4} /></span>
-              <span className="list-picker-name">{createName ? createLabel(createName) : newLabel}</span>
-            </button>
+              <span className="list-picker-create-label">{createName ? createLabel(createName) : newLabel}</span>
+            </Button>
           )}
+        </div>
         </div>
       </div>
     </Popover>
   );
 };
-
-export interface ListPickerTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
-  /** `add`: an accent "+ Add another…" row. `field`: looks like a form field with a placeholder. */
-  look?: 'add' | 'field';
-  label: string;
-  icon?: React.ReactNode;
-  open: boolean;
-}
-
-/** The button a ListPicker opens from (anchor it with the forwarded ref). */
-export const ListPickerTrigger = forwardRef<HTMLButtonElement, ListPickerTriggerProps>(
-  ({ look = 'field', label, icon, open, className, ...rest }, ref) => (
-    <button
-      ref={ref}
-      type="button"
-      className={cx('list-picker-trigger', `list-picker-trigger--${look}`, open && 'is-open', className)}
-      aria-haspopup="dialog"
-      aria-expanded={open}
-      {...rest}
-    >
-      {icon && <span className="list-picker-trigger-icon">{icon}</span>}
-      <span className="list-picker-trigger-label">{label}</span>
-      <span className="list-picker-trigger-chevron" aria-hidden="true"><IconChevronDown size={16} /></span>
-    </button>
-  )
-);
-ListPickerTrigger.displayName = 'ListPickerTrigger';

@@ -58,6 +58,8 @@ export const TaskListCard: React.FC<TaskListCardProps> = ({ listId }) => {
     <Card className="tasks-content">
       <CardHeader
         onContextMenu={openListMenu}
+        overline={strings.timer.listOverline}
+        count={activeList && activeList.tasks.length > 0 && format(strings.timer.listCount, { done: activeList.tasks.filter(t => t.completed).length, total: activeList.tasks.length })}
         title={activeList ? activeList.name : strings.tasks.selectListPrompt}
         titleTooltip={activeList?.name}
         subtitle={usedBy.length > 0 && usedBy.map(s => (
@@ -65,7 +67,7 @@ export const TaskListCard: React.FC<TaskListCardProps> = ({ listId }) => {
             {s.name}
           </Chip>
         ))}
-        actions={activeList && <Menu ariaLabel={strings.timer.moreListActions} items={listMenuItems} />}
+        actions={activeList && <Menu ariaLabel={strings.timer.moreListActions} items={listMenuItems} triggerSurface={2} />}
       />
 
       {activeList ? (

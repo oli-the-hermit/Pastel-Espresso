@@ -1,39 +1,27 @@
-/* ── Task list body & rows (shared with Tasks tab) ──────── */
-/* Blocks (progress, add field, rows) spaced like the player card's. */
-.task-list-body { display: flex; flex-direction: column; gap: var(--space-20); }
+/* ── Task list body & rows (shared with the Tasks tab) ──── */
+/* The progress bar, then the rows, ending with the "Add a task" row. */
+.task-list-body { display: flex; flex-direction: column; gap: var(--space-12); }
+.task-list-items { display: flex; flex-direction: column; gap: var(--space-4); }
 
-.list-progress { display: flex; flex-direction: column; gap: var(--space-8); }
-/* The same row as the timer's scrubber times. */
-.list-progress-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: var(--type-meta);
-  font-weight: var(--weight-label);
-  color: var(--text-2);
-  font-variant-numeric: tabular-nums;
-}
-
-.add-task-form { display: flex; gap: var(--space-8); }
-.add-task-form .form-input { flex: 1; }
-/* Exception (sizes): the Add button takes the field's height and corner (44px, md radius). */
-.add-task-form .btn-action { height: 44px; border-radius: var(--radius-pill); }
-
-.task-list-items { display: flex; flex-direction: column; gap: var(--space-8); }
-
+/* Rows are raised: one step above the card (--row-bg), another when pointed at or holding
+   keyboard focus (--row-hover); not after a mouse click leaves focus inside. Its grip sits
+   in the card's margin (components/drag.css). */
 .task-row {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-12);
-  min-height: 48px;
-  padding: var(--space-8) var(--space-8) var(--space-8) var(--grip-edge);
+  min-height: var(--button-height-lg);
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-16);
   border-radius: var(--radius-md);
   background: var(--row-bg);
-  transition: background var(--transition);
+  transition: background var(--transition), color var(--transition);
 }
 .task-row:hover,
-.task-row:focus-within { background: var(--row-hover); }
+.task-row:focus-visible,
+.task-row:has(:focus-visible) { background: var(--row-hover); }
 .task-text { flex: 1; min-width: 0; font-size: var(--type-body); word-break: break-word; }
-.task-row.done .task-text { color: var(--text-3); text-decoration: line-through; }
+.task-row.done .task-text { color: var(--text-2); text-decoration: line-through; }
 .task-time-badge {
   flex: none;
   height: 24px;
@@ -47,3 +35,35 @@
   font-weight: var(--weight-label);
   font-variant-numeric: tabular-nums;
 }
+
+/* "Add a task": the list's last row, a well like the check box (recessed below the card where
+   rows are raised above it), so "type here" never looks like a task. Its Add button is for
+   the mouse and appears once there is something to add. */
+.add-task-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: var(--button-height-lg);
+  margin-top: var(--space-4);
+  padding: 0 var(--space-8) 0 var(--space-16);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  color: var(--text-2);
+  transition: box-shadow var(--transition);
+}
+.add-task-row:focus-within { box-shadow: inset 0 0 0 var(--ring-width) var(--focus-ring); }
+.add-task-icon { flex: none; display: grid; place-items: center; width: var(--space-16); }
+.add-task-row .add-task-input,
+.add-task-row .add-task-input:hover,
+.add-task-row .add-task-input:focus {
+  flex: 1;
+  min-width: 0;
+  height: var(--button-height-sm);
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.add-task-row .add-task-input::placeholder { color: var(--text-2); }
+.add-task-btn { display: none; }
+.add-task-row.has-text .add-task-btn { display: inline-flex; }

@@ -13,7 +13,9 @@ export const strings = {
     rename: 'Rename',
     close: 'Close',
     markComplete: 'Mark as complete',
-    dragToReorder: 'Drag to reorder'
+    dragToReorder: 'Drag to reorder',
+    moveUp: 'Move up',
+    moveDown: 'Move down'
   },
   app: {
     title: 'Focus Space',
@@ -113,14 +115,15 @@ export const strings = {
     moreTimerActions: 'Timer actions',
     noOpenTasks: 'No open tasks',
     sessionTasksTitle: 'Session tasks',
-    addAnotherList: 'Add another task list',
-    pickListPlaceholder: 'Choose a task list…',
     noSessionListsTitle: 'No task list for this session yet',
     noSessionListsHint: 'Pick a list or create a new one. Lists are saved, so any session can reuse them.',
-    listInUse: 'In this session',
     collapseList: 'Collapse list',
     expandList: 'Expand list',
     moreListActions: 'List actions',
+    switchList: 'Switch list…',
+    switchListTitle: 'Switch "{name}" for…',
+    listHeading: '{name}, {done} of {total} done',
+    listCount: '{done} of {total}',
     sessionOverline: 'Session',
     listOverline: 'Task list',
     moreSessionActions: 'Session actions',
@@ -155,9 +158,9 @@ export const strings = {
   },
   tasks: {
     sidebarTitle: 'Tasks',
-    newListBtn: 'New list',
     selectListPrompt: 'Pick or create a list to get started.',
-    addTaskPlaceholder: 'Add a task and press Enter…',
+    addTaskPlaceholder: 'Add a task',
+    addTaskTo: 'Add a task to {name}',
     addTaskBtn: 'Add',
     renameTooltip: 'Rename list',
     duplicateTooltip: 'Duplicate list',
@@ -165,6 +168,7 @@ export const strings = {
     deleteListTitle: 'Delete list?',
     untitledList: 'Task list',
     emptyLists: 'No lists yet. Create one to get started.',
+    moreListsActions: 'Task lists actions',
     completedOf: '{done} of {total} completed',
     emptyListPrompt: 'Pick or create a list in the sidebar to start tracking tasks.',
     emptyTasks: 'No tasks yet. Add your first one above.',
@@ -244,7 +248,10 @@ export const strings = {
     deleteConfirmTitle: 'Delete session?',
     // Shared by sessions, lists, tasks and events — keep it generic.
     deleteConfirmPrompt: 'Delete "{name}"? This can’t be undone.',
-    emptySessionsMsg: 'No sessions yet. Create one above to get started.'
+    emptySessionsMsg: 'No sessions yet. Create one below to get started.',
+    noneSelected: 'None selected',
+    noSessionsTitle: 'No sessions yet',
+    moreSessionsActions: 'Sessions actions'
   },
   celebration: {
     rewardClaimed: 'Reward claimed',

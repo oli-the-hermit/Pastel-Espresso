@@ -16,7 +16,7 @@ export interface SearchFieldProps {
   className?: string;
 }
 
-/** A pill-shaped search box with a clear button once something is typed (styles: components/search-field.css). */
+/** A pill-shaped search box with a clear button (in the accent) once something is typed (styles: components/search-field.css). */
 export const SearchField: React.FC<SearchFieldProps> = ({ value, onChange, ariaLabel, placeholder, clearLabel, id, className }) => {
   const labels = useUiLabels();
   return (
@@ -40,7 +40,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({ value, onChange, ariaL
         }}
       />
       {value && (
-        <IconButton size="xs" surface={2} label={clearLabel ?? labels.clear} onClick={() => onChange('')}>
+        <IconButton size="xs" surface={2} className="search-field-clear" label={clearLabel ?? labels.clear} onClick={() => onChange('')}>
           <IconClose size={14} strokeWidth={2.4} />
         </IconButton>
       )}

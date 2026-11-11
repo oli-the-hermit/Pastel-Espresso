@@ -92,6 +92,7 @@
 .icon-btn.xs { width: var(--icon-button-size-xs); height: var(--icon-button-size-xs); border-radius: var(--radius-pill); }
 .icon-btn.danger:hover:not(:disabled) { background: var(--danger-container); color: var(--danger); }
 .icon-btn.is-active { background: var(--accent-container); color: var(--on-accent-container); }
+.icon-btn.is-quiet:not(:hover, .is-active) { color: var(--text-3); }
 
 .icon-btn.on-0 { --icon-btn-hover: var(--surface-1); }
 .icon-btn.on-2 { --icon-btn-hover: var(--surface-3); }

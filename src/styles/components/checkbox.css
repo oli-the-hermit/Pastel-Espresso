@@ -1,5 +1,9 @@
 /* ── Checkbox (ui/Checkbox) ──────────────────────────────── */
+/* Empty: a hole, a step darker than anything it sits on, with a soft hairline rim (tokens
+   --check-hole, --check-rim). Pointing at it previews the tick. Ticked: the accent. Its
+   click area is 36px. */
 .checkbox {
+  position: relative;
   appearance: none;
   -webkit-appearance: none;
   width: var(--checkbox-size);
@@ -7,29 +11,31 @@
   flex: none;
   /* Exception (scale: a 20px box; 8px would read as a radio button) */
   border-radius: var(--radius-xs);
-  background: transparent;
-  box-shadow: inset 0 0 0 var(--ring-width) var(--text-3);
+  background: var(--check-hole);
+  box-shadow: inset 0 0 0 var(--hairline) var(--check-rim);
   cursor: pointer;
   display: inline-grid;
   place-items: center;
   transition: background var(--transition), box-shadow var(--transition);
 }
-.checkbox:hover { box-shadow: inset 0 0 0 var(--ring-width) var(--text-2); }
+.checkbox::before { content: ''; position: absolute; inset: calc(var(--space-8) * -1); }
 /* Read-only (aria-disabled): its state comes from elsewhere; keeps its tooltip. */
 .checkbox[aria-disabled='true'] { cursor: default; }
-.checkbox[aria-disabled='true']:hover:not(:checked) { box-shadow: inset 0 0 0 var(--ring-width) var(--text-3); }
 .checkbox:checked {
   background-color: var(--accent);
   box-shadow: none;
 }
-/* The mark is painted with --on-accent through a mask, so it follows the theme. */
-.checkbox:checked::after {
+/* The mark is painted through a mask, so it follows the theme: --on-accent when ticked,
+   the secondary text colour as a preview while an empty box is pointed at. */
+.checkbox:checked::after,
+.checkbox:not(:checked):not([aria-disabled='true']):hover::after {
   content: '';
   width: 14px;
   height: 14px;
   background: var(--on-accent);
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / contain no-repeat;
 }
+.checkbox:not(:checked):hover::after { background: var(--text-2); }
 
 /* ── Checking things off ─────────────────────────────────── */
 .checkbox:checked { animation: check-pop var(--dur-3) var(--ease-emphasized); }

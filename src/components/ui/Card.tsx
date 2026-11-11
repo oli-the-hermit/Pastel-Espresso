@@ -15,6 +15,8 @@ export interface CardHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   titleTooltip?: string;
   /** Small uppercase line above the title. */
   overline?: React.ReactNode;
+  /** A count beside the menu, on the overline's line (e.g. "2 of 5"). Needs an overline. */
+  count?: React.ReactNode;
   /** Right after the title, on its line (e.g. a count chip). */
   titleAddon?: React.ReactNode;
   /** Chips or meta shown under the title. */
@@ -30,9 +32,10 @@ export interface CardHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElemen
  * With an overline, the overline and the actions share a first row of the same height as every
  * card's head row (PanelHeader, the player's), so overlines line up across columns.
  */
-export const CardHeader: React.FC<CardHeaderProps> = ({ title, titleTooltip, overline, titleAddon, subtitle, actions, aside, className, ...rest }) => {
+export const CardHeader: React.FC<CardHeaderProps> = ({ title, titleTooltip, overline, count, titleAddon, subtitle, actions, aside, className, ...rest }) => {
   const side = (
     <>
+      {count != null && count !== false && <span className="card-header-count">{count}</span>}
       {aside}
       {actions && <div className="card-header-actions">{actions}</div>}
     </>
@@ -41,7 +44,7 @@ export const CardHeader: React.FC<CardHeaderProps> = ({ title, titleTooltip, ove
     <div className={cx('card-header', !!overline && 'has-overline', className)} {...rest}>
       {overline && (
         <div className="card-header-top">
-          <span className="overline">{overline}</span>
+          <span className="overline card-overline">{overline}</span>
           {side}
         </div>
       )}

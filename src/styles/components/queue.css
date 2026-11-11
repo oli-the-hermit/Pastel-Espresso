@@ -1,33 +1,31 @@
 /* ── Queue panel and rows (ui/QueuePanel, ui/QueueItem): sessions, task lists ── */
-/* Narrower sides than a card, so rows get the width; the head row keeps the card's top and its
-   label lines up with the other cards' content. */
-.queue-panel { padding: var(--space-24) var(--space-16) var(--space-16); }
-.queue-panel .panel-card-header { padding-inline: var(--space-8) 0; }
+/* A card like the others: the title band, the rows, and the "new" button last. Rows are raised
+   (surface 2), one more step when pointed at or holding keyboard focus; selected, the soft tint.
+   Their grip sits in the card's 24px margin. */
 .queue-list { display: flex; flex-direction: column; gap: var(--space-8); }
+.queue-foot { margin-top: var(--space-24); }
 
 .queue-item {
   position: relative;
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-12) var(--space-12) var(--space-8) calc(var(--grip-edge) + var(--grip-width) + var(--grip-gap));
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-16) var(--space-4) var(--space-16) var(--space-16);
   border-radius: var(--radius-md);
   background: var(--surface-2);
   color: var(--text-1);
   cursor: pointer;
   transition: background var(--dur-2) var(--ease-standard), color var(--dur-2) var(--ease-standard), box-shadow var(--dur-2) var(--ease-standard);
 }
-.queue-item:hover { background: var(--surface-3); }
+.queue-item:hover,
+.queue-item:focus-visible,
+.queue-item:has(:focus-visible) { background: var(--surface-3); }
 .queue-item:focus-visible { outline-offset: 1px; }
-/* One row (no meta): the same height top and bottom. */
-.queue-item--single { padding-block: var(--space-16); }
+/* One line (no details): the height of a task row. */
+.queue-item--single { min-height: var(--button-height-lg); padding-block: var(--space-4); }
 
-.queue-item-grip { position: absolute; left: var(--grip-edge); top: 50%; transform: translateY(-50%); }
-
-.queue-item-name-row { display: flex; align-items: center; gap: var(--space-8); min-width: 0; }
+.queue-item-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); }
 .queue-item-name {
-  flex: 1;
-  min-width: 0;
   font-size: var(--type-body);
   font-weight: var(--weight-label);
   line-height: var(--leading-snug);
@@ -35,9 +33,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.queue-item-trailing { flex: none; font-size: var(--type-meta); color: var(--text-2); font-variant-numeric: tabular-nums; }
-
-.queue-item-meta-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-8); min-height: 28px; }
 .queue-item-meta {
   display: flex;
   align-items: center;
@@ -49,35 +44,11 @@
   overflow: hidden;
 }
 .queue-item-meta-item { display: inline-flex; align-items: center; gap: var(--space-4); }
+.queue-item-trailing { flex: none; font-size: var(--type-meta); font-weight: var(--weight-label); color: var(--text-2); font-variant-numeric: tabular-nums; }
+.queue-item-menu { flex: none; display: inline-flex; }
 
-.queue-item-actions { display: flex; gap: var(--space-1); flex: none; visibility: hidden; }
-.queue-item:hover .queue-item-actions,
-.queue-item:focus-within .queue-item-actions { visibility: visible; }
-/* The tools float over the row's end, on the row's hover color, so they never take width from
-   the name or the meta: on the meta line when there is one, else centred on the row. */
-.queue-item-meta-row > .queue-item-actions {
-  position: absolute;
-  right: var(--space-8);
-  bottom: var(--space-8);
-  padding-left: var(--space-8);
-  border-radius: var(--radius-md);
-  background: var(--surface-3);
-}
-.queue-item-actions.is-floating {
-  position: absolute;
-  top: 50%;
-  right: var(--space-8);
-  transform: translateY(-50%);
-  padding-left: var(--space-8);
-  border-radius: var(--radius-md);
-  background: var(--surface-3);
-}
-
-/* Selected: the tonal container, so "you picked this" never looks like "do this" (a solid fill). */
+/* Selected: the tint alone says it. */
 .queue-item.active,
 .queue-item.active:hover { background: var(--accent-container); color: var(--on-accent-container); }
 .queue-item.active .queue-item-meta,
-.queue-item.active .queue-item-trailing,
-.queue-item.active .drag-handle { color: var(--on-accent-container); }
-.queue-item.active .queue-item-actions.is-floating,
-.queue-item.active .queue-item-meta-row > .queue-item-actions { background: var(--accent-container); }
+.queue-item.active .queue-item-trailing { color: var(--on-accent-container); }

@@ -31,24 +31,14 @@ export interface SelectProps<T = string> {
   name?: string;
   className?: string;
   ariaLabel?: string;
-  /** `field` for forms, `header` for a large title-style trigger (an "Add…" row is a ListPicker). */
-  variant?: 'field' | 'header';
   /** Icon at the start of the trigger, shown instead of the selected option's own. */
   icon?: React.ReactNode;
-  /** Inside the trigger, right after the value (e.g. a count chip). */
-  valueAddon?: React.ReactNode;
-  /**
-   * Options used lately, newest first: the first 3 that match show on top under `label`,
-   * then a separator and the rest. Without a match among them, only the rest shows.
-   */
-  recent?: { values: T[]; label: string };
   createOption?: SelectCreateOption<T>;
   /** Defaults to on when there are more than 8 options. */
   searchable?: boolean;
 }
 
 const SEARCH_THRESHOLD = 8;
-const RECENT_MAX = 3;
 
 function optionText<T>(opt: SelectOption<T>): string {
   if (opt.searchText) return opt.searchText;
@@ -65,10 +55,7 @@ export const Select = <T extends string | number>({
   name,
   className = '',
   ariaLabel,
-  variant = 'field',
   icon,
-  valueAddon,
-  recent,
   createOption,
   searchable
 }: SelectProps<T>): React.ReactElement => {
@@ -90,17 +77,11 @@ export const Select = <T extends string | number>({
 
   const showSearch = searchable ?? options.length > SEARCH_THRESHOLD;
 
-  // The matching options, the recent ones first; recentCount of them form the top group.
-  const [visibleOptions, recentCount] = useMemo(() => {
+  // The options that match the search.
+  const visibleOptions = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const matches = q ? options.filter(o => optionText(o).toLowerCase().includes(q)) : options;
-    if (!recent) return [matches, 0] as const;
-    const top = recent.values
-      .map(v => matches.find(o => o.value === v))
-      .filter((o): o is SelectOption<T> => !!o)
-      .slice(0, RECENT_MAX);
-    return [[...top, ...matches.filter(o => !top.includes(o))], top.length] as const;
-  }, [options, query, recent]);
+    return q ? options.filter(o => optionText(o).toLowerCase().includes(q)) : options;
+  }, [options, query]);
 
   // The create row is a virtual last item for keyboard navigation.
   const itemCount = visibleOptions.length + (createOption ? 1 : 0);
@@ -219,12 +200,11 @@ export const Select = <T extends string | number>({
       <span className={`select-value ${selectedOption ? '' : 'is-placeholder'}`}>
         {selectedOption ? selectedOption.label : placeholder ?? labels.selectPlaceholder}
       </span>
-      {valueAddon && <span className="select-value-addon">{valueAddon}</span>}
     </>
   );
 
   return (
-    <div className={`select select--${variant} ${isOpen ? 'is-open' : ''} ${className}`}>
+    <div className={`select ${isOpen ? 'is-open' : ''} ${className}`}>
       {name && (
         <input type="hidden" name={name} value={value !== undefined && value !== null ? String(value) : ''} />
       )}
@@ -244,7 +224,7 @@ export const Select = <T extends string | number>({
       >
         {triggerContent}
         <span className="select-chevron" aria-hidden="true">
-          <IconChevronDown size={variant === 'header' ? 18 : 16} />
+          <IconChevronDown size={16} />
         </span>
       </button>
 
@@ -285,15 +265,11 @@ export const Select = <T extends string | number>({
           {visibleOptions.length === 0 && !createOption && (
             <li className="select-empty">{labels.noMatches}</li>
           )}
-          {recent && recentCount > 0 && (
-            <li role="presentation" className="select-group-label">{recent.label}</li>
-          )}
           {visibleOptions.map((option, index) => {
             const isSelected = option.value === value;
             const isHighlighted = index === highlightedIndex;
             return (
               <React.Fragment key={String(option.value)}>
-                {index === recentCount && recentCount > 0 && <li role="separator" className="select-separator" />}
                 <li role="presentation">
                   <button
                     type="button"

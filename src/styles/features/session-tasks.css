@@ -1,24 +1,66 @@
 /* ── Session task lists ─────────────────────────────────── */
-.session-tasks .card-header { margin-bottom: var(--space-24); }
+/* The lists are stacked and fold. One grid for every line: the heading's chevron, the check
+   boxes and the add row's plus share a column; the list's name, the tasks and the field's
+   text share the next (16px from the row's edge, 12px between the columns). */
+.list-panel-stack { display: flex; flex-direction: column; gap: var(--space-32); }
+.list-panel { display: flex; flex-direction: column; gap: var(--space-12); border-radius: var(--radius-md); }
 
-/* Each list is a section of the card, not a box inside it: the overline and space group it
-   (two tonal levels at most: card, then rows). */
-.list-panel-stack { display: flex; flex-direction: column; gap: var(--space-40); }
+/* The heading: the list's name as type, with no fill. All of it but its menu folds the list;
+   all of it drags it. */
+.list-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: var(--icon-button-size);
+  padding: 0 var(--space-4) 0 var(--space-16);
+  border-radius: var(--radius-md);
+  cursor: grab;
+  transition: background var(--transition);
+}
+.list-head:active { cursor: grabbing; }
+.list-head:hover { background: var(--surface-2); }
+.list-head-toggle {
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+}
+.list-head-caret {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--space-16);
+  height: var(--space-16);
+  color: var(--text-2);
+  transition: transform var(--transition-md);
+}
+.list-head-toggle[aria-expanded='true'] .list-head-caret { transform: rotate(90deg); }
+.list-head-name {
+  min-width: 0;
+  font-size: var(--type-heading);
+  font-weight: var(--weight-title);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.list-head-count {
+  flex: none;
+  margin-left: auto;
+  font-size: var(--type-meta);
+  font-weight: var(--weight-label);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
 
-.list-panel { position: relative; }
-
-/* The overline over the picker (its count inside), some room, then collapse and ⋮. */
-.list-panel-header { display: flex; align-items: center; gap: var(--space-8); min-width: 0; }
-.list-panel-title { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); margin-right: var(--space-12); }
-/* A container's grip sits in the card's margin beside it, centered on the whole block, and
-   shows only while its header is hovered or the panel is held (rows keep theirs visible). */
-.list-panel-grip { position: absolute; top: 50%; right: 100%; margin-right: var(--space-8); transform: translateY(-50%); visibility: hidden; }
-.list-panel:has(> .list-panel-header:hover) .list-panel-grip,
-.list-panel.dragging .list-panel-grip { visibility: visible; }
-.list-panel-collapse { color: var(--text-2); }
-.list-panel-collapse svg { transition: transform var(--transition-md); }
-.list-panel.is-collapsed .list-panel-collapse svg { transform: rotate(-90deg); }
-.list-panel > .task-list-body { margin-top: var(--space-20); }
+/* The card ends with its "new" button, as every list does. */
+.session-tasks-foot { margin-top: var(--space-24); }
 
 .session-tasks-empty {
   display: flex;
@@ -28,7 +70,7 @@
   padding: var(--space-32) var(--space-16);
   text-align: center;
 }
-.session-tasks-empty .list-picker-trigger { max-width: 380px; margin-top: var(--space-12); }
+.session-tasks-empty .btn-action { margin-top: var(--space-12); }
 .session-tasks-empty-icon {
   width: 52px;
   height: 52px;

@@ -75,7 +75,6 @@
 @import url('./styles/features/timer.css') layer(app);
 @import url('./styles/features/session-tasks.css') layer(app);
 @import url('./styles/features/task-list.css') layer(app);
-@import url('./styles/features/sessions.css') layer(app);
 @import url('./styles/features/tasks.css') layer(app);
 @import url('./styles/features/calendar.css') layer(app);
 @import url('./styles/features/stats.css') layer(app);

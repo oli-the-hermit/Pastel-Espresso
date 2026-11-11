@@ -92,6 +92,8 @@ export interface MenuProps {
   triggerClassName?: string;
   triggerSize?: IconButtonLook['size'];
   triggerSurface?: Surface;
+  /** The trigger is faint at rest (a row's ⋮). */
+  triggerQuiet?: boolean;
   align?: 'start' | 'end';
   /** Shown above the items, e.g. who's signed in. */
   header?: React.ReactNode;
@@ -107,6 +109,7 @@ export const Menu: React.FC<MenuProps> = ({
   triggerClassName,
   triggerSize,
   triggerSurface,
+  triggerQuiet,
   align = 'end',
   header,
   menuClassName
@@ -120,7 +123,7 @@ export const Menu: React.FC<MenuProps> = ({
       <button
         ref={triggerRef}
         type="button"
-        className={cx(triggerClassName ?? iconButtonClass({ size: triggerSize, surface: triggerSurface }), open && 'is-active')}
+        className={cx(triggerClassName ?? iconButtonClass({ size: triggerSize, surface: triggerSurface, quiet: triggerQuiet }), open && 'is-active')}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={ariaLabel ?? labels.moreActions}
