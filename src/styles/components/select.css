@@ -21,9 +21,6 @@
 
 .select-value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .select-value.is-placeholder { color: var(--text-3); }
-/* With an addon the value hugs its text, the addon follows it, the chevron stays at the end. */
-.select-value:has(+ .select-value-addon) { flex: 0 1 auto; }
-.select-value-addon { flex: none; display: inline-flex; margin-right: auto; }
 
 .select-chevron {
   flex: none;
@@ -41,31 +38,10 @@
 
 .select-option-icon { flex: none; display: inline-grid; place-items: center; width: 20px; color: var(--text-2); }
 
-/* Header variant: a title-size field (e.g. task-list panels). */
-.select--header { flex: 1; }
-/* A pill like the account badge; the chevron's circle sits as far from the end as from the
-   top and bottom. */
-.select--header .select-trigger {
-  height: var(--field-height);
-  padding: 0 calc((var(--field-height) - var(--icon-button-size-xs)) / 2) 0 var(--space-16);
-  border-radius: var(--radius-pill);
-  font-size: var(--type-heading);
-  font-weight: var(--weight-label);
-  letter-spacing: var(--tracking-tight);
-}
 
 
 /* Menu panel: pill-shaped search, options and create row, in rounder corners. */
 .select-menu { --popover-radius: var(--radius-xl); min-width: 220px; max-width: 440px; padding: var(--space-8); }
-.select-group-label {
-  padding: var(--space-8) var(--space-16) var(--space-8);
-  font-size: var(--type-overline);
-  font-weight: var(--weight-label);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--text-2);
-}
-.select-separator { height: 1px; margin: var(--space-8) var(--space-12); background: var(--surface-4); }
 
 .select-search {
   flex: none;

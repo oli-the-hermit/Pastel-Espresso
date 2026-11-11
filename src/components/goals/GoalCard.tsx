@@ -134,21 +134,17 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, dragProps, isDragging 
     >
       <div className="goal-card-body">
         <div className="goal-card-header">
-          <div className="goal-card-header-info">
-            <div className="goal-card-title">{goalName}</div>
+          <div className="goal-card-top">
+            <span className="overline">{frequencyLabel(goalType)}</span>
+            <Menu items={goalMenuItems} triggerSurface={2} />
+          </div>
+          <div className="goal-card-title">{goalName}</div>
+          {linkedReward && (
             <div className="goal-card-meta">
-              <span className={`goal-type-badge badge-${goalType}`}>
-                {frequencyLabel(goalType)}
-              </span>
-              {linkedReward && (
-                <span className="goal-reward-badge">{linkedReward.emoji} {linkedReward.name}</span>
-              )}
+              <span className="goal-reward-badge">{linkedReward.emoji} {linkedReward.name}</span>
             </div>
-            <ScheduleBadge startDate={goal.startDate} dueDate={goal.dueDate} completed={isComplete} />
-          </div>
-          <div className="goal-card-actions">
-            <Menu items={goalMenuItems} triggerSize="sm" />
-          </div>
+          )}
+          <ScheduleBadge startDate={goal.startDate} dueDate={goal.dueDate} completed={isComplete} />
         </div>
 
         <InlineTextArea

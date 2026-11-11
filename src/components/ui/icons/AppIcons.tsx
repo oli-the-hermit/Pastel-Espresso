@@ -265,6 +265,16 @@ export const IconUnlink: React.FC<IconProps> = p => (
   </StrokeIcon>
 );
 
+/** Two opposite arrows: put one thing in another's place. */
+export const IconSwitch: React.FC<IconProps> = p => (
+  <StrokeIcon {...p}>
+    <polyline points="4 16 8 20 12 16" />
+    <line x1="8" y1="20" x2="8" y2="4" />
+    <polyline points="12 8 16 4 20 8" />
+    <line x1="16" y1="4" x2="16" y2="20" />
+  </StrokeIcon>
+);
+
 export const IconFlag: React.FC<IconProps> = p => (
   <StrokeIcon {...p}>
     <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
@@ -412,18 +422,6 @@ export const IconRestore: React.FC<IconProps> = p => (
 );
 
 /** "Now playing" bars. Animates only while `playing` is true. */
-export const IconEqualizer: React.FC<{ playing?: boolean; size?: number }> = ({ playing = false, size = 14 }) => (
-  <span
-    className={`equalizer ${playing ? 'is-playing' : ''}`}
-    style={{ width: size, height: size }}
-    aria-hidden="true"
-  >
-    <span />
-    <span />
-    <span />
-  </span>
-);
-
 /* ── Row actions (smaller default size for dense list rows) ── */
 export const IconEdit: React.FC<IconProps> = ({ size = 13, ...p }) => (
   <StrokeIcon size={size} {...p}>

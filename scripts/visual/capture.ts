@@ -175,7 +175,7 @@ async function main() {
       await page.locator('.nav-rail [data-tab="timer"]').click();
       await settle(page);
 
-      // ── Hover states: a session row (its tools show), a task row (its hover fill) ──
+      // ── Hover states: a session row (its grip in the margin), a task row (its hover fill) ──
       await shot(theme, '17-grip-hover', async () => { await page.locator('#sessionsList .queue-item').nth(1).hover(); });
       await shot(theme, '18-task-row-hover', async () => { await page.locator('#tab-timer .task-row').first().hover(); });
       await page.mouse.move(0, 0);
@@ -184,9 +184,9 @@ async function main() {
       await shot(theme, '20-context-menu', openGlobalMenu);
       await page.keyboard.press('Escape');
 
-      // ── The list picker: opened from "Add another task list", then with a new name typed ──
+      // ── The list picker: opened from "Add task list", then with a new name typed ──
       await shot(theme, '21-list-picker', async () => {
-        await page.getByRole('button', { name: strings.timer.addAnotherList }).click();
+        await page.locator('#tab-timer .session-tasks').getByRole('button', { name: strings.timer.addTaskList, exact: true }).click();
       });
       await shot(theme, '22-list-picker-create', async () => {
         await page.locator('.list-picker-search input').fill(strings.timer.listNameStarters.errands);
@@ -352,12 +352,78 @@ async function main() {
       const name = 'Made in the list picker';
       await page.locator('.nav-rail [data-tab="timer"]').click();
       await settle(page);
-      await page.getByRole('button', { name: strings.timer.addAnotherList }).click();
+      await page.locator('#tab-timer .session-tasks').getByRole('button', { name: strings.timer.addTaskList, exact: true }).click();
       await page.locator('.list-picker-search input').fill(name);
       // Nothing matches, so the create row is the first stop: Enter creates.
       await page.locator('.list-picker-search input').press('Enter');
       await settle(page, 300);
-      return (await page.locator('#tab-timer .list-panel .select-value', { hasText: name }).count()) === 1;
+      return (await page.locator('#tab-timer .list-head-name', { hasText: name }).count()) === 1;
+    });
+
+    await check("The picker's clear button empties the search, and Escape clears before it closes", async () => {
+      await page.locator('#tab-timer .session-tasks').getByRole('button', { name: strings.timer.addTaskList, exact: true }).click();
+      const search = page.locator('.list-picker-search input');
+      await search.fill('zzz');
+      await page.locator('.list-picker-clear').click();
+      const cleared = (await search.inputValue()) === '';
+      await search.fill('zzz');
+      await page.keyboard.press('Escape');
+      const stillOpen = (await page.locator('.list-picker').count()) === 1 && (await search.inputValue()) === '';
+      await page.keyboard.press('Escape');
+      await settle(page, 300);
+      return cleared && stillOpen && (await page.locator('.list-picker').count()) === 0;
+    });
+
+    await check("A list's heading folds and unfolds its list", async () => {
+      const toggle = page.locator('#tab-timer .list-head-toggle').first();
+      const rows = page.locator('#tab-timer .list-panel').first().locator('.task-row');
+      const before = await rows.count();
+      await toggle.click();
+      const folded = (await rows.count()) === 0 && (await toggle.getAttribute('aria-expanded')) === 'false';
+      await toggle.click();
+      return before > 0 && folded && (await rows.count()) === before;
+    });
+
+    await check("A task's Move down puts it after the next one", async () => {
+      const rows = page.locator('#tab-timer .list-panel').first().locator('.task-row .task-text');
+      const [first, second] = [await rows.nth(0).innerText(), await rows.nth(1).innerText()];
+      await page.locator('#tab-timer .list-panel').first().locator('.task-row').first().getByRole('button', { name: strings.tasks.moreTaskActions }).click();
+      await page.getByRole('menuitem', { name: strings.common.moveDown }).click();
+      await settle(page, 300);
+      const moved = (await rows.nth(0).innerText()) === second && (await rows.nth(1).innerText()) === first;
+      // Put it back.
+      await page.locator('#tab-timer .list-panel').first().locator('.task-row').nth(1).getByRole('button', { name: strings.tasks.moreTaskActions }).click();
+      await page.getByRole('menuitem', { name: strings.common.moveUp }).click();
+      await settle(page, 300);
+      return moved && (await rows.nth(0).innerText()) === first;
+    });
+
+    await check('The sessions card has its own menu, with New session first', async () => {
+      await page.locator('#tab-timer .queue-panel').getByRole('button', { name: strings.sessions.moreSessionsActions }).click();
+      const first = await page.getByRole('menuitem').first().innerText();
+      await page.keyboard.press('Escape');
+      return first.trim() === strings.actions.newSession;
+    });
+
+    await check("A row's grip shows in the card's margin only while the row is pointed at", async () => {
+      await page.mouse.move(0, 0);
+      const row = page.locator('#tab-timer .task-row').first();
+      const grip = row.locator('.drag-handle');
+      const hidden = Number(await grip.evaluate(el => getComputedStyle(el).opacity)) === 0;
+      await row.hover();
+      await settle(page, 300);
+      const shown = Number(await grip.evaluate(el => getComputedStyle(el).opacity)) === 1;
+      const [g, r] = [await grip.boundingBox(), await row.boundingBox()];
+      await page.mouse.move(0, 0);
+      return hidden && shown && !!g && !!r && g.x + g.width <= r.x;
+    });
+
+    await check("A long title is cut with an ellipsis inside the card's band", async () => {
+      const title = page.locator('#tab-timer .session-tasks .card-title');
+      return title.evaluate(el => {
+        const s = getComputedStyle(el);
+        return s.textOverflow === 'ellipsis' && s.whiteSpace === 'nowrap' && s.overflow === 'hidden';
+      });
     });
 
     // ── Notes: empty, an import dropped on the page (preview, then the notes), the list as a

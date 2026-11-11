@@ -33,11 +33,20 @@ in an `/* Exception (scale: …) */` comment.
 ## Structure
 
 - **Where "create" lives:** a page that is one collection (Goals, Rewards, Notes, Calendar) puts a
-  filled "New …" at the right of its toolbar; a page of several panels (Timer, Tasks) puts a tonal
-  "New …" in the header of the panel it adds to.
+  filled "New …" at the right of its toolbar; inside a card, adding sits at the end of what you add
+  to, as the neutral pill button ("Add task list", "New session", "New task list") or, for a list's
+  tasks, the "Add a task" row that is the list's last row.
+- **The title band:** every card with a title block starts with a band one surface step up
+  (`--surface-2` on a card): the overline in the accent as text, the card's ⋮ on the same line, the
+  title 8px under. Both sit one line-height step tighter than elsewhere: the overline at
+  `--leading-snug`, the title at `--leading-none` (a reward's name at `--leading-tight`). A long title is cut with an ellipsis at the band's padding (24px, the same right
+  as left). Controls on the band take `surface={2}`. `ui/CardHeader` and `ui/PanelHeader` get it as
+  a card's first child (`components/card.css`); goal and reward cards draw the same band in their own
+  styles. A reward ready to claim has its band in the soft tint. Cards without a title block (stat
+  tiles, the calendar grid, the notes places) have no band, and neither has the player: it is a
+  player, not a card of content, so it keeps its open "Now playing" line.
 - **Every card's first row is one height** (an icon button): an overline on the left, actions on
-  the right (`ui/CardHeader` with an overline, `ui/PanelHeader`, the player). Cards side by side
-  share that line.
+  the right. Cards side by side share that line.
 - **An entity's header** (a session, a list, a goal) is its title with a ⋮ that holds the same
   items as its right-click menu: no loose icon buttons.
 - **Two tonal levels inside a card at most:** the card, then its rows or tiles. A group inside a
@@ -52,7 +61,7 @@ two presentations, chosen by what a click on the item does:
 
 | Item | A click… | Shows | Cursor | Examples |
 |---|---|---|---|---|
-| **Row** | selects or opens it | a grip (⋮⋮) at its left edge, always visible (`--grip-color`, darker than the row) | pointer over the row, grab over the grip, grabbing while held | sessions, task lists, tasks, the session's list panels (grip in the header) |
+| **Row** | selects or opens it | a grip (⋮⋮) in the card's 24px margin beside it (`--text-3`), shown while the row is pointed at, has keyboard focus or is held; always shown where there is no hover | pointer over the row, grab over the grip, grabbing while held | sessions, task lists, tasks, the session's list headings |
 | **Card** | does nothing by itself (its controls act) | no grip, so the card keeps even padding | grab over the card's free area, grabbing while held | goals, calendar events |
 
 - The pointer always wins over the hand: buttons, check boxes and text fields inside a card keep
@@ -60,18 +69,38 @@ two presentations, chosen by what a click on the item does:
 - While dragging, the item fades to `surface-3` and the drop target shows an accent line on top
   (`components/drag.css`: `.dragging`, `.drag-over`).
 - The new order saves with the profile; nothing else changes (no toast).
-- Classes: rows use `draggable-item` + `ui/QueueItem` (or a `drag-handle` grip); cards use
-  `draggable-item drag-surface`.
-- A container that holds another draggable list (a session's list panel holds task rows)
-  drags from its header's free area; its grip stays hidden until that area is hovered or the
-  container is held, then shows beside it, centered on the whole block. It and each list only reacts to its own drags
-  (`hooks/useDragReorder` ignores drags it didn't start).
+- Classes: rows use `draggable-item` + `ui/QueueItem` (or a `drag-handle is-margin` grip, inside a
+  row with `position: relative`); cards use `draggable-item drag-surface`. Where the rows scroll
+  (the mini player) there is no margin, so the grip sits in the row.
+- A container that holds another draggable list (a session's list holds task rows) drags from its
+  heading; it and each list only react to their own drags (`hooks/useDragReorder` ignores drags it
+  didn't start).
+- Every row and list that drags also has **Move up / Move down** in its ⋮, for the keyboard.
 
 ## Row tools
 
-Task rows (and goal cards) put their tools in a ⋮ menu at the end, always visible, with the same
-items as the right-click menu (one list, `ui/Menu`). Other rows still show their tools on hover:
+One ⋮ per thing, at its right end: the card, the list, the row. It holds the same items as the
+thing's right-click menu (one list, `ui/Menu`). A row's ⋮ is quiet (`triggerQuiet`, `--text-3` at rest)
+so a list of rows stays calm. Landmark rows still show their tools on hover, until goals get their
+own lab round.
 
-Row tools (edit, duplicate, delete) show on hover and on keyboard focus. They float over the row's
-end on the row's own hover color, on the details line when there is one and centred otherwise, so
-they never take room from the name or the details (`ui/QueueItem`, landmark rows).
+## Lists (component lab A7, 2026-11-10)
+
+The session's task lists, the Tasks page, the sessions card and the list picker share one set of rules:
+
+- **Surfaces:** rows are raised one step above what they sit on (`--row-bg`, `--surface-2` on a card),
+  one more when pointed at or holding keyboard focus (`--row-hover`), not after a mouse click leaves
+  focus inside. What is empty and waiting is recessed: the check box, the "Add a task" row
+  (`--surface-inset`), the picker's search.
+- **Check box:** the 20px box as a hole (`--check-hole`) with a soft hairline rim (`--check-rim`);
+  pointing at an empty box previews the tick; ticked, the accent. Its click area is 36px. The rim is
+  about 1.45:1 against a row, below 3:1: chosen knowingly in the lab (round 4).
+- **One grid:** a list heading's chevron, the check boxes and the add row's plus share a column; the
+  list's name, the task text and the field's text share the next. Row padding 16px, gap 12px.
+- **List heading:** the name as type (heading size, title weight), one leading chevron, the count
+  ("1 of 3") at its end, then the list's ⋮. The whole heading folds the list. A thin progress bar under it.
+- **Selection:** the soft tint (`--accent-container`), nothing else.
+- **List picker** (`ui/ListPicker`): a small card on `--surface-2`, its title, sort and close on a band
+  (`--surface-3`), the search as a well (`--surface-1`) with an accent clear button (Escape clears
+  first, then closes), raised two-line rows (`--surface-3`, highlighted `--surface-4`) with the list
+  icon, scrolling out on a rounded corner, and the neutral pill button last.

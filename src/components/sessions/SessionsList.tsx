@@ -2,10 +2,10 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { Session } from '../../types';
 import { strings } from '../../constants/strings';
-import { IconCalendar, IconCopy, IconEdit, IconEqualizer, IconGift, IconList, IconPlay, IconPlus, IconTrash } from '../ui/icons';
+import { IconCalendar, IconChevronDown, IconChevronUp, IconCopy, IconEdit, IconGift, IconList, IconPlay, IconPlus, IconTrash } from '../ui/icons';
 import { useContextMenu } from '../ui/ContextMenu';
+import type { MenuItem } from '../ui/Menu';
 import { getTodayStr } from '../../lib/dateUtils';
-import { Button } from '../ui/Button';
 import { QueuePanel } from '../ui/QueuePanel';
 import { QueueItem, QueueMetaItem } from '../ui/QueueItem';
 import { useDragReorder } from '../../hooks/useDragReorder';
@@ -43,9 +43,12 @@ export const SessionsList: React.FC = () => {
     setTimeout(toggleTimer, 0);
   };
 
-  const openSessionMenu = (e: React.MouseEvent, session: Session) => {
+  // A session's ⋮ and its right-click menu.
+  const sessionMenuItems = (session: Session, index: number): MenuItem[] => {
     const cm = strings.actions;
-    contextMenu(e, [
+    const before = state.sessions[index - 1];
+    const after = state.sessions[index + 1];
+    return [
       { key: 'start', label: cm.startSession, icon: <IconPlay size={15} />, onSelect: () => startSession(session) },
       { key: 'edit', label: strings.common.edit, icon: <IconEdit size={15} />, onSelect: () => handleEditSession(session) },
       { key: 'dup', label: strings.common.duplicate, icon: <IconCopy size={15} />, onSelect: () => duplicateSession(session.id) },
@@ -55,10 +58,23 @@ export const SessionsList: React.FC = () => {
         icon: <IconCalendar size={16} />,
         onSelect: () => openModal('SCHEDULE_EVENT', { date: getTodayStr() })
       },
+      { key: 'up', label: strings.common.moveUp, icon: <IconChevronUp size={15} />, disabled: !before, onSelect: () => before && reorderSessions(session.id, before.id) },
+      { key: 'down', label: strings.common.moveDown, icon: <IconChevronDown size={15} />, disabled: !after, onSelect: () => after && reorderSessions(session.id, after.id) },
       { key: 'd1', divider: true },
       { key: 'delete', label: strings.common.delete, icon: <IconTrash size={15} />, danger: true, onSelect: () => handleDeleteSession(session) }
-    ]);
+    ];
   };
+
+  // The card's ⋮: a new session, then what can be done with the one in its title.
+  const selected = state.sessions.find(s => s.id === state.activeSessionId);
+  const cardMenuItems: MenuItem[] = [
+    { key: 'new', label: strings.actions.newSession, icon: <IconPlus size={15} />, onSelect: () => openModal('NEW_SESSION') },
+    { key: 'd0', divider: true },
+    { key: 'edit', label: strings.actions.editSession, icon: <IconEdit size={15} />, disabled: !selected, onSelect: () => selected && handleEditSession(selected) },
+    { key: 'dup', label: strings.common.duplicate, icon: <IconCopy size={15} />, disabled: !selected, onSelect: () => selected && duplicateSession(selected.id) },
+    { key: 'd1', divider: true },
+    { key: 'delete', label: strings.common.delete, icon: <IconTrash size={15} />, danger: true, disabled: !selected, onSelect: () => selected && handleDeleteSession(selected) }
+  ];
 
   /** Focus and break lengths, attached lists and the reward, on the row under the name. */
   const sessionMeta = (session: Session) => {
@@ -85,19 +101,21 @@ export const SessionsList: React.FC = () => {
 
   return (
     <QueuePanel
-      title={strings.timer.sessionsTitle}
-      action={
-        <Button variant="tonal" size="sm" id="addSessionBtn" icon={<IconPlus size={15} strokeWidth={2.4} />} onClick={() => openModal('NEW_SESSION')}>
-          {strings.actions.newSession}
-        </Button>
-      }
+      overline={strings.timer.sessionsTitle}
+      title={selected ? selected.name : state.sessions.length ? strings.sessions.noneSelected : strings.sessions.noSessionsTitle}
+      menuLabel={strings.sessions.moreSessionsActions}
+      menuItems={cardMenuItems}
+      newLabel={strings.actions.newSession}
+      onNew={() => openModal('NEW_SESSION')}
+      newId="addSessionBtn"
       ids={state.sessions.map(s => s.id)}
       emptyMessage={strings.sessions.emptySessionsMsg}
       listId="sessionsList"
     >
       {isNew =>
-        state.sessions.map(session => {
+        state.sessions.map((session, index) => {
           const isActive = session.id === state.activeSessionId;
+          const items = sessionMenuItems(session, index);
           return (
             <QueueItem
               key={session.id}
@@ -105,19 +123,15 @@ export const SessionsList: React.FC = () => {
               title={session.name}
               active={isActive}
               onSelect={() => setActiveSession(session.id)}
-              leading={isActive ? <IconEqualizer playing={isActive && state.timer.status === 'running'} /> : undefined}
               meta={sessionMeta(session)}
-              actions={[
-                { key: 'edit', label: strings.common.edit, icon: <IconEdit size={14} />, onClick: () => handleEditSession(session) },
-                { key: 'dup', label: strings.common.duplicate, icon: <IconCopy size={14} />, onClick: () => duplicateSession(session.id) },
-                { key: 'delete', label: strings.common.delete, icon: <IconTrash size={14} />, danger: true, onClick: () => handleDeleteSession(session) }
-              ]}
+              menuLabel={strings.timer.moreSessionActions}
+              menuItems={items}
               dragLabel={strings.common.dragToReorder}
               drag={drag.itemProps(session.id)}
               isDragging={drag.isDragging(session.id)}
               isDragOver={drag.isDragOver(session.id)}
               isNew={isNew(session.id)}
-              onContextMenu={e => openSessionMenu(e, session)}
+              onContextMenu={e => contextMenu(e, items)}
             />
           );
         })

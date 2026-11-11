@@ -25,6 +25,11 @@ Notes: a place to keep what your focus produced.
 - **Less said twice.** The Timer page shows the task count once (the list's progress row, now with its bar on top like the timer's scrubber); the player keeps reset, play and skip (sound and the mini player are in the top bar); the top bar's status appears only while the timer runs on another page; a list's actions sit in one ⋮; the mini player drops its FOCUS label and "Done today" like the main card; an empty week in Stats is one sentence instead of seven empty bars.
 - **Tidier layout.** The drawer's icons start at the top; cards side by side line up their labels; the Timer's task lists are sections of the card instead of boxes inside it; an open note sits on a card; the sample sessions, lists, goals and rewards are in sentence case.
 - **Easier to read.** Hints, counts, timestamps and empty messages moved to the stronger secondary text colour, and the faintest colour was nudged so check boxes and placeholders stay visible on every surface.
+- **Lists, redesigned.** A session's task lists stack and fold: each list's name is its heading, with one chevron, its count and its ⋮. Tasks are raised rows; "Add a task" is the list's last row, and its Add button appears once you type. The card ends with *Add task list*; a list's ⋮ can *Switch list…* to put another in its place. Tasks, lists and sessions gain *Move up* and *Move down*, so you can reorder without dragging. The drag grip waits in the card's margin until you point at a row.
+- **Check boxes** are now soft holes that show the tick as you point at them.
+- **Every card's title stands apart** on a band at its top, with its label in the accent and its ⋮ beside it: the session, the sessions, the Tasks page, Stats, goals and rewards. The player stays as it was. A goal's or reward's period is that label; a reward ready to claim has its band tinted.
+- **The sessions card** has a title (the selected session) and its own ⋮ (new, edit, duplicate, delete); each session's tools are in one ⋮, and *New session* sits at the end of the list. The Tasks page's list sidebar works the same way.
+- **The list picker** is a small card: a search with a clear button, the lists as rows with their icon, sort and *Recently opened* kept, and *New task list* as a button at the end.
 
 ### Under the hood
 
@@ -36,7 +41,7 @@ Notes: a place to keep what your focus produced.
 - **Dependencies:** security updates for Express's `body-parser`, `proxy-addr` and `qs`; Vite 8 and Vitest 5, which clear the last advisories in the development tools (`npm audit` finds none).
 - **License notices:** `public/third-party-notices.txt` is generated from the packages that ship (`npm run licenses`): the app's and the web server's npm packages and the desktop app's Rust crates, each with its own license files. `npm run check` fails when it's out of date.
 - **CI:** every push and pull request runs the checks, a production build and the Rust tests on GitHub Actions.
-- **Checks:** 181 unit tests, 23 browser behavior checks and 110 screenshots compared pixel by pixel on every change, including the Notes screens, a check that the database holds no note text, and one that a note opens unchanged after a password change.
+- **Checks:** 181 unit tests, 29 browser behavior checks and 110 screenshots compared pixel by pixel on every change, including the Notes screens, a check that the database holds no note text, and one that a note opens unchanged after a password change.
 
 ## 1.3.0 (alpha)
 

@@ -60,18 +60,17 @@ export const RewardCard: React.FC<RewardCardProps> = ({ reward, showClaim, isCla
       onContextMenu={openRewardMenu}
     >
       <div className="reward-card-header">
-        <div className="reward-card-emoji">{reward.emoji}</div>
-        <div className="reward-card-name">{reward.name}</div>
-        <div className="reward-card-actions">
-          <Menu items={rewardMenuItems} triggerSize="sm" triggerSurface={reward.status === 'ready' ? 'accent-container' : undefined} />
+        <div className="reward-card-top">
+          <span className="overline">{frequencyLabel(rewardFrequency)}</span>
+          <Menu items={rewardMenuItems} triggerSurface={reward.status === 'ready' ? 'accent-container' : 2} />
+        </div>
+        <div className="reward-card-title">
+          <div className="reward-card-emoji">{reward.emoji}</div>
+          <div className="reward-card-name">{reward.name}</div>
         </div>
       </div>
 
-      {/* Full width under the header, starting at the card's edge like the emoji. */}
       <div className="reward-card-meta">
-        <span className={`goal-type-badge badge-${rewardFrequency}`}>
-          {frequencyLabel(rewardFrequency)}
-        </span>
         {links.sessionId && <span className="reward-trigger-badge">{strings.rewards.badgeSession}</span>}
         {links.goalId && <span className="reward-trigger-badge">{strings.rewards.badgeGoal}</span>}
         {links.landmarkIds.length > 0 && <span className="reward-trigger-badge">{strings.rewards.badgeLandmark}</span>}
@@ -91,7 +90,7 @@ export const RewardCard: React.FC<RewardCardProps> = ({ reward, showClaim, isCla
 
       {ready && !claimed && (
         <div className="reward-claim-container">
-          <Button variant="primary" size="lg" block surface="accent-container" onClick={() => claimReward(reward.id)}>
+          <Button variant="primary" size="lg" block onClick={() => claimReward(reward.id)}>
             {strings.actions.claimReward}
           </Button>
         </div>

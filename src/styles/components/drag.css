@@ -3,11 +3,33 @@
   flex: none;
   display: inline-flex;
   width: var(--grip-width);
-  color: var(--grip-color);
+  color: var(--text-3);
   cursor: grab;
   user-select: none;
 }
 .drag-handle:active { cursor: grabbing; }
+/* In the card's margin: outside its row or heading (which needs position: relative), centred
+   in the card's 24px side, shown while the row is pointed at, has keyboard focus or is held.
+   Its box fills the margin, so moving from the row to the grip never leaves the row. Always
+   shown where there is no hover (touch). */
+.drag-handle.is-margin {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 100%;
+  width: var(--space-24);
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+:hover > .drag-handle.is-margin,
+:focus-visible > .drag-handle.is-margin,
+:has(:focus-visible) > .drag-handle.is-margin,
+.dragging > .drag-handle.is-margin { opacity: 1; }
+@media (hover: none) {
+  .drag-handle.is-margin { opacity: 1; }
+}
 /* A card dragged by its whole surface (no grip): the grab hand over its free area. */
 .drag-surface { cursor: grab; }
 .drag-surface:active { cursor: grabbing; }
