@@ -18,7 +18,7 @@ export const strings = {
     moveDown: 'Move down'
   },
   app: {
-    title: 'Focus Space',
+    title: 'Pastel Espresso',
     description: 'A calm, minimal focus timer with sessions, task lists, goals, landmarks, and rewards.'
   },
   // Goal and reward frequencies (types GOAL_FREQUENCIES), plus the "All" filter.
@@ -149,8 +149,8 @@ export const strings = {
     alwaysOnTopOn: 'Always on top: on',
     alwaysOnTopOff: 'Always on top: off',
     close: 'Close (timer keeps running)',
-    waiting: 'Connecting to Focus Space…',
-    windowTitle: 'Focus Space · Mini player',
+    waiting: 'Connecting to Pastel Espresso…',
+    windowTitle: 'Pastel Espresso · Mini player',
     progress: 'Progress',
     upNext: 'Up next',
     noSessionLists: 'This session has no task lists yet. Add one in the app.',
@@ -371,22 +371,22 @@ export const strings = {
   /** Desktop app updates: the launch card (shell/UpdateNotice) and Settings > Updates. */
   updates: {
     /** The GitHub release's text (scripts/release/notes.ts); a test version adds help.stageNote above it. */
-    releaseBody: 'Download the setup file below to install Focus Space. Once installed, it updates itself.',
+    releaseBody: 'Download the setup file below to install Pastel Espresso. Once installed, it updates itself.',
     releaseWhatsNew: 'What’s new in {version}',
     releaseFeedback: 'Found a problem or have an idea? Tell us in GitHub Issues: {url}',
     sectionTitle: 'Updates',
     notifyLabel: 'Tell me when an update is ready',
-    notifyHint: 'Focus Space checks each time it opens.',
+    notifyHint: 'Pastel Espresso checks each time it opens.',
     checkBtn: 'Check for updates',
     checking: 'Checking for updates…',
     upToDate: 'You’re up to date. This is version {version}.',
     readyTitle: 'Version {version} is ready',
-    readyBody: 'Update now and Focus Space reopens where you left off. Your data stays as it is.',
+    readyBody: 'Update now and Pastel Espresso reopens where you left off. Your data stays as it is.',
     installBtn: 'Update and restart',
     laterBtn: 'Maybe later',
     downloading: 'Downloading the update… {percent}%',
     downloadingNoSize: 'Downloading the update…',
-    restarting: 'Installing. Focus Space will reopen in a moment.',
+    restarting: 'Installing. Pastel Espresso will reopen in a moment.',
     checkFailed: 'We couldn’t check for updates right now. Check your connection and try again.',
     installFailed: 'The update didn’t finish. Your data is safe, so please try again.',
     tryAgainBtn: 'Try again'
@@ -394,7 +394,7 @@ export const strings = {
   /** The screen shown when a window stops drawing (components/shell/CrashScreen). */
   crash: {
     title: 'Something unexpected happened',
-    body: 'Focus Space stopped drawing this screen. Your saved data is safe. Reload to pick up where you left off.',
+    body: 'Pastel Espresso stopped drawing this screen. Your saved data is safe. Reload to pick up where you left off.',
     reload: 'Reload',
     copyDetails: 'Copy details',
     copied: 'Details copied',
@@ -405,7 +405,7 @@ export const strings = {
       'Still connecting to the local app service. We’ll keep trying every few seconds. If it takes a while, start it with npm run dev.',
     signInTitle: 'Welcome back',
     signInSubtitle: 'Sign in to pick up where you left off.',
-    setupTitle: 'Let’s set up Focus Space',
+    setupTitle: 'Let’s set up Pastel Espresso',
     setupSubtitle: 'One quick step, no Next › Next › Finish required. This main account looks after every profile on this device.',
     usernameLabel: 'Username',
     displayNameLabel: 'Display name',
@@ -544,7 +544,7 @@ export const strings = {
     reportTitle: 'Report a problem',
     reportDesc: 'Opens GitHub Issues in your browser.',
     starTitle: 'Star on GitHub',
-    starDesc: 'If Focus Space helps you, a star helps us.',
+    starDesc: 'If Pastel Espresso helps you, a star helps us.',
     shortcutsNote: 'Shortcuts pause while you’re typing or a dialog is open.',
     shortcutsAppTitle: 'Anywhere in the app',
     shortcutsEditorTitle: 'While writing a note',
@@ -561,6 +561,8 @@ export const strings = {
       'Goals and Rewards make better use of wide windows.'
     ],
     versionLabel: 'Version {version}',
+    /** Under the name in About, until 1.5: the app was called Focus Space before 1.4. */
+    formerly: 'Formerly Focus Space',
     /** About, while shared/release.json marks a test version (stage). */
     stageBadge: { alpha: 'Alpha', beta: 'Beta' },
     stageNote: {
@@ -572,7 +574,7 @@ export const strings = {
     credits: 'Made by San Milano.',
     licenseNote: 'Free to use and change, including for your work. Selling it, or a version built from it, isn’t allowed.',
     licensesTitle: 'Third-party licenses',
-    licensesIntro: 'Focus Space is built on open-source work. Here is every package it ships with, and its license.',
+    licensesIntro: 'Pastel Espresso is built on open-source work. Here is every package it ships with, and its license.',
     licensesLoading: 'Opening the licenses…',
     licensesError: 'The licenses couldn’t be opened. Close Help and try again.',
     githubLabel: 'GitHub',
@@ -584,7 +586,7 @@ export const strings = {
   },
   onboarding: {
     dialogLabel: 'Tour',
-    welcomeTitle: 'Hi {name}, welcome to Focus Space',
+    welcomeTitle: 'Hi {name}, welcome to Pastel Espresso',
     welcomeBody: 'A calm place to focus, one session at a time. Want a quick look around? It takes about a minute.',
     startBtn: 'Show me around',
     laterBtn: 'Maybe later',
@@ -724,9 +726,9 @@ export const strings = {
     transfer: {
       import: 'Import',
       importTitle: 'Import notes',
-      importIntro: 'Bring in Markdown files, a folder of them (an Obsidian vault works), or a Focus Space bundle. Your files stay as they are, and the notes arrive in a new collection.',
+      importIntro: 'Bring in Markdown files, a folder of them (an Obsidian vault works), or a Pastel Espresso bundle. Your files stay as they are, and the notes arrive in a new collection.',
       fromFiles: 'Files',
-      fromFilesHint: 'Markdown files (.md) or a bundle (.focusbundle.json)',
+      fromFilesHint: 'Markdown files (.md) or a bundle (.espresso.json)',
       fromFolder: 'A folder',
       fromFolderHint: 'Every Markdown file inside it, subfolders included',
       dropHint: 'You can also drop files or a folder onto the notes page.',
@@ -742,12 +744,12 @@ export const strings = {
       skipReasons: {
         notSupported: 'not a Markdown file or bundle',
         tooLarge: 'too long for one note',
-        notBundle: 'not a Focus Space bundle',
-        newerBundle: 'made by a newer Focus Space; update to open it',
+        notBundle: 'not a Pastel Espresso bundle',
+        newerBundle: 'made by a newer Pastel Espresso; update to open it',
         unreadable: 'couldn’t be read',
         damaged: { one: '{count} note inside couldn’t be read', other: '{count} notes inside couldn’t be read' }
       },
-      nothing: 'None of these can come in as notes. Pick Markdown files (.md) or a Focus Space bundle.',
+      nothing: 'None of these can come in as notes. Pick Markdown files (.md) or a Pastel Espresso bundle.',
       overLimit: 'That’s {count} notes, and there’s room for {room} more. Emptying the Trash makes room, or import fewer.',
       importButton: { one: 'Import {count} note', other: 'Import {count} notes' },
       importing: 'Importing…',
@@ -761,12 +763,12 @@ export const strings = {
       asMarkdownHint: 'Opens in Obsidian and any text editor',
       asFolder: 'A folder of Markdown files',
       asFolderHint: 'One .md file per note, in a new folder where you choose',
-      asBundle: 'Focus Space bundle',
+      asBundle: 'Pastel Espresso bundle',
       asBundleHint: 'One file with titles, labels and collections, to bring back in whole',
       folderUnavailable: 'This browser can’t save a folder. A bundle keeps everything, or the desktop app can save the folder.',
       exporting: 'Saving your notes…',
-      bundleTitle: 'Focus Space notes, {date}',
-      fileTypes: { markdown: 'Markdown', bundle: 'Focus Space bundle', notes: 'Notes and bundles' }
+      bundleTitle: 'Pastel Espresso notes, {date}',
+      fileTypes: { markdown: 'Markdown', bundle: 'Pastel Espresso bundle', notes: 'Notes and bundles' }
     },
     confirm: {
       deleteForeverTitle: 'Delete for good?',
@@ -834,7 +836,7 @@ export const strings = {
     addLandmark: 'Add landmark',
     scheduleHere: 'Schedule session here',
     openDay: 'Open day view',
-    openApp: 'Open Focus Space'
+    openApp: 'Open Pastel Espresso'
   },
   windowControls: {
     minimize: 'Minimize',

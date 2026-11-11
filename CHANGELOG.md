@@ -6,6 +6,8 @@ Versions follow [Semantic Versioning](https://semver.org): the middle number goe
 
 ## 1.4.0 (alpha, not released yet)
 
+**Focus Space is now Pastel Espresso.** Same app, same data: updating keeps your profiles, notes and settings as they are, and Help → About says "Formerly Focus Space" until 1.5.
+
 Notes: a place to keep what your focus produced.
 
 ### What's new
@@ -34,6 +36,7 @@ Notes: a place to keep what your focus produced.
 
 ### Under the hood
 
+- **The new name everywhere you see it:** window titles, the installer and the app's entry in Windows, the release page and the repository (`oli-the-hermit/Pastel-Espresso`; the old address redirects, so 1.3 installs still find this update). What's saved stays put: the data folder `com.focusspace.desktop`, the database file and the browser's saved settings keep their old names. Note bundles are now saved as `.espresso.json`; bundles saved before keep importing.
 - **Notes are encrypted one by one**, title and text sealed separately, with a key of their own kept inside your encrypted profile, so changing your password never touches them. Both backends (the web server and the desktop app's Rust port) store them the same way, checked by new steps in the shared API scenarios. Moving, labelling or trashing many notes at once is one request per hundred notes, all or nothing.
 - **Upgrading** from 1.3 keeps everything: a 1.3 profile opens in 1.4 as it was, and its first note adds the notes key to it.
 - **The editor** is TipTap (ProseMirror) wearing the app's own components, loaded only when you open a note, with its styles in the app's stylesheet so the desktop's strict Content Security Policy holds. Markdown is escaped only where it could be misread, so "R&D", snake_case and Windows paths stay as typed.

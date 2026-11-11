@@ -8,7 +8,7 @@
  *   npm run visual:capture                 → documentation/visual/current
  *   npm run visual:capture -- --out <dir>  → any folder (e.g. the baseline)
  *
- * Never touches the real database: FOCUSSPACE_DATA_DIR points at a new temp folder.
+ * Never touches the real database: PASTEL_ESPRESSO_DATA_DIR points at a new temp folder.
  */
 import { spawn, type ChildProcess } from 'node:child_process';
 import fs from 'node:fs';
@@ -51,19 +51,19 @@ async function waitForHttp(url: string, timeoutMs = 20_000) {
 function startApi(dataDir: string): ChildProcess {
   const child = spawn(process.execPath, ['server/index.js'], {
     cwd: ROOT,
-    env: { ...process.env, PORT: String(API_PORT), FOCUSSPACE_DATA_DIR: dataDir },
+    env: { ...process.env, PORT: String(API_PORT), PASTEL_ESPRESSO_DATA_DIR: dataDir },
     stdio: 'ignore'
   });
   return child;
 }
 
 async function main() {
-  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'focusspace-visual-'));
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pastel-espresso-visual-'));
   fs.rmSync(OUT_DIR, { recursive: true, force: true });
   fs.mkdirSync(OUT_DIR, { recursive: true });
 
   const api = startApi(dataDir);
-  process.env.FOCUSSPACE_API_URL = `http://127.0.0.1:${API_PORT}`;
+  process.env.PASTEL_ESPRESSO_API_URL = `http://127.0.0.1:${API_PORT}`;
   const vite = await createServer({ root: ROOT, logLevel: 'error', server: { port: WEB_PORT, strictPort: true, open: false } });
   await vite.listen();
   await waitForHttp(`http://127.0.0.1:${API_PORT}/api/health`);
@@ -473,6 +473,7 @@ async function main() {
         text: '---\ntags:\n  - handoff\n---\n\n# Session handoff\n\n- [x] Storage in both backends\n- [ ] The Notes screen\n\n| Step | State |\n|---|---|\n| 2 | Done |\n| 3 | Next |\n'
       },
       { name: 'Research notes.md', lastModified: t0 - 3 * day, text: `Interviews say **capture first**, file later.\n\nCanary: ${NOTE_CANARY}\n` },
+      // A bundle saved before the rename (Focus Space's format and extension): old bundles keep importing.
       {
         name: 'Pastel Studio.focusbundle.json',
         lastModified: t0 - 2 * day,
@@ -829,7 +830,7 @@ async function main() {
         // About 5 MB of noise: over the old 1 MB cap, and it doesn't compress away.
         const png = new PNG({ width: 1300, height: 1300 });
         for (let i = 0; i < png.data.length; i++) png.data[i] = (i % 4 === 3) ? 255 : Math.floor(Math.random() * 256);
-        const file = path.join(os.tmpdir(), `focusspace-photo-${process.pid}.png`);
+        const file = path.join(os.tmpdir(), `pastel-espresso-photo-${process.pid}.png`);
         fs.writeFileSync(file, PNG.sync.write(png));
         try {
           await live.locator('.user-badge-btn').first().click();

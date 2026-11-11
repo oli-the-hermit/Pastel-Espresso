@@ -1,4 +1,4 @@
-// Focus Space alert worker (web only).
+// Pastel Espresso alert worker (web only).
 // Its only job is to give browser notifications action buttons ("Start break")
 // and hand the chosen action back to the open tab. No caching, no fetch handling.
 
@@ -16,7 +16,7 @@ self.addEventListener('notificationclick', event => {
       const client = windows.find(c => c.focused) || windows[0];
       if (client) {
         await client.focus();
-        client.postMessage({ type: 'fs-alert-action', action, payload });
+        client.postMessage({ type: 'pe-alert-action', action, payload });
       } else {
         await self.clients.openWindow('/');
       }

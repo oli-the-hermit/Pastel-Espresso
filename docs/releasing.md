@@ -1,4 +1,6 @@
-# Releasing Focus Space
+# Releasing Pastel Espresso
+
+The signing key files keep the app's former name (`focus-space.key`): they are local files, and renaming them changes nothing.
 
 Desktop releases are built, signed and published by GitHub Actions (`.github/workflows/release.yml`). Installed apps check GitHub for a newer version each time they open and offer it in a card: **Update and restart** or **Maybe later**. People can turn this off, or check by hand, in **Settings → Updates**.
 
@@ -6,7 +8,7 @@ Before a new version opens the data for the first time, the app saves a copy to 
 
 ## One-time setup
 
-1. **A public GitHub repository.** The app downloads updates without signing in, so the repository must be public. Its `owner/name` goes in [`shared/release.json`](../shared/release.json) as `githubRepo` (set: `oli-the-hermit/Focus-Space`). This also turns on the GitHub links in Help.
+1. **A public GitHub repository.** The app downloads updates without signing in, so the repository must be public. Its `owner/name` goes in [`shared/release.json`](../shared/release.json) as `githubRepo` (set: `oli-the-hermit/Pastel-Espresso`; the repository was called Focus-Space before 1.4, and GitHub redirects the old address, which 1.3 installs use to find updates). This also turns on the GitHub links in Help.
 2. **An update key.** Updates are signed, and the app refuses anything not signed with your key. Run this yourself in PowerShell; it asks you to choose a password:
    ```powershell
    npx tauri signer generate -w "$env:USERPROFILE\.tauri\focus-space.key"

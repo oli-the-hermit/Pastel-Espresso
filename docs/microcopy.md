@@ -1,6 +1,6 @@
-# Focus Space — Microcopy & System States
+# Pastel Espresso — Microcopy & System States
 
-The single reference for every user-facing message in Focus Space: what the app says, where it says it, and what the user can do next. The source of truth for the text itself is [`src/constants/strings.ts`](../src/constants/strings.ts), including every server error: both backends ([`server/app.js`](../server/app.js) and its Rust port) send only an error **code**, and the frontend shows `strings.errors.api[code]`.
+The single reference for every user-facing message in Pastel Espresso: what the app says, where it says it, and what the user can do next. The source of truth for the text itself is [`src/constants/strings.ts`](../src/constants/strings.ts), including every server error: both backends ([`server/app.js`](../server/app.js) and its Rust port) send only an error **code**, and the frontend shows `strings.errors.api[code]`.
 
 ## Voice guide
 
@@ -39,14 +39,14 @@ The single reference for every user-facing message in Focus Space: what the app 
 
 | Feature Context / Trigger | Category | UI Component | Semantic Title | Message Body | Suggested Action / CTA |
 |---|---|---|---|---|---|
-| First launch, no account yet | Status | Screen header | Let's set up Focus Space | One quick step, no Next › Next › Finish required. This main account looks after every profile on this device. | Create main account |
+| First launch, no account yet | Status | Screen header | Let's set up Pastel Espresso | One quick step, no Next › Next › Finish required. This main account looks after every profile on this device. | Create main account |
 | Setup submitting | Status | Button label | Setting up | Setting things up… | — (button disabled) |
 | Setup complete | Success | Toast | Setup complete | Setup complete, no restart required. Your space is ready. | Start a session |
 | Setup complete, earlier local data found | Success | Toast | Data brought over | Your earlier sessions and tasks came along. Everything's where you left it. | Keep going |
 | Returning user | Status | Screen header | Welcome back | Sign in to pick up where you left off. | Sign in |
 | Signing in | Status | Button label | Signing in | Signing in… | — |
 | Restoring saved session on launch | Status | Full-screen status | Opening your space | Opening your space… | — |
-| A window stops drawing (render crash) | Error Recovery | Full-screen card | Something unexpected happened | Focus Space stopped drawing this screen. Your saved data is safe. Reload to pick up where you left off. If it keeps happening, copy the details and include them when you report it. | Reload / Copy details |
+| A window stops drawing (render crash) | Error Recovery | Full-screen card | Something unexpected happened | Pastel Espresso stopped drawing this screen. Your saved data is safe. Reload to pick up where you left off. If it keeps happening, copy the details and include them when you report it. | Reload / Copy details |
 | Local service not reachable yet (web) | Helpful Alert | Inline helper | Still connecting | Still connecting to the local app service. We'll keep trying every few seconds. If it takes a while, start it with npm run dev. | Retries automatically |
 | Empty required field | Error Recovery | Inline helper | Missing details | A few fields are still empty. Fill them in to continue. | Complete the form |
 | Username or password left empty (server) | Error Recovery | Inline helper | Missing details | Enter your username and password to continue. | Sign in |
@@ -101,7 +101,7 @@ The single reference for every user-facing message in Focus Space: what the app 
 | Unexpected problem on the app service | Error Recovery | Inline helper | Unexpected hiccup | Something unexpected happened on our side. Your data is safe, so please try again. | Try again |
 | Unknown address (desktop service) | Error Recovery | Inline helper | Not found | We couldn't find what you were looking for. | — |
 | About: a test version (shared/release.json stage alpha/beta) | Helpful Alert | Badge + note | Alpha | This is an alpha: still in development, so features and data may change before the final version. Your feedback helps. | Report a problem |
-| GitHub release text (scripts/release/notes.ts) | Status | Release page | Release notes | Alpha note (test versions), then: Download the setup file below to install Focus Space. Once installed, it updates itself. Then: Found a problem or have an idea? Tell us in GitHub Issues: {url} | Download |
+| GitHub release text (scripts/release/notes.ts) | Status | Release page | Release notes | Alpha note (test versions), then: Download the setup file below to install Pastel Espresso. Once installed, it updates itself. Then: Found a problem or have an idea? Tell us in GitHub Issues: {url} | Download |
 | Settings: notification options (same form as the bell's dialog) | Status | Section | Notifications | The bell's settings: phase alerts, reminders, hide-after, chime, browser permission | Save |
 | Settings: profile list (the main account sees every profile; a regular profile sees its own) | Status | Badges | Main · Active | "Main" marks the main account, "Active" the profile signed in now | — |
 | Appearance: theme | Status | Segmented control | Theme | Light · Dark · System | Pick one |
@@ -136,14 +136,14 @@ The single reference for every user-facing message in Focus Space: what the app 
 | Mini player: rename a session task | Status | Inline field in the row | Rename | The task’s name, editable; Enter saves, Escape keeps the old name | Enter |
 | Mini player: add a task (large layout) | Status | Add field + list picker when the session has several lists | Add a task | Add a task and press Enter… · list picker: "Add to list" | Add |
 | Mini player: session without task lists | Empty State | Tile text | No task lists | This session has no task lists yet. Add one in the app. | Open app |
-| Update found on launch (desktop) | Helpful Alert | Card (bottom right) | Version {version} is ready | Update now and Focus Space reopens where you left off. Your data stays as it is. | Update and restart / Maybe later |
+| Update found on launch (desktop) | Helpful Alert | Card (bottom right) | Version {version} is ready | Update now and Pastel Espresso reopens where you left off. Your data stays as it is. | Update and restart / Maybe later |
 | Update downloading | Status | Card and Settings | Downloading | Downloading the update… {percent}% | — |
-| Update installing | Status | Card and Settings | Installing | Installing. Focus Space will reopen in a moment. | — |
+| Update installing | Status | Card and Settings | Installing | Installing. Pastel Espresso will reopen in a moment. | — |
 | Update didn't finish | Error Recovery | Card and Settings | Didn't finish | The update didn't finish. Your data is safe, so please try again. | Try again |
-| Settings: update notices | Status | Switch | Tell me when an update is ready | Focus Space checks each time it opens. | Toggle |
+| Settings: update notices | Status | Switch | Tell me when an update is ready | Pastel Espresso checks each time it opens. | Toggle |
 | Settings: manual check, nothing new | Success | Inline status | Up to date | You're up to date. This is version {version}. | — |
 | Settings: manual check didn't go through | Error Recovery | Inline status | Couldn't check | We couldn't check for updates right now. Check your connection and try again. | Check for updates |
-| Mini player waiting for the main window | Status | Mini window | Connecting | Connecting to Focus Space… | — |
+| Mini player waiting for the main window | Status | Mini window | Connecting | Connecting to Pastel Espresso… | — |
 | Mini player: session tasks (large layout) | Status | Tile with checkboxes | Session tasks | Every task of the session, ticked off from the mini player too. Empty: No tasks for this session yet. | Tick a task |
 | Player card (Timer page) | Status | Card: overline and ⋮ in the head; the countdown alone on the art tile (the phase shows through its colour, and screen readers hear it); the current task as the large line, the session under it; an Up next block at the bottom | Now playing | Overline: Now playing. ⋮ (Timer actions): the same items as a right-click on the player. Countdown (screen readers): {phase}: {time} remaining. Up next (overline), then the next phase and its length; the reward row shows only the gift icon (tooltip: Reward on completion) and the reward | Open the ⋮ |
 | Auto-save didn't go through *(needs wiring)* | Helpful Alert | Toast | Changes not saved yet | We couldn't save your latest changes. We'll try again with your next edit. | Keep the app open |
@@ -187,12 +187,12 @@ The single reference for every user-facing message in Focus Space: what the app 
 
 | Feature Context / Trigger | Category | UI Component | Semantic Title | Message Body | Suggested Action / CTA |
 |---|---|---|---|---|---|
-| First launch on a profile | Status | Tour, welcome slide | Hi {name}, welcome to Focus Space | A calm place to focus, one session at a time. Want a quick look around? It takes about a minute. | Show me around · Maybe later |
+| First launch on a profile | Status | Tour, welcome slide | Hi {name}, welcome to Pastel Espresso | A calm place to focus, one session at a time. Want a quick look around? It takes about a minute. | Show me around · Maybe later |
 | Tour step (spotlight) | Status | Tour card | Chapter · {current} of {total} | One or two sentences per highlighted area (`strings.onboarding.steps`). | Back · Next · Close tour |
 | Tour finished | Success | Tour, final slide | You're all set | Replay this tour anytime from Help, the ? at the top right. | Start focusing |
 | Help hub | Status | Modal | Help | Take the tour · Keyboard shortcuts · What's new · About · Report a problem · Star on GitHub | — |
 | About: privacy | Status | Panel | Your data stays here | Everything is stored on this device and encrypted with your password, and it never leaves it. The desktop app only goes online to see whether an update is out. | — |
-| About → Third-party licenses | Status | Help sub-view | Third-party licenses | Focus Space is built on open-source work. Here is every package it ships with, and its license. Loading: Opening the licenses… Failed: The licenses couldn't be opened. Close Help and try again. | Back |
+| About → Third-party licenses | Status | Help sub-view | Third-party licenses | Pastel Espresso is built on open-source work. Here is every package it ships with, and its license. Loading: Opening the licenses… Failed: The licenses couldn't be opened. Close Help and try again. | Back |
 | Shortcuts paused | Status | Helper text | Shortcuts paused | Shortcuts pause while you're typing or a dialog is open. | — |
 
 ## Menus & window
@@ -272,19 +272,19 @@ Notes are sealed on the device like the rest of a profile's data: both backends 
 | Opening a note | Status | Empty state | Opening note | Opening your note… | — |
 | A note can't be opened | Helpful Alert | Empty state | Note unavailable | We couldn't open this note. It may have been deleted, or the connection dropped. | Back to notes |
 | Typing in a note | Status | Chip | Saved / Saving… | Saved · Saving… · Not saved yet. Your next change tries again. | — |
-| Import, where from | Informational | Modal (Import notes) | Import notes | Bring in Markdown files, a folder of them (an Obsidian vault works), or a Focus Space bundle. Your files stay as they are, and the notes arrive in a new collection. · You can also drop files or a folder onto the notes page. | Files / A folder |
+| Import, where from | Informational | Modal (Import notes) | Import notes | Bring in Markdown files, a folder of them (an Obsidian vault works), or a Pastel Espresso bundle. Your files stay as they are, and the notes arrive in a new collection. · You can also drop files or a folder onto the notes page. | Files / A folder |
 | Files dragged over the notes page | Status | Empty state | Drop to import | Drop to bring these in as notes, in a new collection. | — |
 | Reading picked or dropped files | Status | Hint | Reading | Reading your files… | — |
 | Import preview | Informational | Modal (Ready to import) | Ready to import | New collection for {count} note(s) (an editable name per new collection) · Includes {titles} (and {count} more). · Brings the labels {names}. Any you don't have yet are made for you. · Left out: {name} ({reason}); … | Import {count} note(s) / Cancel |
-| Why a file is left out | Helpful Alert | Hint (in the preview) | Left out | not a Markdown file or bundle · too long for one note · not a Focus Space bundle · made by a newer Focus Space; update to open it · couldn't be read · {count} note(s) inside couldn't be read | — |
-| Nothing in the files can become a note | Helpful Alert | Inline error | Nothing to import | None of these can come in as notes. Pick Markdown files (.md) or a Focus Space bundle. | — |
+| Why a file is left out | Helpful Alert | Hint (in the preview) | Left out | not a Markdown file or bundle · too long for one note · not a Pastel Espresso Space bundle · made by a newer Pastel Espresso; update to open it · couldn't be read · {count} note(s) inside couldn't be read | — |
+| Nothing in the files can become a note | Helpful Alert | Inline error | Nothing to import | None of these can come in as notes. Pick Markdown files (.md) or a Pastel Espresso bundle. | — |
 | An import past the note limit | Helpful Alert | Inline error | Over the limit | That's {count} notes, and there's room for {room} more. Emptying the Trash makes room, or import fewer. | Empty Trash |
 | Import done | Success | Toast | Imported | {count} note(s) imported into {place}. · {count} notes imported into {collections} new collections. | — (the new collection opens) |
 | Import stopped partway | Helpful Alert | Toast | Import stopped | The import stopped partway. What came in is in its new collection; importing again adds the rest as copies. | — |
 | Import failed before anything came in | Helpful Alert | Toast | Nothing imported | Nothing was imported this time. Check your connection and try again. | — |
 | Files that can't be read | Helpful Alert | Toast | Can't read files | We couldn't read those files. Try picking them again. | — |
-| Export, how | Informational | Modal (Export) | Export | Save a copy of this note as a file. The note stays here as it is. · Save a copy of {count} notes as files. They stay here as they are. | Markdown file · A folder of Markdown files · Focus Space bundle |
-| A browser that can't save folders | Helpful Alert | Hint | No folder saving | This browser can't save a folder. A bundle keeps everything, or the desktop app can save the folder. | Focus Space bundle |
+| Export, how | Informational | Modal (Export) | Export | Save a copy of this note as a file. The note stays here as it is. · Save a copy of {count} notes as files. They stay here as they are. | Markdown file · A folder of Markdown files · Pastel Espresso bundle |
+| A browser that can't save folders | Helpful Alert | Hint | No folder saving | This browser can't save a folder. A bundle keeps everything, or the desktop app can save the folder. | Pastel Espresso bundle |
 | Export in progress | Status | Hint | Saving | Saving your notes… | — |
 | Export done | Success | Toast | Saved as files | Note saved as a file. · {count} notes saved as files. · {count} note(s) saved in the folder "{folder}". | — |
 | Export failed | Helpful Alert | Toast | Export didn't finish | That export didn't finish. Your notes are unchanged; try again. | — |
@@ -310,4 +310,4 @@ Notes are sealed on the device like the rest of a profile's data: both backends 
   - the bootstrap `catch`, which today falls back to the login screen silently;
   - the reward status change from `locked` to `ready`.
 - **Alerts.** Phase-end and calendar alerts are built in `src/lib/notify.ts` and shown by `AlertCard` (in-app and in the desktop popup) or as a browser notification with action buttons (`public/notify-sw.js`).
-- **Capitalization.** Sentence case for every string. Proper nouns (Focus Space, GitHub) keep their capitals; keyboard key names (Space, Shift) are shown as keys. Accent names follow the same rule: "Solar lime", "Red giant", but "Andromeda violet" and "Neptune azure" keep their proper nouns.
+- **Capitalization.** Sentence case for every string. Proper nouns (Pastel Espresso, GitHub) keep their capitals; keyboard key names (Space, Shift) are shown as keys. Accent names follow the same rule: "Solar lime", "Red giant", but "Andromeda violet" and "Neptune azure" keep their proper nouns.

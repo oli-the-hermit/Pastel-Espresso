@@ -26,8 +26,8 @@ export default defineConfig({
     // The desktop shell opens its own window, and Claude uses its own pane; don't also open a browser tab.
     open: !underTauri && !underClaude,
     proxy: {
-      // FOCUSSPACE_API_URL lets a second dev instance talk to its own API server.
-      '/api': process.env.FOCUSSPACE_API_URL || 'http://127.0.0.1:4000'
+      // PASTEL_ESPRESSO_API_URL lets a second dev instance talk to its own API server.
+      '/api': process.env.PASTEL_ESPRESSO_API_URL || 'http://127.0.0.1:4000'
     }
   }
 });

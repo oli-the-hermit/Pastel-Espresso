@@ -44,7 +44,7 @@ export class CrashBoundary extends React.Component<CrashBoundaryProps, CrashBoun
   componentDidCatch(error: Error, info: React.ErrorInfo) {
     this.componentStack = info.componentStack ?? null;
     // Kept in the console (and the desktop log) for bug reports.
-    console.error('Focus Space stopped rendering:', error, info.componentStack);
+    console.error('Pastel Espresso stopped rendering:', error, info.componentStack);
   }
 
   private copyDetails = () => {

@@ -5,7 +5,7 @@
  *
  *   node scripts/parity/run-web.ts
  *
- * Never touches the real database: FOCUSSPACE_DATA_DIR points at a new temp folder.
+ * Never touches the real database: PASTEL_ESPRESSO_DATA_DIR points at a new temp folder.
  */
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -137,10 +137,10 @@ async function waitForHttp(url: string, timeoutMs = 20_000) {
 async function main() {
   const port = await freePort();
   const base = `http://127.0.0.1:${port}`;
-  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'focusspace-parity-'));
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pastel-espresso-parity-'));
   const api = spawn(process.execPath, ['server/index.js'], {
     cwd: ROOT,
-    env: { ...process.env, PORT: String(port), FOCUSSPACE_DATA_DIR: dataDir },
+    env: { ...process.env, PORT: String(port), PASTEL_ESPRESSO_DATA_DIR: dataDir },
     stdio: ['ignore', 'ignore', 'inherit']
   });
   const exited = new Promise<void>(res => api.once('exit', () => res()));

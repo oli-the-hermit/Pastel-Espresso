@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   Focus Space — design tokens (single source of truth)
+   Pastel Espresso — design tokens (single source of truth)
 
    Every color, type, spacing, radius, size and motion value in the
    stylesheets comes from here; Stylelint rejects raw values elsewhere.
@@ -11,7 +11,7 @@
 
    Two sections:
      CORE     shared by every app in the family (the future design system)
-     PRODUCT  specific to Focus Space (timer phases, layout, loops)
+     PRODUCT  specific to Pastel Espresso (timer phases, layout, loops)
  ═══════════════════════════════════════════════════════════ */
 
 /* ══ CORE ════════════════════════════════════════════════════ */
@@ -264,7 +264,7 @@
   color-scheme: light;
 }
 
-/* ══ PRODUCT: Focus Space ════════════════════════════════════ */
+/* ══ PRODUCT: Pastel Espresso ════════════════════════════════════ */
 
 :root {
   /* ── Break phase ── */

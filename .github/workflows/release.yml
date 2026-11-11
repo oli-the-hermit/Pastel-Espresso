@@ -64,7 +64,7 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: Focus Space ${{ github.ref_name }}
+          releaseName: Pastel Espresso ${{ github.ref_name }}
           releaseBody: ${{ steps.notes.outputs.body }}
           releaseDraft: true
           # Never a GitHub pre-release, even for an alpha: the updater reads

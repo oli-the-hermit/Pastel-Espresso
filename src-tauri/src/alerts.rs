@@ -2,7 +2,7 @@
 //!
 //! WebView timers are throttled while the main window is minimized or hidden,
 //! so the countdown's end is also scheduled here in Rust. When it fires:
-//!   - main always gets `fs:alert-fired` (it re-checks the clock and plays the chime),
+//!   - main always gets `pe:alert-fired` (it re-checks the clock and plays the chime),
 //!   - if main isn't in front, the "island" popup window shows the alert with actions.
 //!
 //! The payload is opaque JSON built by `src/lib/notify.ts`; Rust only routes it.
@@ -19,8 +19,8 @@ const ISLAND_WIDTH: f64 = 400.0;
 const ISLAND_HEIGHT: f64 = 120.0;
 const ISLAND_TOP_MARGIN: f64 = 16.0;
 
-const EVT_ALERT_FIRED: &str = "fs:alert-fired";
-const EVT_ALERT_SHOW: &str = "fs:alert-show";
+const EVT_ALERT_FIRED: &str = "pe:alert-fired";
+const EVT_ALERT_SHOW: &str = "pe:alert-show";
 
 #[derive(Default)]
 pub struct Alerts {
@@ -73,7 +73,7 @@ fn show_island(app: &AppHandle, payload: Value) -> tauri::Result<()> {
     };
 
     WebviewWindowBuilder::new(app, ISLAND_LABEL, WebviewUrl::App("index.html#island".into()))
-        .title("Focus Space")
+        .title("Pastel Espresso")
         .inner_size(ISLAND_WIDTH, ISLAND_HEIGHT)
         .position(x, y)
         .decorations(false)

@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Focus Space",
+  "productName": "Pastel Espresso",
   "version": "../package.json",
   "identifier": "com.focusspace.desktop",
   "build": {

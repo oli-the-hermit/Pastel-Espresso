@@ -1,6 +1,6 @@
-# Focus Space
+# Pastel Espresso
 
-A calm, minimal focus timer with sessions, task lists, goals, landmarks and rewards. It runs as a Windows desktop app or in your browser, and everything stays on your device.
+Formerly Pastel Espresso. A calm, minimal focus timer with sessions, task lists, goals, landmarks and rewards. It runs as a Windows desktop app or in your browser, and everything stays on your device.
 
 Made by San Milano ([@oli-the-hermit](https://github.com/oli-the-hermit)).
 
@@ -8,9 +8,9 @@ Made by San Milano ([@oli-the-hermit](https://github.com/oli-the-hermit)).
 
 ## Get started
 
-**Desktop (Windows 10/11):** download `Focus Space_<version>_x64-setup.exe` from the [releases page](https://github.com/oli-the-hermit/Focus-Space/releases/latest) and run it. It installs for your user only; no admin rights needed. The first launch asks you to create the **main account**, which looks after every profile on this device.
+**Desktop (Windows 10/11):** download `Pastel Espresso_<version>_x64-setup.exe` from the [releases page](https://github.com/oli-the-hermit/Pastel-Espresso/releases/latest) and run it. It installs for your user only; no admin rights needed. The first launch asks you to create the **main account**, which looks after every profile on this device.
 
-**Linux and macOS:** ready-made versions are coming very soon. Until then, you can run Focus Space in your browser, which works on any system:
+**Linux and macOS:** ready-made versions are coming very soon. Until then, you can run Pastel Espresso in your browser, which works on any system:
 
 1. Install [Node.js](https://nodejs.org/) (version 24 or later).
 2. Download the code: on this page, choose **Code → Download ZIP** and unzip it (or clone the repository).
@@ -26,7 +26,7 @@ A short tour opens on first use. You can replay it any time from **Help** (the `
 | Page | What it's for |
 |---|---|
 | **Timer** | Sessions play like tracks: press play to focus, and the break comes right after. Each session has its own focus and break length, and can show one or more task lists while you work: add them from a picker with search (or create one by typing its name), and drag them to reorder. |
-| **Tasks** | Group tasks into lists that any session can reuse. Drag to reorder and tick them off; Focus Space times how long each task took. |
+| **Tasks** | Group tasks into lists that any session can reuse. Drag to reorder and tick them off; Pastel Espresso times how long each task took. |
 | **Calendar** | Schedule sessions by week, day or month, and drag them to move. You get a heads-up before each one starts. |
 | **Stats** | Daily averages, your most productive days and a log of finished tasks. |
 | **Goals** | Break bigger goals into landmarks and tick them off as you go. |
@@ -36,7 +36,7 @@ A short tour opens on first use. You can replay it any time from **Help** (the `
 
 **Mini player:** keeps a small timer on top of your other windows. Resize it into a compact, tall or wide layout. In the browser it uses Picture-in-Picture (Chrome and Edge).
 
-**Alerts:** choose when Focus Space nudges you, when a phase ends and before scheduled sessions, from the bell button.
+**Alerts:** choose when Pastel Espresso nudges you, when a phase ends and before scheduled sessions, from the bell button.
 
 ### Keyboard shortcuts
 
@@ -54,14 +54,14 @@ Shortcuts pause while a menu or dialog is open.
 
 ## Updates
 
-The desktop app keeps itself up to date. When a new version is out, a card offers it the next time you open Focus Space: choose **Update and restart**, and it reopens where you left off a moment later. Your data stays as it is, and the app saves a copy of it first, just in case.
+The desktop app keeps itself up to date. When a new version is out, a card offers it the next time you open Pastel Espresso: choose **Update and restart**, and it reopens where you left off a moment later. Your data stays as it is, and the app saves a copy of it first, just in case.
 
 Prefer to decide yourself? In **Settings → Updates**, turn off **Tell me when an update is ready**, and use **Check for updates** whenever you like.
 
 ## Your data
 
 - Everything is stored **on this device** and encrypted with your password. Your data never leaves it; the desktop app only contacts GitHub to check for updates (you can turn that off in Settings).
-- Desktop data lives in `%APPDATA%\com.focusspace.desktop\focusspace.db`. Updating or reinstalling never touches it. For your own backup, copy that file while the app is closed; the app also keeps a copy from before each update in the `backups` folder next to it.
+- Desktop data lives in `%APPDATA%\com.focusspace.desktop\focusspace.db` (the folder and file keep the app's former name, so nothing moves when you update). Updating or reinstalling never touches it. For your own backup, copy that file while the app is closed; the app also keeps a copy from before each update in the `backups` folder next to it.
 - **Keep your password safe.** Your data is encrypted with it, so a forgotten password can't be recovered. The main account can remove other profiles, but it can't read them.
 - Up to 6 profiles can share one device, each with its own password and data.
 
@@ -90,7 +90,7 @@ npm install
 | `npm run check:csp` | Loads the production build under both security policies |
 | `npm run visual:capture` then `npm run visual:diff` | Screenshot every view and compare with the baseline |
 
-The web version stores its data in `server/data/`. Set `FOCUSSPACE_DATA_DIR` to use another folder.
+The web version stores its data in `server/data/`. Set `PASTEL_ESPRESSO_DATA_DIR` to use another folder.
 
 ### Desktop app on Linux and macOS
 
@@ -133,7 +133,7 @@ The app is in `src-tauri/target/release/bundle/macos/`. The first time, open it 
 
 ## About this project
 
-I built Focus Space for two reasons. The first was personal: I wanted to stay focused and get more done, with a simple, clean app that does its job without adding distractions of its own.
+I built Pastel Espresso for two reasons. The first was personal: I wanted to stay focused and get more done, with a simple, clean app that does its job without adding distractions of its own.
 
 The second was to learn. This is my first app built to a professional standard, or at least that's the goal. Focus timers aren't a new idea, and the app is small on purpose, which made it a good project for learning to build software the right way. I aim to keep my code clean, easy to grow and easy to maintain: every rule, text and design value lives in one place, parts are reused instead of copied, and everything stays as simple as it can be. The result should be a codebase almost anyone can read, extend or improve.
 
@@ -151,18 +151,18 @@ People matter more than features or looks. This is a first release: it has been 
 - **Comfort:** is the text easy to read in light and dark mode? Does it work well with just the keyboard?
 - **Your routine:** does the timer fit the way you work? What would you add, change or remove?
 
-Share your thoughts by [opening an issue](https://github.com/oli-the-hermit/Focus-Space/issues/new).
+Share your thoughts by [opening an issue](https://github.com/oli-the-hermit/Pastel-Espresso/issues/new).
 
 ### Something not working?
 
-If you run into a bug, an error or trouble installing, please [open an issue](https://github.com/oli-the-hermit/Focus-Space/issues/new). The quickest way is **Help → Report a problem** in the app: it opens a new issue with the app version and your platform already filled in. Tell me what you did, what you expected and what happened instead; a screenshot helps too.
+If you run into a bug, an error or trouble installing, please [open an issue](https://github.com/oli-the-hermit/Pastel-Espresso/issues/new). The quickest way is **Help → Report a problem** in the app: it opens a new issue with the app version and your platform already filled in. Tell me what you did, what you expected and what happened instead; a screenshot helps too.
 
 ### Free, and staying free
 
-Focus Space is free and will stay free. Use it for personal or professional work, change it and build on it as you like. The one thing that isn't allowed is selling it, or anything made from it. See [License](#license) for the details.
+Pastel Espresso is free and will stay free. Use it for personal or professional work, change it and build on it as you like. The one thing that isn't allowed is selling it, or anything made from it. See [License](#license) for the details.
 
 ## License
 
-Free to use, modify and build on, including for your own commercial work. You may not sell Focus Space or anything built from it, including as paid hosting or support. This is the MIT License with the [Commons Clause](https://commonsclause.com/); see [LICENSE](LICENSE). Because of that restriction, Focus Space is source-available rather than open source.
+Free to use, modify and build on, including for your own commercial work. You may not sell Pastel Espresso or anything built from it, including as paid hosting or support. This is the MIT License with the [Commons Clause](https://commonsclause.com/); see [LICENSE](LICENSE). Because of that restriction, Pastel Espresso is source-available rather than open source.
 
 The open-source packages it ships with, and their licenses, are listed in [public/third-party-notices.txt](public/third-party-notices.txt) (also in the app: Help → About → Third-party licenses). `npm run licenses` regenerates the list after a dependency change, and `npm run check` fails while it is out of date.

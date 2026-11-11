@@ -7,7 +7,7 @@
  *
  *   npm run check:csp        (builds first)
  *
- * Never touches the real database: FOCUSSPACE_DATA_DIR points at a new temp folder.
+ * Never touches the real database: PASTEL_ESPRESSO_DATA_DIR points at a new temp folder.
  */
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -117,10 +117,10 @@ async function main() {
   if (!fs.existsSync(path.join(ROOT, 'dist/index.html'))) throw new Error('No dist/ build. Run `npm run build` first.');
   const port = await freePort();
   const base = `http://127.0.0.1:${port}`;
-  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'focusspace-csp-'));
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pastel-espresso-csp-'));
   const api = spawn(process.execPath, ['server/index.js', '--static'], {
     cwd: ROOT,
-    env: { ...process.env, PORT: String(port), FOCUSSPACE_DATA_DIR: dataDir },
+    env: { ...process.env, PORT: String(port), PASTEL_ESPRESSO_DATA_DIR: dataDir },
     stdio: 'ignore'
   });
   const exited = new Promise<void>(res => api.once('exit', () => res()));

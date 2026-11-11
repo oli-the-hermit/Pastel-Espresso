@@ -173,6 +173,7 @@ export const HelpModal: React.FC = () => {
             </span>
             <div>
               <div className="about-name">{strings.app.title}</div>
+              <div className="about-formerly">{strings.help.formerly}</div>
               <div className="about-version">
                 {format(strings.help.versionLabel, { version })}
                 {RELEASE_STAGE && <span className="role-badge stage-badge">{strings.help.stageBadge[RELEASE_STAGE]}</span>}

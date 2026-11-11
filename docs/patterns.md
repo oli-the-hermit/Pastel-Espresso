@@ -1,4 +1,4 @@
-# Focus Space — UX patterns
+# Pastel Espresso — UX patterns
 
 The rules every screen follows: visual rules first, then interaction. Values live in the tokens
 (`src/styles/foundation/tokens.css`); words live in [`microcopy.md`](microcopy.md).

@@ -130,7 +130,7 @@ export const IconCalendar: React.FC<IconProps> = p => (
   </StrokeIcon>
 );
 
-/** The Focus Space mark: a clock face with a bolder stroke than IconClock. */
+/** The Pastel Espresso mark: a clock face with a bolder stroke than IconClock. */
 export const IconLogo: React.FC<IconProps> = ({ strokeWidth = 2.4, ...p }) => (
   <StrokeIcon strokeWidth={strokeWidth} {...p}>
     <circle cx="12" cy="12" r="9" />

@@ -31,8 +31,8 @@ export interface AlertPayload {
 }
 
 /** Island → main (Tauri event) and service worker → page (postMessage). */
-export const EVT_ALERT_ACTION = 'fs:alert-action';
-export const SW_ALERT_MESSAGE = 'fs-alert-action';
+export const EVT_ALERT_ACTION = 'pe:alert-action';
+export const SW_ALERT_MESSAGE = 'pe-alert-action';
 
 export interface AlertActionMessage {
   action: AlertActionId | 'dismiss';

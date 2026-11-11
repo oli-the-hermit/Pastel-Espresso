@@ -1,9 +1,9 @@
 @echo off
-title FocusSpace Time Tracker - Dev Server
+title Pastel Espresso - Dev Server
 cd /d "%~dp0"
 
 echo ===================================================
-echo   FocusSpace Time Tracker - Development Server
+echo   Pastel Espresso - Development Server
 echo ===================================================
 echo.
 

@@ -7,7 +7,7 @@ foundation/   tokens.css (every design value), properties.css (@property),
               reset.css, reduced-motion.css, helpers.css
 components/   generic, reusable pieces: button, card, select, modal, …
 layout/       the app shell: rail, top bar, columns
-features/     Focus Space pages and windows: timer, calendar, goals, mini, …
+features/     Pastel Espresso pages and windows: timer, calendar, goals, mini, …
 motion.css    cross-cutting motion: phase cross-fades, press feedback, page changes
 ```
 
@@ -17,7 +17,7 @@ motion.css    cross-cutting motion: phase cross-fades, press feedback, page chan
    `foundation/tokens.css`. Stylelint (`npm run lint:css`) fails on raw values anywhere else.
    Tolerated literals: `0`, percentages, `calc()`/`clamp()`, `z-index` 1–3 for local stacking.
 2. **Core vs product.** The **CORE** section of `tokens.css` is shared by the whole app family;
-   the **PRODUCT** section holds Focus Space specifics (break phase, layout, loops).
+   the **PRODUCT** section holds Pastel Espresso specifics (break phase, layout, loops).
 3. **Flat Material.** Tonal surfaces, no gradients, no transparency, no decorative shadows,
    no separator borders. Only floating layers use `--elev-overlay`.
 4. **New component → new file** in `components/`, imported in `index.css` next to its peers.

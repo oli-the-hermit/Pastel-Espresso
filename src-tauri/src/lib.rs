@@ -28,7 +28,8 @@ pub fn run() {
         .manage(updates::Updates::default())
         .setup(|app| {
             // Release builds log too, so a user can attach the file to a bug report:
-            // %LOCALAPPDATA%\com.focusspace.desktop\logs\Focus Space.log (one file, capped).
+            // %LOCALAPPDATA%\com.focusspace.desktop\logs\Pastel Espresso.log (one file, capped; the folder
+            // keeps the identifier from the app's former name).
             app.handle().plugin(
                 tauri_plugin_log::Builder::default()
                     .level(if cfg!(debug_assertions) { log::LevelFilter::Info } else { log::LevelFilter::Warn })
@@ -61,7 +62,7 @@ pub fn run() {
             // Tauri's file-drop handler is off; it swallows HTML5 drag and drop in
             // WebView2, which the app uses to reorder sessions, tasks and events.
             WebviewWindowBuilder::new(app, "main", WebviewUrl::App("index.html".into()))
-                .title("Focus Space")
+                .title("Pastel Espresso")
                 .inner_size(1440.0, 900.0)
                 .min_inner_size(1100.0, 700.0)
                 .center()
@@ -89,5 +90,5 @@ pub fn run() {
             }
         })
         .run(tauri::generate_context!())
-        .expect("error while running the Focus Space desktop app");
+        .expect("error while running the Pastel Espresso desktop app");
 }

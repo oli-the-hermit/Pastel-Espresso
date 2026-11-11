@@ -14,8 +14,8 @@ import { storage } from './storage';
 export const MINI_WINDOW_LABEL = 'mini';
 /** URL hash that makes `main.tsx` render the mini player instead of the app. */
 export const MINI_WINDOW_HASH = '#mini';
-export const EVT_TIMER_STATE = 'fs:timer-state';
-export const EVT_TIMER_COMMAND = 'fs:timer-command';
+export const EVT_TIMER_STATE = 'pe:timer-state';
+export const EVT_TIMER_COMMAND = 'pe:timer-command';
 
 export const MINI_WIDTH = 400;
 export const MINI_HEIGHT = 152;
@@ -240,8 +240,8 @@ export async function openExternal(url: string): Promise<void> {
 // ── Alerts (see src-tauri/src/alerts.rs) ──────────────────────────────
 
 export const ISLAND_WINDOW_HASH = '#island';
-const EVT_ALERT_FIRED = 'fs:alert-fired';
-const EVT_ALERT_SHOW = 'fs:alert-show';
+const EVT_ALERT_FIRED = 'pe:alert-fired';
+const EVT_ALERT_SHOW = 'pe:alert-show';
 
 export interface AlertFiredEvent {
   payload: AlertPayload;

@@ -40,7 +40,7 @@ if (serveStatic) {
 }
 
 const server = app.listen(PORT, HOST, () => {
-  console.log(`FocusSpace API listening on http://${HOST}:${PORT}`);
+  console.log(`Pastel Espresso API listening on http://${HOST}:${PORT}`);
   console.log(`Database file: ${DB_PATH}`);
   console.log(`Production static mode: ${serveStatic ? 'ON' : 'OFF'}`);
 });

@@ -1,15 +1,17 @@
 /**
  * Notes as files. A bundle is one versioned JSON file holding many notes with their
- * collections and labels (`.focusbundle.json`); a Markdown file is one note, its labels in
+ * collections and labels (`.espresso.json`); a Markdown file is one note, its labels in
  * front matter. This module reads files into an import plan and writes notes out as text;
  * the pickers and save dialogs are in lib/fileAccess.ts.
  */
 import { LIMITS } from '../constants/limits';
 import { deriveNoteTitle } from './notes';
 
-export const BUNDLE_FORMAT = 'focus-space-bundle';
+export const BUNDLE_FORMAT = 'pastel-espresso-bundle';
+/** Formats older versions wrote (before 1.4 the app was called Focus Space); still imported. */
+export const LEGACY_BUNDLE_FORMATS: readonly string[] = ['focus-space-bundle'];
 export const BUNDLE_VERSION = 1;
-export const BUNDLE_EXTENSION = '.focusbundle.json';
+export const BUNDLE_EXTENSION = '.espresso.json';
 export const MARKDOWN_EXTENSION = '.md';
 
 /** Files read as one Markdown note each. */
@@ -324,7 +326,7 @@ function readBundle(text: string): BundleRead {
     return { ok: false, reason: 'notBundle' };
   }
   const b = data && typeof data === 'object' ? (data as Record<string, unknown>) : {};
-  if (b.format !== BUNDLE_FORMAT || !Array.isArray(b.documents)) return { ok: false, reason: 'notBundle' };
+  if ((b.format !== BUNDLE_FORMAT && !LEGACY_BUNDLE_FORMATS.includes(String(b.format))) || !Array.isArray(b.documents)) return { ok: false, reason: 'notBundle' };
   if (typeof b.version === 'number' && b.version > BUNDLE_VERSION) return { ok: false, reason: 'newerBundle' };
   const collections = (Array.isArray(b.collections) ? b.collections : []).flatMap(c => {
     const r = c && typeof c === 'object' ? (c as Record<string, unknown>) : {};

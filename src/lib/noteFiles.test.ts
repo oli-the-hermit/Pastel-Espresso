@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   BUNDLE_FORMAT,
+  LEGACY_BUNDLE_FORMATS,
   MAX_NOTE_BYTES,
   buildBundle,
   bundleText,
@@ -38,12 +39,20 @@ describe('bundles', () => {
   it('comes back in whole: titles, bodies, labels, dates and collections', () => {
     const notes = [note(), note({ id: 'n2', title: 'Plan', labels: ['plan', 'handoff'], body: '- [ ] one\n' })];
     const text = bundleText(buildBundle('Export', notes, [{ id: 'c1', name: 'Research' }], T0));
-    const plan = planImport([md('x.focusbundle.json', text)], options);
+    const plan = planImport([md('x.espresso.json', text)], options);
     expect(plan.skipped).toEqual([]);
     expect(plan.groups).toEqual([{ key: '0:c1', name: 'Research' }]);
     expect(plan.notes.map(({ title, body, labels, createdAt, editedAt }) => ({ title, body, labels, createdAt, editedAt }))).toEqual(
       notes.map(({ title, body, labels, createdAt, editedAt }) => ({ title, body, labels, createdAt, editedAt }))
     );
+  });
+
+  it('still imports a bundle saved before the rename (Focus Space)', () => {
+    const [legacy] = LEGACY_BUNDLE_FORMATS;
+    const text = JSON.stringify({ format: legacy, version: 1, title: 'Old', documents: [{ title: 'Kept', body: 'x' }] });
+    const plan = planImport([md('Old.focusbundle.json', text)], options);
+    expect(plan.skipped).toEqual([]);
+    expect(plan.notes.map(n => n.title)).toEqual(['Kept']);
   });
 
   it('puts notes without a collection in one named after the bundle', () => {

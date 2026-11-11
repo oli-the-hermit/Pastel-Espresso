@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   Focus Space — stylesheet entry
+   Pastel Espresso — stylesheet entry
    Flat Material 2026: tonal surfaces, lime accent (#D1DD23),
    no gradients / blur / decorative shadows / separator borders.
 
@@ -71,7 +71,7 @@
 @import url('./styles/layout/title-bar.css') layer(app);
 @import url('./styles/layout/columns.css') layer(app);
 
-/* Features: Focus Space pages and windows */
+/* Features: Pastel Espresso pages and windows */
 @import url('./styles/features/timer.css') layer(app);
 @import url('./styles/features/session-tasks.css') layer(app);
 @import url('./styles/features/task-list.css') layer(app);

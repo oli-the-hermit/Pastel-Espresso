@@ -72,6 +72,7 @@
   color: var(--on-accent);
 }
 .about-name { font-size: var(--type-heading); font-weight: var(--weight-title); }
+.about-formerly { font-size: var(--type-meta); color: var(--text-2); }
 .about-version { display: flex; align-items: center; gap: var(--space-8); font-size: var(--type-meta); color: var(--text-2); }
 /* A test version (shared/release.json stage): amber badge and note, never the accent. */
 .stage-badge { background: var(--warning-container); color: var(--warning); }
