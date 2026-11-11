@@ -1,0 +1,110 @@
+/* Component lab: goal card, round 1. Unlayered, so these rules sit above the app's "app" layer.
+   Every size and colour is one of the app's tokens (src/styles/foundation/tokens.css).
+   The options reuse the app's own A7 pieces (card band, task rows, check box, add row, menus);
+   only what is new is here, prefixed gb-. */
+
+/* ── The page ───────────────────────────────────────────── */
+html, body { height: auto; overflow: auto; }
+.lab {
+  max-width: 1760px;
+  margin: 0 auto;
+  padding: var(--space-32) var(--space-24) var(--space-48);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+}
+.lab-top { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: var(--space-16); }
+.lab-intro { display: flex; flex-direction: column; gap: var(--space-4); }
+.lab-title { font-size: var(--type-page); font-weight: var(--weight-title); line-height: var(--leading-tight); }
+.lab-sub { max-width: 72ch; font-size: var(--type-body); color: var(--text-2); }
+.lab-tools { display: flex; gap: var(--space-8); }
+.lab-tools [aria-pressed='true'] { background: var(--accent-container); color: var(--on-accent-container); }
+
+.lab-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-40); align-items: start; }
+@media (max-width: 1240px) {
+  .lab-grid { grid-template-columns: minmax(0, 480px); gap: var(--space-48); }
+}
+.lab-col { display: flex; flex-direction: column; gap: var(--space-16); min-width: 0; }
+.lab-col-head { display: flex; flex-direction: column; gap: var(--space-4); min-height: 4rem; }
+.lab-col-name { font-size: var(--type-title); font-weight: var(--weight-title); line-height: var(--leading-tight); }
+.lab-col-desc { font-size: var(--type-meta); color: var(--text-2); }
+.lab-cards { display: flex; flex-direction: column; gap: var(--space-24); }
+/* The app's goal card sits in a grid cell (align-self: start); here it fills the column. */
+.lab-cards > .goal-card { align-self: stretch; }
+
+.lab-notes { display: flex; flex-direction: column; gap: var(--space-8); }
+.lab-notes ol,
+.lab-notes ul {
+  margin: 0;
+  padding-left: var(--space-20);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  font-size: var(--type-meta);
+  color: var(--text-2);
+}
+.lab-notes ol { list-style: decimal; }
+.lab-notes ul { list-style: disc; }
+.lab-notes b { color: var(--text-1); font-weight: var(--weight-label); }
+
+.lab-toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-24);
+  transform: translate(-50%, var(--space-8));
+  max-width: calc(100vw - var(--space-48));
+  padding: var(--space-12) var(--space-20);
+  border-radius: var(--radius-pill);
+  background: var(--surface-4);
+  color: var(--text-1);
+  font-size: var(--type-meta);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition), transform var(--transition);
+}
+.lab-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+/* The page redraws a column after every action: only the box just ticked plays the app's pop. */
+.lab-col .checkbox:checked:not(.is-fresh) { animation: none; }
+
+/* ── The options: a card with the app's band ──────────────── */
+/* A goal's name may run to two lines, so it wraps instead of ending in an ellipsis. */
+.gb-card .card-title { white-space: normal; overflow: visible; word-break: break-word; }
+.gb-card .card-subtitle-row { align-items: center; }
+/* Done: the success colours, as a ticked task's time. */
+.gb-done {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: var(--chip-height);
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-pill);
+  background: var(--success-container);
+  color: var(--success);
+  font-size: var(--type-meta);
+  font-weight: var(--weight-label);
+}
+.gb-body { display: flex; flex-direction: column; gap: var(--space-20); }
+/* The description, once written: the app's inline text, quiet. */
+.gb-desc { color: var(--text-2); }
+
+/* B1: the landmarks' heading, on the lists' grid (16px in, like a list heading's chevron). */
+.gb-list { display: flex; flex-direction: column; gap: var(--space-12); }
+.gb-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: var(--icon-button-size);
+  padding: 0 var(--space-4) 0 var(--space-16);
+}
+.gb-head-name { font-size: var(--type-heading); font-weight: var(--weight-title); line-height: var(--leading-tight); }
+.gb-count { margin-left: auto; font-size: var(--type-meta); font-weight: var(--weight-label); color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+/* B2: the bar closes the band, under the title and its chips. */
+.gb-band-bar { margin-top: var(--space-12); }
+
+/* A landmark row: the app's task row, with its dates and reward after the name. */
+.gb-row-meta { flex: none; display: flex; align-items: center; gap: var(--space-8); }
+.gb-row-meta .chip { background: var(--surface-3); }
+
+/* A goal without landmarks ends with its one action. */
+.gb-foot { display: flex; }

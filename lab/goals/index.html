@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en" data-theme="dark" style="color-scheme: dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Component lab: goal card</title>
+  <link rel="icon" href="data:,">
+  <!-- The app's own font, tokens and component styles: "Current" is the real thing, and the
+       options reuse the app's rows, check boxes and add row from A7. -->
+  <link rel="stylesheet" href="../../node_modules/@fontsource-variable/geist/index.css">
+  <link rel="stylesheet" href="../../src/index.css">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <main class="lab">
+    <header class="lab-top">
+      <div class="lab-intro">
+        <span class="overline">Component lab · round 1</span>
+        <h1 class="lab-title">Goal card</h1>
+        <p class="lab-sub">
+          The goal card as it is in 1.4, next to two options built on the lists' rules (A7).
+          Everything is live: tick landmarks, add one by typing its name, open the menus, move
+          landmarks up and down, add a description, complete a goal that has no landmarks.
+        </p>
+      </div>
+      <div class="lab-tools">
+        <button type="button" class="btn-action sm" id="themeDark" aria-pressed="true">Dark</button>
+        <button type="button" class="btn-action sm" id="themeLight" aria-pressed="false">Light</button>
+        <button type="button" class="btn-action sm" id="reset">Reset</button>
+      </div>
+    </header>
+
+    <div class="lab-grid">
+      <section class="lab-col" data-variant="cur">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">Current</h2>
+          <p class="lab-col-desc">The goal card in 1.4 (after A7), with the app's own styles.</p>
+        </header>
+        <div class="lab-cards" data-slot="cards"></div>
+        <div class="lab-notes">
+          <span class="overline">What I see</span>
+          <ol>
+            <li>Landmark rows show three loose tools on hover; tasks, lists and sessions now have one menu each. Landmarks can't be reordered.</li>
+            <li>On a goal with landmarks, "Complete" looks like a button but does nothing: it completes on its own.</li>
+            <li>"Landmarks" is said three times: the count, the overline, the button.</li>
+            <li>"+ Landmark" sits at the bottom, away from the landmarks, and always opens a dialog, even for just a name.</li>
+            <li>Every card shows "Write a description", written or not.</li>
+            <li>The rows start 8px in, not on the lists' 16px grid; the card's sides are 12px plus 12px.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="lab-col" data-variant="b1">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">B1 · Landmarks as a list</h2>
+          <p class="lab-col-desc">The landmarks are a list in the card, with A7's heading: name, count, thin bar.</p>
+        </header>
+        <div class="lab-cards" data-slot="cards"></div>
+        <div class="lab-notes">
+          <span class="overline">How it works</span>
+          <ul>
+            <li><b>Band:</b> the period as the overline, the menu, the title, then the reward and the dates.</li>
+            <li><b>Landmarks:</b> a heading with the count and a thin bar, then raised rows with one quiet menu (Mark complete, Edit, Duplicate, Move up, Move down, Delete).</li>
+            <li><b>Adding:</b> "Add a landmark" is the list's last row: type a name, press Enter. Dates and a reward come from Edit.</li>
+            <li><b>Completing:</b> a goal with landmarks completes when the last one is ticked (a "Done" chip on the band). Only a goal without landmarks has a "Complete goal" button.</li>
+            <li><b>Description:</b> shown once written; "Add a description" is in the menu.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="lab-col" data-variant="b2">
+        <header class="lab-col-head">
+          <h2 class="lab-col-name">B2 · Progress in the title</h2>
+          <p class="lab-col-desc">The goal is the list: its band carries the count and the bar, like a list's heading.</p>
+        </header>
+        <div class="lab-cards" data-slot="cards"></div>
+        <div class="lab-notes">
+          <span class="overline">How it differs from B1</span>
+          <ul>
+            <li><b>The count</b> ("1 of 3") sits beside the menu on the overline's line, and <b>the bar</b> closes the band. No "Landmarks" heading: the rows follow the band directly.</li>
+            <li>Every card shows its progress in the same place, so a page of goals scans in one line per card.</li>
+            <li>Rows, adding, completing and the description work as in B1.</li>
+          </ul>
+        </div>
+        <div class="lab-notes">
+          <span class="overline">Chosen: B2 (2026-11-11)</span>
+          <ul>
+            <li>A goal is a list of landmarks, so its band is the list's heading: the same name, count and bar as A7, one level up, without repeating the word.</li>
+            <li>Progress reads first, in the same spot on every card; that's what you look for on a page of goals.</li>
+            <li>The cost: the band is taller on goals with landmarks, and the bar sits a little away from the rows it counts.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="lab-toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="lab.js"></script>
+</body>
+</html>
