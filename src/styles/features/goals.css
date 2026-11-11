@@ -1,42 +1,29 @@
 /* ── Goals ──────────────────────────────────────────────── */
-/* The header (title, badges, menu) sits open on the card, like a reward card; Complete sits
-   at the footer's end. The whole card drags to reorder (pattern: docs/patterns.md, drag-surface). */
-.goal-card {
-  --goal-inset: var(--space-12);
-  align-self: start;
-  display: flex;
-  align-items: flex-start;
-  /* The footer sits as far from the bottom edge as the content sits from the sides. */
-  padding: var(--goal-inset) var(--goal-inset) calc(var(--goal-inset) * 2);
-  border-radius: var(--radius-3xl);
-  background: var(--surface-1);
-  --field-bg: var(--surface-2);
-}
-.goal-card-body { flex: 1; min-width: 0; align-self: stretch; display: flex; flex-direction: column; gap: var(--space-16); }
-/* Everything under the header lines up with the header's content. */
-.goal-card-body > :not(.goal-card-header, .goal-description) { padding-inline: var(--goal-inset); }
-/* The card's title band (components/card.css): the frequency as the overline with the menu on
-   its line, the title 8px under, then its badges. Badges on it take one step up (surface 3). */
-.goal-card-header {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-4);
-  margin: calc(var(--goal-inset) * -1) calc(var(--goal-inset) * -1) 0;
-  padding: var(--space-24) var(--space-24) var(--space-20);
-  border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
-  background: var(--surface-2);
-}
-.goal-card-top { align-self: stretch; min-height: var(--icon-button-size); display: flex; align-items: center; justify-content: space-between; gap: var(--space-8); }
-.goal-card-header .overline { color: var(--accent-text); line-height: var(--leading-snug); }
-.goal-card-header > :not(.goal-card-top) { margin-top: var(--space-4); }
-/* The same size as a card title (e.g. the session's task card). */
-.goal-card-header > .goal-card-title { margin-top: calc(var(--space-8) * -1); font-size: var(--type-title); font-weight: var(--weight-title); line-height: var(--leading-none); word-break: break-word; }
-.goal-card-meta { display: flex; flex-wrap: wrap; gap: var(--space-8); }
-.goal-card-header .goal-reward-badge { background: var(--surface-3); }
-/* Its text lines up with the header's content; the field's own padding sits outside that line. */
-.goal-description { width: auto; margin-inline: calc(var(--goal-inset) - var(--space-8)); color: var(--text-2); }
+/* A goal is a card (ui/Card) whose band is its landmarks' heading: the period, the count, the
+   title, its chips and the bar (ui/CardHeader). Under it: the description once written, the
+   landmarks as the app's task rows (features/task-list.css), "Add a landmark" as the last row,
+   and "Complete goal" on a goal without landmarks. The whole card drags to reorder (pattern:
+   docs/patterns.md, drag-surface). */
+.goal-card { align-self: start; }
+/* Its text lines up with the title; the field's own padding sits outside that line. */
+.goal-description-wrap { margin-bottom: var(--space-16); }
+/* The field sits 8px out on each side (its own padding), so it spans the card's width plus those. */
+.goal-description { width: calc(100% + var(--space-16)); color: var(--text-2); }
+.goal-card-foot { display: flex; margin-top: var(--space-24); }
 
+/* Done: the success colours, as a ticked task's time. */
+.goal-done-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 24px;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-pill);
+  background: var(--success-container);
+  color: var(--success);
+  font-size: var(--type-meta);
+  font-weight: var(--weight-label);
+}
 .goal-reward-badge,
 .reward-trigger-badge,
 .landmark-reward-tag {
@@ -54,56 +41,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-.goal-card-progress { display: flex; flex-direction: column; gap: var(--space-8); --progress-track: var(--surface-2); }
-.goal-progress-row { display: flex; justify-content: space-between; font-size: var(--type-meta); color: var(--text-2); font-variant-numeric: tabular-nums; }
-
-.goal-landmarks { display: flex; flex-direction: column; gap: var(--space-4); }
-.landmarks-title {
-  font-size: var(--type-overline);
-  font-weight: var(--weight-label);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--text-2);
-  margin-bottom: var(--space-4);
-}
-.landmark-item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-8) var(--space-8);
-  min-height: 44px;
-  padding: var(--space-8) var(--space-8) var(--space-8) var(--space-8);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
-}
-/* The name wraps inside its own space, so the row's tools never drop to a line of their own. */
-.landmark-text { flex: 1 1 0; min-width: 0; font-size: var(--type-body); word-break: break-word; }
-.landmark-item.landmark-done .landmark-text { color: var(--text-3); text-decoration: line-through; }
-/* The row's tools float over its end when shown, so they never take room from the name. */
-.landmark-actions {
-  position: absolute;
-  top: 50%;
-  right: var(--space-8);
-  transform: translateY(-50%);
-  display: flex;
-  gap: var(--space-1);
-  padding-left: var(--space-8);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
-  visibility: hidden;
-}
-.landmark-item:hover .landmark-actions,
-.landmark-item:focus-within .landmark-actions { visibility: visible; }
+/* On the band and on a raised row, one step up. */
+.goal-reward-badge,
 .landmark-reward-tag { background: var(--surface-3); }
 
-/* Twice the card's gap above the footer: + Landmark and the Saved note at the start, Complete
-   at the end. */
-.goal-card-footer { display: flex; align-items: center; gap: var(--space-8); margin-top: auto; padding-top: var(--space-16); }
-.goal-saved { display: inline-flex; align-items: center; gap: var(--space-4); font-size: var(--type-meta); font-weight: var(--weight-label); color: var(--text-2); }
-.goal-card-footer .goal-complete-btn { margin-left: auto; }
-.goal-saved > * { animation: pop-in var(--dur-2) var(--ease-decel); }
+/* A landmark's dates and reward, after its name. */
+.landmark-meta { flex: none; display: flex; align-items: center; gap: var(--space-8); }
 
 .schedule-badge {
   display: inline-flex;

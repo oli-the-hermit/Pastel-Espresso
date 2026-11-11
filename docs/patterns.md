@@ -84,6 +84,21 @@ thing's right-click menu (one list, `ui/Menu`). A row's ⋮ is quiet (`triggerQu
 so a list of rows stays calm. Landmark rows still show their tools on hover, until goals get their
 own lab round.
 
+## Goals (component lab, goal card B2, 2026-11-11)
+
+A goal is a list of landmarks, so its band is that list's heading (`features/goals.css`):
+
+- **Band:** the period as the overline, the count ("1 of 3") beside the ⋮ (`CardHeader count`), the
+  title (it wraps: `titleWraps`), its chips (Done, the reward, the dates), and the bar closing the band
+  (`CardHeader progress`).
+- **Landmarks** are the lists' raised rows (`task-row`), with one quiet ⋮ (Mark complete, Edit,
+  Duplicate, Move up, Move down, Delete); "Add a landmark" is the last row (a name and Enter; dates and
+  a reward come from Edit, or from "Add landmark" in the goal's ⋮).
+- **Completing:** a goal with landmarks completes when the last one is ticked (a "Done" chip on the
+  band); only a goal without landmarks has a "Complete goal" button.
+- **Description:** shown once written; "Add a description" in the ⋮ opens an empty one, and leaving it
+  empty puts it away.
+
 ## Lists (component lab A7, 2026-11-10)
 
 The session's task lists, the Tasks page, the sessions card and the list picker share one set of rules:

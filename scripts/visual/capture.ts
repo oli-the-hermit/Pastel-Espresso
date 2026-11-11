@@ -278,8 +278,8 @@ async function main() {
       // The drawer choice is stored per device: put the rail back for the views after this.
       await page.getByRole('button', { name: strings.rail.collapse }).click();
       await shot(theme, '56-goal-description', async () => {
-        await page.locator('#tab-goals .goal-card').first()
-          .getByRole('textbox', { name: strings.goals.descriptionLabel }).click();
+        await page.locator('#tab-goals .goal-card').first().getByRole('button', { name: strings.goals.goalActions }).click();
+        await page.getByRole('menuitem', { name: strings.goals.addDescription }).click();
         await page.keyboard.type('Four focused sessions before lunch.');
       });
       // Escape puts the saved (empty) text back, so nothing is saved.
@@ -416,6 +416,41 @@ async function main() {
       const [g, r] = [await grip.boundingBox(), await row.boundingBox()];
       await page.mouse.move(0, 0);
       return hidden && shown && !!g && !!r && g.x + g.width <= r.x;
+    });
+
+    await check("A landmark typed into a goal's last row is added, and the band counts it", async () => {
+      await page.locator('.nav-rail [data-tab="goals"]').click();
+      await settle(page);
+      const card = page.locator('#tab-goals .goal-card').first();
+      const before = await card.locator('.task-row').count();
+      const field = card.getByRole('textbox', { name: new RegExp(`^${strings.goals.addLandmarkTo.split('{name}')[0]}`) });
+      await field.fill('Made in the lab check');
+      await field.press('Enter');
+      await settle(page, 300);
+      const rows = card.locator('.task-row');
+      const added = (await rows.count()) === before + 1 && (await rows.last().innerText()).includes('Made in the lab check');
+      const counted = (await card.locator('.card-header-count').innerText()).trim().endsWith(`of ${before + 1}`);
+      // Put it back.
+      await rows.last().getByRole('button', { name: strings.goals.landmarkActions }).click();
+      await page.getByRole('menuitem', { name: strings.common.delete }).click();
+      await settle(page, 300);
+      return added && counted && (await rows.count()) === before;
+    });
+
+    await check("A landmark's Move down puts it after the next one", async () => {
+      const names = page.locator('#tab-goals .goal-card').first().locator('.task-row .task-text');
+      const [first, second] = [await names.nth(0).innerText(), await names.nth(1).innerText()];
+      await page.locator('#tab-goals .goal-card').first().locator('.task-row').first().getByRole('button', { name: strings.goals.landmarkActions }).click();
+      await page.getByRole('menuitem', { name: strings.common.moveDown }).click();
+      await settle(page, 300);
+      const moved = (await names.nth(0).innerText()) === second && (await names.nth(1).innerText()) === first;
+      await page.locator('#tab-goals .goal-card').first().locator('.task-row').nth(1).getByRole('button', { name: strings.goals.landmarkActions }).click();
+      await page.getByRole('menuitem', { name: strings.common.moveUp }).click();
+      await settle(page, 300);
+      const back = (await names.nth(0).innerText()) === first;
+      await page.locator('.nav-rail [data-tab="timer"]').click();
+      await settle(page);
+      return moved && back;
     });
 
     await check("A long title is cut with an ellipsis inside the card's band", async () => {

@@ -29,6 +29,7 @@ Notes: a place to keep what your focus produced.
 - **Check boxes** are now soft holes that show the tick as you point at them.
 - **Every card's title stands apart** on a band at its top, with its label in the accent and its ⋮ beside it: the session, the sessions, the Tasks page, Stats, goals and rewards. The player stays as it was. A goal's or reward's period is that label; a reward ready to claim has its band tinted.
 - **The sessions card** has a title (the selected session) and its own ⋮ (new, edit, duplicate, delete); each session's tools are in one ⋮, and *New session* sits at the end of the list. The Tasks page's list sidebar works the same way.
+- **Goals read like lists.** A goal's band carries its period, its progress ("1 of 3") beside its ⋮ and a bar under the title, so every card shows how far along it is in the same place. Landmarks are raised rows with one ⋮ (including *Move up* and *Move down*); type a landmark's name in the goal's last row and press Enter to add it. A goal with landmarks completes when the last one is ticked and shows *Done* on its band; only a goal without landmarks has a *Complete goal* button. The description shows once you've written one (*Add a description* is in the ⋮).
 - **The list picker** is a small card: a search with a clear button, the lists as rows with their icon, sort and *Recently opened* kept, and *New task list* as a button at the end.
 
 ### Under the hood
@@ -41,7 +42,7 @@ Notes: a place to keep what your focus produced.
 - **Dependencies:** security updates for Express's `body-parser`, `proxy-addr` and `qs`; Vite 8 and Vitest 5, which clear the last advisories in the development tools (`npm audit` finds none).
 - **License notices:** `public/third-party-notices.txt` is generated from the packages that ship (`npm run licenses`): the app's and the web server's npm packages and the desktop app's Rust crates, each with its own license files. `npm run check` fails when it's out of date.
 - **CI:** every push and pull request runs the checks, a production build and the Rust tests on GitHub Actions.
-- **Checks:** 181 unit tests, 29 browser behavior checks and 110 screenshots compared pixel by pixel on every change, including the Notes screens, a check that the database holds no note text, and one that a note opens unchanged after a password change.
+- **Checks:** 181 unit tests, 31 browser behavior checks and 110 screenshots compared pixel by pixel on every change, including the Notes screens, a check that the database holds no note text, and one that a note opens unchanged after a password change.
 
 ## 1.3.0 (alpha)
 

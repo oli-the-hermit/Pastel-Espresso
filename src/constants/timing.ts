@@ -7,8 +7,6 @@ export const TIMING = {
   toastVisibleMs: 3500,
   /** A toast with an action (Undo) waits longer, so there is time to read it and decide. */
   toastActionVisibleMs: 8000,
-  /** How long an in-place "Saved" note stays (e.g. after editing a goal's description). */
-  savedNoteMs: 3000,
   /** The bell's dot clears itself this long after the last toast, so it never lingers. */
   bellDotMs: 60_000,
   /** How long the bell button rings after a phase ends. */

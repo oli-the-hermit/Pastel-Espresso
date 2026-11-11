@@ -106,6 +106,17 @@ export function createGoalActions({ setState, showToast }: Pick<ActionDeps, 'set
     }));
   };
 
+  const reorderLandmarks = (goalId: string, sourceId: string, targetId: string) => {
+    setState(prev => ({
+      ...prev,
+      goals: prev.goals.map(g => {
+        if (g.id !== goalId || !g.landmarks) return g;
+        const landmarks = moveById(g.landmarks, sourceId, targetId);
+        return landmarks ? { ...g, landmarks } : g;
+      })
+    }));
+  };
+
   const updateLandmark = (goalId: string, landmarkId: string, landmark: Partial<Landmark>) => {
     setState(prev => ({
       ...prev,
@@ -195,5 +206,5 @@ export function createGoalActions({ setState, showToast }: Pick<ActionDeps, 'set
     });
   };
 
-  return { addGoal, updateGoal, duplicateGoal, deleteGoal, reorderGoals, toggleGoal, addLandmark, updateLandmark, duplicateLandmark, deleteLandmark, toggleLandmark };
+  return { addGoal, updateGoal, duplicateGoal, deleteGoal, reorderGoals, toggleGoal, addLandmark, updateLandmark, reorderLandmarks, duplicateLandmark, deleteLandmark, toggleLandmark };
 }

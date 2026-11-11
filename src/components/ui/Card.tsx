@@ -13,6 +13,8 @@ export interface CardHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   title: React.ReactNode;
   /** Tooltip for the title, which truncates with an ellipsis. */
   titleTooltip?: string;
+  /** The title wraps onto more lines instead of ending in an ellipsis (e.g. a goal's name). */
+  titleWraps?: boolean;
   /** Small uppercase line above the title. */
   overline?: React.ReactNode;
   /** A count beside the menu, on the overline's line (e.g. "2 of 5"). Needs an overline. */
@@ -21,6 +23,8 @@ export interface CardHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   titleAddon?: React.ReactNode;
   /** Chips or meta shown under the title. */
   subtitle?: React.ReactNode;
+  /** A progress bar that closes the title block (e.g. a goal's landmarks). */
+  progress?: React.ReactNode;
   /** Icon buttons on the right, grouped tightly. */
   actions?: React.ReactNode;
   /** Anything else on the right, unwrapped (e.g. a status chip). */
@@ -32,7 +36,8 @@ export interface CardHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElemen
  * With an overline, the overline and the actions share a first row of the same height as every
  * card's head row (PanelHeader, the player's), so overlines line up across columns.
  */
-export const CardHeader: React.FC<CardHeaderProps> = ({ title, titleTooltip, overline, count, titleAddon, subtitle, actions, aside, className, ...rest }) => {
+export const CardHeader: React.FC<CardHeaderProps> = ({ title, titleTooltip, titleWraps, overline, count, titleAddon, subtitle, progress, actions, aside, className, ...rest }) => {
+  const titleClass = cx('card-title', titleWraps && 'card-title--wrap');
   const side = (
     <>
       {count != null && count !== false && <span className="card-header-count">{count}</span>}
@@ -51,13 +56,14 @@ export const CardHeader: React.FC<CardHeaderProps> = ({ title, titleTooltip, ove
       <div className="card-header-main">
         {titleAddon ? (
         <div className="card-title-row">
-            <h2 className="card-title" title={titleTooltip}>{title}</h2>
+            <h2 className={titleClass} title={titleTooltip}>{title}</h2>
             {titleAddon}
           </div>
         ) : (
-          <h2 className="card-title" title={titleTooltip}>{title}</h2>
+          <h2 className={titleClass} title={titleTooltip}>{title}</h2>
         )}
         {subtitle && <div className="card-subtitle-row">{subtitle}</div>}
+        {progress && <div className="card-header-progress">{progress}</div>}
       </div>
       {!overline && side}
     </div>

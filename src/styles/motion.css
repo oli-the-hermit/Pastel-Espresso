@@ -96,8 +96,7 @@ html:not(.has-vt) .nav-rail-pill { animation: pill-in var(--dur-3) var(--ease-em
   to { opacity: 1; transform: none; }
 }
 
-.task-text,
-.landmark-text { transition: color var(--dur-3) var(--ease-standard); }
+.task-text { transition: color var(--dur-3) var(--ease-standard); }
 
 /* ── Small pops ──────────────────────────────────────────── */
 .nav-badge { animation: pop-in var(--dur-3) var(--ease-emphasized); }

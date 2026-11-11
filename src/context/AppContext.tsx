@@ -108,6 +108,8 @@ interface AppContextType {
   toggleGoal: (id: string) => void;
   addLandmark: (goalId: string, landmark: Omit<Landmark, 'id'>) => void;
   updateLandmark: (goalId: string, landmarkId: string, landmark: Partial<Landmark>) => void;
+  /** Moves a landmark to another's place within its goal (Move up / Move down). */
+  reorderLandmarks: (goalId: string, sourceId: string, targetId: string) => void;
   duplicateLandmark: (goalId: string, landmarkId: string) => void;
   deleteLandmark: (goalId: string, landmarkId: string) => void;
   toggleLandmark: (goalId: string, landmarkId: string) => void;
@@ -258,7 +260,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const { reorderSessions, setActiveSession, createSession, updateSession, duplicateSession, deleteSession, setSessionTaskLists } = createSessionActions({ setState, showToast, stopTicker });
   const { reorderTaskLists, reorderTasks, setActiveList, createList, renameList, duplicateList, deleteList, setSelectedListForTimer, addTask, toggleTask, renameTask, duplicateTask, deleteTask } = createListActions({ setState, showToast, stateRef });
   const { moveCalendarEvent, addCalendarEvent, updateCalendarEvent, deleteCalendarEvent, setCalendarView, setCalendarDate } = createCalendarActions({ setState, showToast, stateRef });
-  const { addGoal, updateGoal, duplicateGoal, deleteGoal, reorderGoals, toggleGoal, addLandmark, updateLandmark, duplicateLandmark, deleteLandmark, toggleLandmark } = createGoalActions({ setState, showToast });
+  const { addGoal, updateGoal, duplicateGoal, deleteGoal, reorderGoals, toggleGoal, addLandmark, updateLandmark, reorderLandmarks, duplicateLandmark, deleteLandmark, toggleLandmark } = createGoalActions({ setState, showToast });
   const { addReward, updateReward, duplicateReward, deleteReward, claimReward } = createRewardActions({ setState, showToast, stateRef, setActiveCelebrationReward });
   const { createNoteCollection, renameNoteCollection, removeNoteCollection, createNoteLabel, renameNoteLabel, removeNoteLabel } = createNoteActions({ setState });
 
@@ -337,6 +339,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         toggleGoal,
         addLandmark,
         updateLandmark,
+        reorderLandmarks,
         duplicateLandmark,
         deleteLandmark,
         toggleLandmark,
