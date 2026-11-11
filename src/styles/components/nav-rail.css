@@ -27,9 +27,8 @@
 .nav-rail-toggle:hover { background: var(--drawer-hover); color: var(--text-1); }
 .nav-rail[data-variant='expanded'] .nav-rail-toggle { color: var(--accent-text); }
 
-/* Anchored to the top, under the toggle (content starts where the eye does); the footer keeps
-   to the bottom. */
-.nav-rail-items { display: flex; flex-direction: column; gap: var(--space-8); margin-bottom: auto; }
+/* Centred in the space between the toggle (top) and the footer (bottom), which keep to the ends. */
+.nav-rail-items { display: flex; flex-direction: column; gap: var(--space-8); margin-block: auto; }
 
 .nav-rail-item {
   width: 76px;
