@@ -44,8 +44,19 @@ export default tseslint.config(
       'src-tauri/**',
       'documentation/**',
       'npm/**',
-      'public/**'
+      'public/**',
+      // Generated from screens.js by tools/figma-screens/build.mjs
+      'tools/figma-screens/code.js'
     ]
+  },
+  {
+    // The Figma screens plugin: a classic script run inside Figma, where `figma` is a global
+    files: ['tools/figma-screens/screens.js'],
+    languageOptions: { sourceType: 'script', globals: { figma: 'readonly', console: 'readonly' } }
+  },
+  {
+    files: ['tools/figma-screens/build.mjs'],
+    languageOptions: { globals: globals.node }
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

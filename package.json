@@ -22,6 +22,7 @@
     "desktop": "tauri dev",
     "desktop:build": "tauri build",
     "accents": "node scripts/accents/generate.ts",
+    "figma:screens": "node tools/figma-screens/build.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:css": "stylelint \"src/**/*.css\"",
