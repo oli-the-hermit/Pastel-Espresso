@@ -1,0 +1,48 @@
+# Figma screens
+
+A Figma development plugin that builds Pastel Espresso's screens in the Pastel Studio Figma file, so
+the layout can be changed and previewed there quickly. The screens are made of the Pastel Studio
+design system's Figma library (built by `pastel-studio-ds`, `tools/figma-library`). A change to a
+component shows on every screen. Each screen is re-coloured with Espresso's accent (solar lime)
+and its accent-tinted drawer.
+
+## What it builds
+
+On the **Screens** page, in the **Pastel Espresso** section:
+
+- **Espresso components:** the pieces the design system doesn't have.
+  - AppMark and UserBadge.
+  - PlayerCard, idle and running.
+  - QueueItem, TaskItem, TaskListHeading and AddTaskRow.
+  - EspressoDrawer, expanded and as a rail.
+  - EspressoTopBar.
+- **Screens,** each a 1600 × 960 desktop window with its title bar, tools and window buttons:
+  - Timer & sessions, idle and running;
+  - Tasks;
+  - Timer & sessions with the account menu open;
+  - Sign in.
+
+Sizes, colours and wording come from `src/styles` and `src/constants/strings.ts`.
+
+## Run it
+
+1. In the Figma desktop app, open the Pastel Studio file. It must already hold the library: run
+   **Pastel Studio DS: Figma library** first.
+2. Menu → **Plugins → Development → Import plugin from manifest…**, then pick `manifest.json` in this
+   folder. This is needed once.
+3. Menu → **Plugins → Development → Pastel Espresso: screens**.
+
+A screen that already exists is skipped. To rebuild one, delete it and run the plugin again. The
+plugin never changes what is already there, so move and edit the screens freely.
+
+## Change it
+
+Edit `screens.js`, then build `code.js`, which is what Figma runs:
+
+```
+npm run figma:screens
+```
+
+`build.mjs` puts together the screens kit from the design system beside this repo
+(`../pastel-studio-theme/tools/figma-library/screens-kit.js`), Espresso's accent from the design
+system's palette, and `screens.js`.
