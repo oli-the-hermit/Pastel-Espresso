@@ -16,13 +16,36 @@ On the **Screens** page, in the **Pastel Espresso** section:
   - QueueItem, TaskItem, TaskListHeading and AddTaskRow.
   - EspressoDrawer, expanded and as a rail.
   - EspressoTopBar.
+  - SwitchRow, on and off.
+  - StatCard.
+  - NoteCard, at rest and selected.
+  - RewardCard: ready, in progress and claimed.
+  - GoalCard, open and done.
 - **Screens,** each a 1600 × 960 desktop window with its title bar, tools and window buttons:
   - Timer & sessions, idle and running;
   - Tasks;
   - Timer & sessions with the account menu open;
-  - Sign in.
+  - Sign in, and Create the main account;
+  - Notes, and a note open in the editor;
+  - Calendar, a week;
+  - Stats;
+  - Goals & landmarks;
+  - Rewards;
+  - over the Timer page: Settings (its start, and scrolled to its end), Profile, Appearance,
+    New session, Help with its About and What's new views, Notification settings, the tour's
+    welcome and one of its steps, and Update ready;
+  - Reward claimed, over Rewards;
+  - Something unexpected happened, shown when the window stops drawing.
+- **Small windows,** at their own sizes:
+  - Mini player: compact (400 × 152), tall (320 × 420) and wide (640 × 300);
+  - Alert island (400 × 120).
 
-Sizes, colours and wording come from `src/styles` and `src/constants/strings.ts`.
+The design system's whole-file plugin (`tools/figma-file` in `pastel-studio-theme`) builds the same
+from this `screens.js`: the screens go in the **Pastel Espresso** section of its **Mockups** page,
+and the components in **Pastel Espresso components** on **Blocks**.
+
+Sizes, colours and wording come from `src/styles` and `src/constants/strings.ts`. What the screens
+show (the notes, the goals, the sessions) is made up, and a reward's emoji is drawn as an icon.
 
 ## Run it
 
